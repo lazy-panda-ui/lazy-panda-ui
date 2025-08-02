@@ -1,0 +1,21 @@
+# Codacy configuration for lazy-panda-ui
+# See https://docs.codacy.com/repositories-configure/codacy-configuration-file/ for details
+
+engines:
+  eslint:
+    enabled: true
+    extra_args: ["--ext", ".ts,.tsx", "src/"]
+  coverage:
+    enabled: true
+
+ignore_paths:
+  - dist/
+  - node_modules/
+  - coverage/
+  - .expo/
+  - .vscode/
+
+# Optionally, you can specify patterns to exclude or include files
+# patterns:
+#   - pattern: "src/components/experimental/**"
+#     exclude: true

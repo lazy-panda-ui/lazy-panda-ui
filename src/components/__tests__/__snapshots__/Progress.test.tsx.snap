@@ -1,0 +1,33 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`Progress renders with value 1`] = `
+<View
+  style={
+    [
+      {
+        "backgroundColor": "#E5E5EA",
+        "borderRadius": 4,
+        "height": 8,
+        "overflow": "hidden",
+        "width": "100%",
+      },
+      undefined,
+    ]
+  }
+>
+  <View
+    style={
+      [
+        {
+          "backgroundColor": "#007AFF",
+          "borderRadius": 4,
+          "height": 8,
+        },
+        {
+          "width": "50%",
+        },
+      ]
+    }
+  />
+</View>
+`;
