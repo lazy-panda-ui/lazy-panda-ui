@@ -1,14 +1,13 @@
-name: Publish to GitHub NPM Registry
+name: Publish to GitHub NPM Registry (DISABLED)
 
+# Temporarily disabled - use publish-clean.yml instead
 on:
-  push:
-    branches:
-      - main
-    paths:
-      - 'package.json'
-      - 'src/**'
-      - '.github/workflows/publish.yml'
   workflow_dispatch:
+    inputs:
+      force_run:
+        description: 'Force run this workflow (use publish-clean.yml instead)'
+        required: false
+        default: 'false'
 
 permissions:
   contents: write
@@ -74,8 +73,16 @@ jobs:
         run: |
           git config --local user.email "action@github.com"
           git config --local user.name "GitHub Action"
-          git tag "v${{ steps.package_info.outputs.version }}"
-          git push origin "v${{ steps.package_info.outputs.version }}"
+          
+          # Check if tag already exists
+          if git rev-parse "v${{ steps.package_info.outputs.version }}" >/dev/null 2>&1; then
+            echo "Tag v${{ steps.package_info.outputs.version }} already exists, skipping tag creation"
+          else
+            echo "Creating tag v${{ steps.package_info.outputs.version }}"
+            git tag "v${{ steps.package_info.outputs.version }}"
+            git push origin "v${{ steps.package_info.outputs.version }}"
+            echo "Successfully created and pushed tag v${{ steps.package_info.outputs.version }}"
+          fi
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
