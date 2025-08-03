@@ -1,0 +1,1 @@
+"use strict";(self.webpackChunk_lazy_panda_ui_documentation=self.webpackChunk_lazy_panda_ui_documentation||[]).push([[634],{192:(a,t,n)=>{n.r(t),n.d(t,{default:()=>d});n(6540);var u=n(6347),e=n(4848);function d(){return(0,e.jsx)(u.rd,{to:"/lazy-panda-ui/docs/getting-started"})}}}]);

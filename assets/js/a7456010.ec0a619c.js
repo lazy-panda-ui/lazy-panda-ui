@@ -1,0 +1,1 @@
+"use strict";(self.webpackChunk_lazy_panda_ui_documentation=self.webpackChunk_lazy_panda_ui_documentation||[]).push([[235],{8552:a=>{a.exports=JSON.parse('{"name":"docusaurus-plugin-content-pages","id":"default"}')}}]);
