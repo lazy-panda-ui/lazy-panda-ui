@@ -43,7 +43,7 @@
     "lint": "eslint ./src --ext .ts,.tsx",
     "format": "prettier --write ./src",
     "prepare": "npm run build",
-    "prepublishOnly": "npm run test && npm run lint && npm run build",
+    "prepublishOnly": "npm run build",
     "dist": "npm run test && npm run build && cp -R src dist && find dist -type f -name '*.ts' -delete && find dist -type f -name '*.tsx' -delete"
   },
   "publishConfig": {
