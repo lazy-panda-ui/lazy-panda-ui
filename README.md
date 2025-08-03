@@ -18,7 +18,7 @@ Visit our [documentation website](https://lazy-panda-ui.github.io/lazy-panda-ui/
 ## Usage
 
 ```tsx
-import { Button, Card, Text, theme } from 'lazy-panda-ui';
+import { Button, Card, Text, theme } from '@lazy-panda-ui/lazy-panda-ui';
 
 <Card>
   <Text>Hello World</Text>

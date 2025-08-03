@@ -1,0 +1,248 @@
+---
+sidebar_position: 20
+---
+
+# Skeleton
+
+The Skeleton component creates a placeholder preview of content while it's loading. It helps improve perceived performance and reduces layout shift.
+
+## Import
+
+```tsx
+import { Skeleton } from '@lazy-panda-ui/lazy-panda-ui';
+```
+
+## Usage
+
+```tsx
+import React from 'react';
+import { Skeleton } from '@lazy-panda-ui/lazy-panda-ui';
+
+function MyComponent() {
+  return (
+    <Skeleton width={200} height={20} />
+  );
+}
+```
+
+## Props
+
+| Name | Type | Default | Description |
+|------|------|---------|-------------|
+| `variant` | `'text' \| 'rectangular' \| 'circular' \| 'rounded'` | `'text'` | Shape variant |
+| `width` | `number \| string` | `'100%'` | Width of skeleton |
+| `height` | `number \| string` | - | Height of skeleton |
+| `animation` | `'pulse' \| 'wave' \| 'none'` | `'pulse'` | Animation type |
+| `speed` | `'slow' \| 'normal' \| 'fast'` | `'normal'` | Animation speed |
+| `repeat` | `number` | `1` | Number of times to repeat |
+| `gap` | `number` | `8` | Gap between repeated elements |
+
+## Examples
+
+### Basic Skeletons
+```tsx
+<Stack spacing="md">
+  <Skeleton width={200} height={20} />
+  <Skeleton width={300} height={20} />
+  <Skeleton width={250} height={20} />
+</Stack>
+```
+
+### Skeleton Variants
+```tsx
+<Stack spacing="md">
+  <Skeleton variant="text" width={200} />
+  <Skeleton variant="rectangular" width={300} height={100} />
+  <Skeleton variant="circular" width={40} height={40} />
+  <Skeleton variant="rounded" width={200} height={60} />
+</Stack>
+```
+
+### Animation Types
+```tsx
+<Stack spacing="md">
+  <Skeleton animation="pulse" width={200} />
+  <Skeleton animation="wave" width={200} />
+  <Skeleton animation="none" width={200} />
+</Stack>
+```
+
+### Different Speeds
+```tsx
+<Stack spacing="md">
+  <Skeleton speed="slow" width={200} />
+  <Skeleton speed="normal" width={200} />
+  <Skeleton speed="fast" width={200} />
+</Stack>
+```
+
+### Text Block
+```tsx
+<Stack spacing="sm">
+  <Skeleton width="90%" />
+  <Skeleton width="95%" />
+  <Skeleton width="85%" />
+  <Skeleton width="70%" />
+</Stack>
+```
+
+### Card Skeleton
+```tsx
+<Card>
+  <Skeleton variant="rectangular" height={200} />
+  <Box padding="md">
+    <Stack spacing="md">
+      <Skeleton width={140} height={24} />
+      <Skeleton width="90%" />
+      <Skeleton width="95%" />
+      <Skeleton width="60%" />
+    </Stack>
+  </Box>
+</Card>
+```
+
+### Profile Skeleton
+```tsx
+<Stack direction="row" spacing="md">
+  <Skeleton
+    variant="circular"
+    width={50}
+    height={50}
+  />
+  <Stack spacing="sm" flex={1}>
+    <Skeleton width={150} height={20} />
+    <Skeleton width={100} height={16} />
+  </Stack>
+</Stack>
+```
+
+### List Skeleton
+```tsx
+<List>
+  {Array(5).fill(0).map((_, i) => (
+    <List.Item key={i}>
+      <Stack direction="row" spacing="md">
+        <Skeleton
+          variant="circular"
+          width={40}
+          height={40}
+        />
+        <Stack spacing="sm" flex={1}>
+          <Skeleton width="60%" />
+          <Skeleton width="80%" />
+        </Stack>
+      </Stack>
+    </List.Item>
+  ))}
+</List>
+```
+
+### Media Content
+```tsx
+<Grid container spacing="md">
+  {Array(3).fill(0).map((_, i) => (
+    <Grid item xs={12} sm={4} key={i}>
+      <Card>
+        <Skeleton
+          variant="rectangular"
+          height={200}
+        />
+        <Box padding="md">
+          <Stack spacing="sm">
+            <Skeleton width="80%" />
+            <Skeleton width="60%" />
+          </Stack>
+        </Box>
+      </Card>
+    </Grid>
+  ))}
+</Grid>
+```
+
+## Customization
+
+### Custom Styles
+```tsx
+<Skeleton
+  style={{
+    background: '#f0f0f0',
+    '&::after': {
+      background: 'linear-gradient(90deg, transparent, rgba(255,255,255,0.4), transparent)',
+    },
+  }}
+  width={200}
+  height={20}
+/>
+```
+
+### Custom Animation
+```tsx
+<Skeleton
+  animation="wave"
+  style={{
+    animationDuration: '2s',
+    background: 'linear-gradient(90deg, #f0f0f0 25%, #e0e0e0 50%, #f0f0f0 75%)',
+  }}
+  width={200}
+  height={20}
+/>
+```
+
+## Best Practices
+
+1. Match skeleton shapes to content
+2. Use appropriate sizing
+3. Maintain content hierarchy
+4. Consider animation performance
+5. Handle loading states consistently
+6. Avoid layout shift
+7. Use meaningful dimensions
+
+## API Reference
+
+### Animation Speeds
+```tsx
+const skeletonSpeeds = {
+  slow: '2s',
+  normal: '1.5s',
+  fast: '1s',
+};
+```
+
+### Theme Customization
+```tsx
+const theme = {
+  skeleton: {
+    baseColor: '#e0e0e0',
+    highlightColor: '#f5f5f5',
+    borderRadius: {
+      text: '4px',
+      rectangular: '0',
+      circular: '50%',
+      rounded: '8px',
+    },
+    animation: {
+      pulse: {
+        keyframes: {
+          '0%': { opacity: 1 },
+          '50%': { opacity: 0.4 },
+          '100%': { opacity: 1 },
+        },
+      },
+      wave: {
+        keyframes: {
+          '0%': { transform: 'translateX(-100%)' },
+          '100%': { transform: 'translateX(100%)' },
+        },
+      },
+    },
+  },
+};
+```
+
+## Related Components
+
+- [Progress](progress) - For determinate progress
+- [Spinner](spinner) - For loading indicators
+- [LoadingOverlay](loading-overlay) - For blocking loading states
+- [Placeholder](placeholder) - For content placeholders

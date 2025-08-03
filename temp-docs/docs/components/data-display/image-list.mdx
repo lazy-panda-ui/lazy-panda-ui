@@ -1,0 +1,229 @@
+# ImageList
+
+The ImageList component is used to display a collection of images in a grid or masonry layout. It supports various customization options including loading states, error handling, and custom layouts.
+
+## Import
+
+```tsx
+import { ImageList } from '@lazy-panda-ui/lazy-panda-ui';
+```
+
+## Usage
+
+### Basic Grid Layout
+
+```tsx
+import { ImageList } from '@lazy-panda-ui/lazy-panda-ui';
+
+function Example() {
+  const images = [
+    { source: require('./image1.jpg') },
+    { source: require('./image2.jpg') },
+    { source: require('./image3.jpg') },
+    { source: { uri: 'https://example.com/image4.jpg' } },
+  ];
+
+  return <ImageList images={images} />;
+}
+```
+
+### Masonry Layout
+
+```tsx
+import { ImageList } from '@lazy-panda-ui/lazy-panda-ui';
+
+function Example() {
+  const images = [
+    { source: require('./image1.jpg'), aspectRatio: 1 },
+    { source: require('./image2.jpg'), aspectRatio: 0.5 },
+    { source: require('./image3.jpg'), aspectRatio: 1.5 },
+  ];
+
+  return (
+    <ImageList
+      images={images}
+      variant="masonry"
+      columns={2}
+    />
+  );
+}
+```
+
+### Custom Column Count
+
+```tsx
+import { ImageList } from '@lazy-panda-ui/lazy-panda-ui';
+
+function Example() {
+  return (
+    <>
+      <ImageList
+        images={images}
+        columns={2}
+        gap={8}
+      />
+
+      <ImageList
+        images={images}
+        columns={4}
+        gap={4}
+      />
+    </>
+  );
+}
+```
+
+### With Loading State
+
+```tsx
+import { ImageList } from '@lazy-panda-ui/lazy-panda-ui';
+
+function Example() {
+  return (
+    <ImageList
+      images={images}
+      showLoading
+    />
+  );
+}
+```
+
+### With Error Handling
+
+```tsx
+import { ImageList } from '@lazy-panda-ui/lazy-panda-ui';
+
+function Example() {
+  const handleError = (event) => {
+    console.log('Image failed to load:', event.nativeEvent.error);
+  };
+
+  return (
+    <ImageList
+      images={images}
+      onError={handleError}
+      fallback={<Text>Failed to load image</Text>}
+    />
+  );
+}
+```
+
+### Interactive Images
+
+```tsx
+import { ImageList } from '@lazy-panda-ui/lazy-panda-ui';
+
+function Example() {
+  const images = [
+    {
+      source: require('./image1.jpg'),
+      onPress: () => console.log('Image 1 pressed'),
+    },
+    {
+      source: require('./image2.jpg'),
+      onPress: () => console.log('Image 2 pressed'),
+    },
+  ];
+
+  return <ImageList images={images} />;
+}
+```
+
+## Props
+
+### Main Props
+
+| Prop | Type | Default | Description |
+|------|------|---------|-------------|
+| `images` | ImageItem[] | Required | Array of image items to display |
+| `columns` | number | 3 | Number of columns in the grid |
+| `gap` | number | theme.spacing.sm | Space between images |
+| `variant` | 'grid' \| 'masonry' | 'grid' | Layout variant of the image list |
+| `showLoading` | boolean | true | Whether to show loading indicator |
+
+### Style Props
+
+| Prop | Type | Description |
+|------|------|-------------|
+| `style` | ViewStyle | Additional styles for the container |
+| `imageStyle` | ImageStyle | Additional styles for each image |
+
+### Custom Components
+
+| Prop | Type | Description |
+|------|------|-------------|
+| `fallback` | React.ReactNode | Custom placeholder when image fails to load |
+
+### Event Props
+
+| Prop | Type | Description |
+|------|------|-------------|
+| `onError` | (event: ImageErrorEvent) => void | Called when an image fails to load |
+
+### ImageItem Props
+
+| Prop | Type | Description |
+|------|------|-------------|
+| `source` | ImageSourcePropType | Source of the image |
+| `aspectRatio` | number | Aspect ratio for masonry layout |
+| `onPress` | () => void | Called when image is pressed |
+
+### Accessibility Props
+
+| Prop | Type | Description |
+|------|------|-------------|
+| `testID` | string | Test ID for testing |
+
+## Theme Customization
+
+You can customize the ImageList component through the theme:
+
+```tsx
+const theme = {
+  components: {
+    imageList: {
+      container: {
+        // container styles
+      },
+      image: {
+        // image styles
+      },
+      loading: {
+        // loading indicator styles
+      },
+      fallback: {
+        // fallback container styles
+      },
+      variants: {
+        grid: {
+          // grid variant styles
+        },
+        masonry: {
+          // masonry variant styles
+        },
+      },
+    },
+  },
+};
+```
+
+### ImageItem Type
+
+```tsx
+interface ImageItem {
+  /**
+   * Source of the image
+   */
+  source: ImageSourcePropType;
+
+  /**
+   * Optional aspect ratio for masonry layout
+   */
+  aspectRatio?: number;
+
+  /**
+   * Called when image is pressed
+   */
+  onPress?: () => void;
+}
+```

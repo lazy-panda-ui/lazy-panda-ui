@@ -1,0 +1,255 @@
+---
+sidebar_position: 14
+---
+
+# Menu
+
+The Menu component displays a list of options when triggered by an anchor element. It's commonly used for dropdowns, context menus, and option selectors.
+
+## Import
+
+```tsx
+import { Menu } from '@lazy-panda-ui/lazy-panda-ui';
+```
+
+## Usage
+
+```tsx
+import React from 'react';
+import { Menu, Button } from '@lazy-panda-ui/lazy-panda-ui';
+
+function MyComponent() {
+  return (
+    <Menu>
+      <Menu.Trigger>
+        <Button>Open Menu</Button>
+      </Menu.Trigger>
+      <Menu.Content>
+        <Menu.Item>Option 1</Menu.Item>
+        <Menu.Item>Option 2</Menu.Item>
+        <Menu.Item>Option 3</Menu.Item>
+      </Menu.Content>
+    </Menu>
+  );
+}
+```
+
+## Props
+
+### Menu Props
+| Name | Type | Default | Description |
+|------|------|---------|-------------|
+| `defaultOpen` | `boolean` | `false` | Initial open state |
+| `open` | `boolean` | - | Controlled open state |
+| `onOpenChange` | `(open: boolean) => void` | - | Open state change handler |
+| `placement` | `'top' \| 'bottom' \| 'left' \| 'right'` | `'bottom'` | Menu placement |
+| `offset` | `number` | `8` | Distance from trigger |
+| `modal` | `boolean` | `true` | Whether menu is modal |
+
+### Menu.Item Props
+| Name | Type | Default | Description |
+|------|------|---------|-------------|
+| `disabled` | `boolean` | `false` | Whether item is disabled |
+| `selected` | `boolean` | `false` | Whether item is selected |
+| `icon` | `ReactNode` | - | Icon element |
+| `suffix` | `ReactNode` | - | Suffix element |
+| `onClick` | `() => void` | - | Click handler |
+
+## Examples
+
+### Basic Menu
+```tsx
+<Menu>
+  <Menu.Trigger>
+    <Button>Actions</Button>
+  </Menu.Trigger>
+  <Menu.Content>
+    <Menu.Item>Edit</Menu.Item>
+    <Menu.Item>Duplicate</Menu.Item>
+    <Menu.Item>Delete</Menu.Item>
+  </Menu.Content>
+</Menu>
+```
+
+### With Icons
+```tsx
+<Menu>
+  <Menu.Trigger>
+    <Button>File</Button>
+  </Menu.Trigger>
+  <Menu.Content>
+    <Menu.Item icon={<Icon name="file" />}>
+      New File
+    </Menu.Item>
+    <Menu.Item icon={<Icon name="folder" />}>
+      Open Folder
+    </Menu.Item>
+    <Menu.Item icon={<Icon name="save" />}>
+      Save
+    </Menu.Item>
+  </Menu.Content>
+</Menu>
+```
+
+### With Dividers
+```tsx
+<Menu>
+  <Menu.Trigger>
+    <Button>Edit</Button>
+  </Menu.Trigger>
+  <Menu.Content>
+    <Menu.Item>Cut</Menu.Item>
+    <Menu.Item>Copy</Menu.Item>
+    <Menu.Item>Paste</Menu.Item>
+    <Menu.Divider />
+    <Menu.Item>Find</Menu.Item>
+    <Menu.Item>Replace</Menu.Item>
+  </Menu.Content>
+</Menu>
+```
+
+### With Submenus
+```tsx
+<Menu>
+  <Menu.Trigger>
+    <Button>View</Button>
+  </Menu.Trigger>
+  <Menu.Content>
+    <Menu.Item>Zoom In</Menu.Item>
+    <Menu.Item>Zoom Out</Menu.Item>
+    <Menu.Sub>
+      <Menu.SubTrigger>Layout</Menu.SubTrigger>
+      <Menu.SubContent>
+        <Menu.Item>Horizontal</Menu.Item>
+        <Menu.Item>Vertical</Menu.Item>
+        <Menu.Item>Grid</Menu.Item>
+      </Menu.SubContent>
+    </Menu.Sub>
+  </Menu.Content>
+</Menu>
+```
+
+### Context Menu
+```tsx
+<ContextMenu>
+  <ContextMenu.Trigger>
+    <Box padding="lg">
+      Right click here
+    </Box>
+  </ContextMenu.Trigger>
+  <ContextMenu.Content>
+    <Menu.Item>View Details</Menu.Item>
+    <Menu.Item>Share</Menu.Item>
+    <Menu.Divider />
+    <Menu.Item color="error">
+      Delete
+    </Menu.Item>
+  </ContextMenu.Content>
+</ContextMenu>
+```
+
+## Customization
+
+### Custom Trigger
+```tsx
+<Menu>
+  <Menu.Trigger>
+    {({ open }) => (
+      <Button
+        rightIcon={
+          <Icon
+            name="chevron-down"
+            style={{
+              transform: open ? 'rotate(180deg)' : 'none',
+              transition: 'transform 0.2s',
+            }}
+          />
+        }
+      >
+        Options
+      </Button>
+    )}
+  </Menu.Trigger>
+  <Menu.Content>
+    <Menu.Item>Option 1</Menu.Item>
+    <Menu.Item>Option 2</Menu.Item>
+  </Menu.Content>
+</Menu>
+```
+
+### Custom Styling
+```tsx
+<Menu>
+  <Menu.Trigger>
+    <Button>Styled Menu</Button>
+  </Menu.Trigger>
+  <Menu.Content
+    style={{
+      background: 'linear-gradient(45deg, #FE6B8B 30%, #FF8E53 90%)',
+      padding: '8px',
+      borderRadius: '8px',
+    }}
+  >
+    <Menu.Item
+      style={{
+        color: 'white',
+        ':hover': {
+          backgroundColor: 'rgba(255, 255, 255, 0.1)',
+        },
+      }}
+    >
+      Custom Item
+    </Menu.Item>
+  </Menu.Content>
+</Menu>
+```
+
+## Best Practices
+
+1. Keep menus concise and organized
+2. Group related items together
+3. Use dividers for logical separation
+4. Include keyboard navigation
+5. Show item states clearly
+6. Handle mobile interactions
+7. Provide visual feedback
+8. Use consistent patterns
+
+## API Reference
+
+### Placement Options
+```tsx
+type Placement =
+  | 'top'
+  | 'top-start'
+  | 'top-end'
+  | 'bottom'
+  | 'bottom-start'
+  | 'bottom-end'
+  | 'left'
+  | 'left-start'
+  | 'left-end'
+  | 'right'
+  | 'right-start'
+  | 'right-end';
+```
+
+### Compound Components
+```tsx
+interface MenuComposition {
+  Trigger: typeof MenuTrigger;
+  Content: typeof MenuContent;
+  Item: typeof MenuItem;
+  Divider: typeof MenuDivider;
+  Sub: typeof MenuSub;
+  SubTrigger: typeof MenuSubTrigger;
+  SubContent: typeof MenuSubContent;
+}
+```
+
+## Related Components
+
+- [Dropdown](dropdown) - For simple selection menus
+- [Select](select) - For option selection
+- [Popover](popover) - For custom floating content
+- [ContextMenu](context-menu) - For right-click menus

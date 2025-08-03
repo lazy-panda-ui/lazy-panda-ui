@@ -1,0 +1,337 @@
+---
+sidebar_position: 22
+---
+
+# Toast
+
+The Toast component displays brief, temporary notifications or messages that automatically disappear after a set time. It's ideal for showing feedback about an operation without interrupting the user's workflow.
+
+## Import
+
+```tsx
+import { Toast, useToast } from '@lazy-panda-ui/lazy-panda-ui';
+```
+
+## Usage
+
+```tsx
+import React from 'react';
+import { useToast, Button } from '@lazy-panda-ui/lazy-panda-ui';
+
+function MyComponent() {
+  const toast = useToast();
+
+  return (
+    <Button
+      onClick={() => 
+        toast({
+          title: 'Success',
+          description: 'Operation completed',
+          status: 'success',
+        })
+      }
+    >
+      Show Toast
+    </Button>
+  );
+}
+```
+
+## Props
+
+| Name | Type | Default | Description |
+|------|------|---------|-------------|
+| `title` | `string` | - | Toast title |
+| `description` | `string` | - | Toast description |
+| `status` | `'info' \| 'success' \| 'warning' \| 'error'` | `'info'` | Toast status |
+| `duration` | `number` | `3000` | Duration in milliseconds |
+| `isClosable` | `boolean` | `true` | Show close button |
+| `position` | `'top' \| 'top-right' \| 'top-left' \| 'bottom' \| 'bottom-right' \| 'bottom-left'` | `'bottom'` | Toast position |
+| `icon` | `ReactNode` | - | Custom icon |
+| `onClose` | `() => void` | - | Close callback |
+
+## Examples
+
+### Basic Toasts
+```tsx
+function ToastExample() {
+  const toast = useToast();
+
+  return (
+    <Stack direction="row" spacing="md">
+      <Button
+        onClick={() => 
+          toast({
+            title: 'Info',
+            description: 'Information message',
+            status: 'info',
+          })
+        }
+      >
+        Info
+      </Button>
+
+      <Button
+        onClick={() => 
+          toast({
+            title: 'Success',
+            description: 'Success message',
+            status: 'success',
+          })
+        }
+      >
+        Success
+      </Button>
+
+      <Button
+        onClick={() => 
+          toast({
+            title: 'Warning',
+            description: 'Warning message',
+            status: 'warning',
+          })
+        }
+      >
+        Warning
+      </Button>
+
+      <Button
+        onClick={() => 
+          toast({
+            title: 'Error',
+            description: 'Error message',
+            status: 'error',
+          })
+        }
+      >
+        Error
+      </Button>
+    </Stack>
+  );
+}
+```
+
+### Different Positions
+```tsx
+function PositionExample() {
+  const toast = useToast();
+  const positions = [
+    'top',
+    'top-right',
+    'top-left',
+    'bottom',
+    'bottom-right',
+    'bottom-left',
+  ];
+
+  return (
+    <Stack direction="row" spacing="md" wrap="wrap">
+      {positions.map((position) => (
+        <Button
+          key={position}
+          onClick={() =>
+            toast({
+              title: position,
+              description: `Toast at ${position}`,
+              position,
+            })
+          }
+        >
+          {position}
+        </Button>
+      ))}
+    </Stack>
+  );
+}
+```
+
+### Custom Duration
+```tsx
+<Button
+  onClick={() =>
+    toast({
+      title: 'Long Toast',
+      description: 'This toast will stay for 10 seconds',
+      duration: 10000,
+    })
+  }
+>
+  Show Long Toast
+</Button>
+```
+
+### With Custom Icon
+```tsx
+<Button
+  onClick={() =>
+    toast({
+      title: 'Custom Icon',
+      description: 'Toast with custom icon',
+      icon: <Icon name="star" />,
+      status: 'info',
+    })
+  }
+>
+  Custom Icon Toast
+</Button>
+```
+
+### With Action
+```tsx
+<Button
+  onClick={() =>
+    toast({
+      title: 'Action Required',
+      description: 'Please confirm your action',
+      status: 'warning',
+      duration: null,
+      action: (
+        <Button size="sm" onClick={() => {
+          // Handle action
+        }}>
+          Confirm
+        </Button>
+      ),
+    })
+  }
+>
+  Toast with Action
+</Button>
+```
+
+### Promise Toast
+```tsx
+function PromiseExample() {
+  const toast = useToast();
+
+  const handleAsyncAction = async () => {
+    toast.promise(
+      asyncOperation(),
+      {
+        loading: 'Processing...',
+        success: 'Operation completed',
+        error: 'Operation failed',
+      }
+    );
+  };
+
+  return (
+    <Button onClick={handleAsyncAction}>
+      Start Operation
+    </Button>
+  );
+}
+```
+
+## Customization
+
+### Custom Styles
+```tsx
+<Button
+  onClick={() =>
+    toast({
+      title: 'Styled Toast',
+      description: 'Custom styled toast',
+      style: {
+        background: 'linear-gradient(45deg, #FE6B8B 30%, #FF8E53 90%)',
+        color: 'white',
+        borderRadius: '8px',
+      },
+    })
+  }
+>
+  Styled Toast
+</Button>
+```
+
+### Custom Component
+```tsx
+<Button
+  onClick={() =>
+    toast({
+      render: () => (
+        <Box
+          p="md"
+          bg="primary"
+          color="white"
+          borderRadius="md"
+        >
+          <Stack direction="row" spacing="md">
+            <Avatar src="/user.jpg" size="sm" />
+            <Text>New message from John</Text>
+          </Stack>
+        </Box>
+      ),
+    })
+  }
+>
+  Custom Toast
+</Button>
+```
+
+## Best Practices
+
+1. Keep messages brief
+2. Use appropriate status
+3. Consider timing carefully
+4. Position consistently
+5. Avoid stacking too many
+6. Provide clear actions
+7. Handle mobile views
+
+## API Reference
+
+### Toast Function Options
+```tsx
+interface ToastOptions {
+  title?: string;
+  description?: string;
+  status?: 'info' | 'success' | 'warning' | 'error';
+  duration?: number | null;
+  isClosable?: boolean;
+  position?: ToastPosition;
+  icon?: ReactNode;
+  onClose?: () => void;
+  action?: ReactNode;
+  render?: () => ReactNode;
+}
+```
+
+### Theme Customization
+```tsx
+const theme = {
+  toast: {
+    durations: {
+      info: 3000,
+      success: 2000,
+      warning: 4000,
+      error: 5000,
+    },
+    variants: {
+      info: {
+        bg: '#E3F2FD',
+        color: '#1976D2',
+      },
+      success: {
+        bg: '#E8F5E9',
+        color: '#4CAF50',
+      },
+      warning: {
+        bg: '#FFF3E0',
+        color: '#FF9800',
+      },
+      error: {
+        bg: '#FFEBEE',
+        color: '#F44336',
+      },
+    },
+  },
+};
+```
+
+## Related Components
+
+- [Alert](alert) - For persistent messages
+- [Snackbar](snackbar) - For action-required messages
+- [Notification](notification) - For detailed notifications
+- [Message](message) - For inline messages

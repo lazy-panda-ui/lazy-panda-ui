@@ -17,5 +17,5 @@ ignore_paths:
 
 # Optionally, you can specify patterns to exclude or include files
 # patterns:
-#   - pattern: "src/components/experimental/**"
+#   - pattern: "src/docs/components/experimental/**"
 #     exclude: true

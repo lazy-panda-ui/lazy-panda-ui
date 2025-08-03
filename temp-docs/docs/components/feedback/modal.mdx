@@ -1,0 +1,208 @@
+---
+sidebar_position: 5
+---
+
+# Modal
+
+The Modal component provides a solid foundation for creating dialogs, popovers, lightboxes, or whatever else.
+
+## Import
+
+```tsx
+import { Modal } from '@lazy-panda-ui/lazy-panda-ui';
+```
+
+## Usage
+
+```tsx
+import React, { useState } from 'react';
+import { Modal, Button, Typography } from '@lazy-panda-ui/lazy-panda-ui';
+
+function MyComponent() {
+  const [visible, setVisible] = useState(false);
+
+  return (
+    <>
+      <Button onPress={() => setVisible(true)}>
+        Open Modal
+      </Button>
+      <Modal
+        visible={visible}
+        onDismiss={() => setVisible(false)}
+      >
+        <Modal.Header title="Modal Title" />
+        <Modal.Content>
+          <Typography>Modal content goes here</Typography>
+        </Modal.Content>
+        <Modal.Actions>
+          <Button onPress={() => setVisible(false)}>Close</Button>
+        </Modal.Actions>
+      </Modal>
+    </>
+  );
+}
+```
+
+## Props
+
+### Modal Props
+
+| Name | Type | Default | Description |
+|------|------|---------|-------------|
+| `visible` | `boolean` | `false` | Whether the modal is visible |
+| `onDismiss` | `() => void` | - | Callback when modal is dismissed |
+| `dismissable` | `boolean` | `true` | Whether modal can be dismissed by pressing outside |
+| `contentStyle` | `StyleProp<ViewStyle>` | - | Styles for the content container |
+| `overlayStyle` | `StyleProp<ViewStyle>` | - | Styles for the overlay |
+| `animationType` | `'none' \| 'slide' \| 'fade'` | `'fade'` | Type of animation |
+
+### Modal.Header Props
+
+| Name | Type | Default | Description |
+|------|------|---------|-------------|
+| `title` | `string` | - | Title text |
+| `subtitle` | `string` | - | Subtitle text |
+| `showDismiss` | `boolean` | `true` | Whether to show dismiss button |
+| `onDismiss` | `() => void` | - | Callback when dismiss button is pressed |
+
+### Modal.Content Props
+
+| Name | Type | Default | Description |
+|------|------|---------|-------------|
+| `style` | `StyleProp<ViewStyle>` | - | Additional styles for content |
+| `children` | `ReactNode` | - | Content to render |
+
+### Modal.Actions Props
+
+| Name | Type | Default | Description |
+|------|------|---------|-------------|
+| `children` | `ReactNode` | - | Action buttons to render |
+| `align` | `'start' \| 'center' \| 'end'` | `'end'` | Alignment of actions |
+
+## Examples
+
+### Basic Modal
+```tsx
+<Modal visible={visible} onDismiss={hideModal}>
+  <Modal.Content>
+    <Typography>Simple modal content</Typography>
+  </Modal.Content>
+</Modal>
+```
+
+### Full Featured Modal
+```tsx
+<Modal visible={visible} onDismiss={hideModal}>
+  <Modal.Header 
+    title="Confirm Action"
+    subtitle="Please review before proceeding"
+  />
+  <Modal.Content>
+    <Typography>Are you sure you want to proceed?</Typography>
+  </Modal.Content>
+  <Modal.Actions>
+    <Button variant="text" onPress={hideModal}>
+      Cancel
+    </Button>
+    <Button variant="contained" onPress={handleConfirm}>
+      Confirm
+    </Button>
+  </Modal.Actions>
+</Modal>
+```
+
+### Custom Animation
+```tsx
+<Modal
+  visible={visible}
+  onDismiss={hideModal}
+  animationType="slide"
+>
+  <Modal.Content>
+    <Typography>Modal with slide animation</Typography>
+  </Modal.Content>
+</Modal>
+```
+
+### Custom Styled
+```tsx
+<Modal
+  visible={visible}
+  onDismiss={hideModal}
+  contentStyle={{ borderRadius: 16 }}
+  overlayStyle={{ backgroundColor: 'rgba(0, 0, 0, 0.75)' }}
+>
+  <Modal.Content>
+    <Typography>Styled modal content</Typography>
+  </Modal.Content>
+</Modal>
+```
+
+## Accessibility
+
+The Modal component includes built-in accessibility features:
+
+```tsx
+<Modal
+  visible={visible}
+  onDismiss={hideModal}
+  accessibilityLabel="Confirmation dialog"
+  accessibilityHint="Contains important information requiring your confirmation"
+>
+  <Modal.Content>
+    <Typography>Accessible modal content</Typography>
+  </Modal.Content>
+</Modal>
+```
+
+## API Reference
+
+### Animation
+
+The Modal supports three types of animations:
+
+1. **Fade (default)**
+```tsx
+<Modal animationType="fade" />
+```
+
+2. **Slide**
+```tsx
+<Modal animationType="slide" />
+```
+
+3. **None**
+```tsx
+<Modal animationType="none" />
+```
+
+### Platform Specific
+
+Modal behavior and styling can be customized per platform:
+
+```tsx
+<Modal
+  contentStyle={Platform.select({
+    ios: { borderRadius: 10 },
+    android: { borderRadius: 4 }
+  })}
+>
+  {/* content */}
+</Modal>
+```
+
+## Best Practices
+
+1. Always provide a way to dismiss the modal
+2. Use appropriate animations for different contexts
+3. Ensure modal content is accessible
+4. Handle back button on Android
+5. Consider keyboard interactions
+6. Use consistent styling within your app
+7. Keep modal content focused and concise
+
+## Related Components
+
+- [Dialog](dialog) - A simpler modal dialog
+- [Backdrop](backdrop) - A backdrop component
+- [Sheet](sheet) - A bottom sheet component

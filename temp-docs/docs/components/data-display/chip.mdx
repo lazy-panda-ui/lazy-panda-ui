@@ -1,0 +1,272 @@
+---
+sidebar_position: 13
+---
+
+# Chip
+
+The Chip component is used to represent small blocks of information, tags, choices, or actions that can be submitted or removed.
+
+## Import
+
+```tsx
+import { Chip } from '@lazy-panda-ui/lazy-panda-ui';
+```
+
+## Usage
+
+```tsx
+import React from 'react';
+import { Chip } from '@lazy-panda-ui/lazy-panda-ui';
+
+function MyComponent() {
+  return (
+    <Chip
+      label="Example Chip"
+      onDelete={() => console.log('deleted')}
+    />
+  );
+}
+```
+
+## Props
+
+| Name | Type | Default | Description |
+|------|------|---------|-------------|
+| `label` | `string \| ReactNode` | - | Content of the chip |
+| `variant` | `'solid' \| 'outlined' \| 'soft'` | `'solid'` | Visual variant |
+| `color` | `'default' \| 'primary' \| 'secondary' \| 'success' \| 'warning' \| 'error'` | `'default'` | Color scheme |
+| `size` | `'sm' \| 'md' \| 'lg'` | `'md'` | Size of the chip |
+| `avatar` | `ReactNode` | - | Avatar element |
+| `icon` | `ReactNode` | - | Icon element |
+| `disabled` | `boolean` | `false` | Whether chip is disabled |
+| `clickable` | `boolean` | `false` | Whether chip is clickable |
+| `deletable` | `boolean` | `false` | Whether chip is deletable |
+| `onDelete` | `() => void` | - | Delete callback |
+| `onClick` | `() => void` | - | Click callback |
+
+## Examples
+
+### Basic Chips
+```tsx
+<Stack direction="row" spacing="sm">
+  <Chip label="Basic" />
+  <Chip label="Clickable" clickable />
+  <Chip label="Deletable" onDelete={() => {}} />
+  <Chip label="Disabled" disabled />
+</Stack>
+```
+
+### Chip Variants
+```tsx
+<Stack direction="row" spacing="sm">
+  <Chip variant="solid" label="Solid" />
+  <Chip variant="outlined" label="Outlined" />
+  <Chip variant="soft" label="Soft" />
+</Stack>
+```
+
+### Chip Colors
+```tsx
+<Stack direction="row" spacing="sm">
+  <Chip color="default" label="Default" />
+  <Chip color="primary" label="Primary" />
+  <Chip color="secondary" label="Secondary" />
+  <Chip color="success" label="Success" />
+  <Chip color="warning" label="Warning" />
+  <Chip color="error" label="Error" />
+</Stack>
+```
+
+### With Icons
+```tsx
+<Stack direction="row" spacing="sm">
+  <Chip
+    icon={<Icon name="user" />}
+    label="With Icon"
+  />
+  <Chip
+    icon={<Icon name="star" />}
+    label="Favorite"
+    color="primary"
+  />
+  <Chip
+    icon={<Icon name="check" />}
+    label="Completed"
+    color="success"
+  />
+</Stack>
+```
+
+### With Avatar
+```tsx
+<Stack direction="row" spacing="sm">
+  <Chip
+    avatar={<Avatar src="/user1.jpg" size="sm" />}
+    label="John Doe"
+  />
+  <Chip
+    avatar={<Avatar name="JD" size="sm" />}
+    label="Jane Doe"
+    color="primary"
+  />
+</Stack>
+```
+
+## Interactive Chips
+
+### Clickable Chips
+```tsx
+<Stack direction="row" spacing="sm">
+  <Chip
+    label="Click me"
+    clickable
+    onClick={() => console.log('clicked')}
+  />
+  <Chip
+    label="Select"
+    clickable
+    selected
+    color="primary"
+  />
+</Stack>
+```
+
+### Deletable Chips
+```tsx
+<Stack direction="row" spacing="sm">
+  <Chip
+    label="Delete me"
+    onDelete={() => console.log('deleted')}
+  />
+  <Chip
+    label="Custom delete"
+    onDelete={() => {}}
+    deleteIcon={<Icon name="close" />}
+  />
+</Stack>
+```
+
+## Customization
+
+### Custom Styles
+```tsx
+<Chip
+  label="Custom"
+  style={{
+    background: 'linear-gradient(45deg, #FE6B8B 30%, #FF8E53 90%)',
+    color: 'white',
+    boxShadow: '0 3px 5px 2px rgba(255, 105, 135, .3)',
+  }}
+/>
+```
+
+### Custom Delete Icon
+```tsx
+<Chip
+  label="Custom Delete"
+  onDelete={() => {}}
+  deleteIcon={
+    <Icon
+      name="trash"
+      color="error"
+      size="sm"
+    />
+  }
+/>
+```
+
+### Shape Variation
+```tsx
+<Stack direction="row" spacing="sm">
+  <Chip
+    label="Rounded"
+    style={{ borderRadius: '16px' }}
+  />
+  <Chip
+    label="Square"
+    style={{ borderRadius: '4px' }}
+  />
+</Stack>
+```
+
+## Array Management
+
+### Chip Array
+```tsx
+function ChipArray() {
+  const [chips, setChips] = React.useState([
+    'React', 'TypeScript', 'JavaScript'
+  ]);
+
+  const handleDelete = (chipToDelete: string) => {
+    setChips(chips.filter(chip => chip !== chipToDelete));
+  };
+
+  return (
+    <Stack direction="row" spacing="sm">
+      {chips.map(chip => (
+        <Chip
+          key={chip}
+          label={chip}
+          onDelete={() => handleDelete(chip)}
+        />
+      ))}
+    </Stack>
+  );
+}
+```
+
+## Best Practices
+
+1. Use clear and concise labels
+2. Maintain consistent spacing
+3. Choose appropriate colors
+4. Handle interactions gracefully
+5. Consider mobile touch targets
+6. Provide visual feedback
+7. Keep delete actions reversible
+
+## API Reference
+
+### Size Values
+```tsx
+const chipSizes = {
+  sm: {
+    height: 24,
+    fontSize: 12,
+    padding: '0 8px',
+  },
+  md: {
+    height: 32,
+    fontSize: 14,
+    padding: '0 12px',
+  },
+  lg: {
+    height: 40,
+    fontSize: 16,
+    padding: '0 16px',
+  },
+};
+```
+
+### Color Palette
+```tsx
+const chipColors = {
+  default: {
+    background: '#E0E0E0',
+    color: '#000000',
+  },
+  primary: {
+    background: '#1976D2',
+    color: '#FFFFFF',
+  },
+  // ... other colors
+};
+```
+
+## Related Components
+
+- [Badge](badge) - For status indicators
+- [Tag](tag) - For simpler labeling
+- [Button](button) - For primary actions
+- [Avatar](avatar) - For user representation in chips

@@ -1,0 +1,243 @@
+---
+sidebar_position: 7
+---
+
+# Select
+
+The Select component is used for collecting user provided information from a list of options.
+
+## Import
+
+```tsx
+import { Select } from '@lazy-panda-ui/lazy-panda-ui';
+```
+
+## Usage
+
+```tsx
+import React, { useState } from 'react';
+import { Select } from '@lazy-panda-ui/lazy-panda-ui';
+
+function MyComponent() {
+  const [value, setValue] = useState(null);
+
+  return (
+    <Select
+      label="Choose an option"
+      value={value}
+      onValueChange={setValue}
+      items={[
+        { label: 'Option 1', value: '1' },
+        { label: 'Option 2', value: '2' },
+        { label: 'Option 3', value: '3' },
+      ]}
+    />
+  );
+}
+```
+
+## Props
+
+| Name | Type | Default | Description |
+|------|------|---------|-------------|
+| `label` | `string` | - | The label for the select |
+| `value` | `string \| null` | - | The current selected value |
+| `onValueChange` | `(value: string \| null) => void` | - | Callback when selection changes |
+| `items` | `Array<{ label: string, value: string }>` | `[]` | Array of items to choose from |
+| `variant` | `'outlined' \| 'filled' \| 'standard'` | `'outlined'` | The variant to use |
+| `error` | `boolean` | `false` | Whether the select is in an error state |
+| `helperText` | `string` | - | Helper text to show below |
+| `disabled` | `boolean` | `false` | Whether the select is disabled |
+| `required` | `boolean` | `false` | Whether selection is required |
+| `placeholder` | `string` | - | Placeholder text when no value is selected |
+| `multiple` | `boolean` | `false` | Whether multiple selection is allowed |
+| `searchable` | `boolean` | `false` | Whether to show search input |
+| `loading` | `boolean` | `false` | Whether items are loading |
+
+## Examples
+
+### Basic Usage
+```tsx
+<Select
+  label="Country"
+  value={country}
+  onValueChange={setCountry}
+  items={countries}
+/>
+```
+
+### With Error State
+```tsx
+<Select
+  label="Category"
+  value={category}
+  onValueChange={setCategory}
+  items={categories}
+  error={!!categoryError}
+  helperText={categoryError}
+/>
+```
+
+### Searchable Select
+```tsx
+<Select
+  label="Search Countries"
+  value={country}
+  onValueChange={setCountry}
+  items={countries}
+  searchable
+  placeholder="Type to search..."
+/>
+```
+
+### Multiple Selection
+```tsx
+<Select
+  label="Select Tags"
+  value={tags}
+  onValueChange={setTags}
+  items={availableTags}
+  multiple
+/>
+```
+
+## Variants
+
+### Outlined
+```tsx
+<Select
+  variant="outlined"
+  label="Outlined Select"
+  value={value}
+  onValueChange={setValue}
+  items={items}
+/>
+```
+
+### Filled
+```tsx
+<Select
+  variant="filled"
+  label="Filled Select"
+  value={value}
+  onValueChange={setValue}
+  items={items}
+/>
+```
+
+### Standard
+```tsx
+<Select
+  variant="standard"
+  label="Standard Select"
+  value={value}
+  onValueChange={setValue}
+  items={items}
+/>
+```
+
+## Customization
+
+### Custom Item Rendering
+```tsx
+<Select
+  label="Custom Items"
+  value={value}
+  onValueChange={setValue}
+  items={items}
+  renderItem={(item) => (
+    <Select.Item
+      label={item.label}
+      value={item.value}
+      leftIcon={<Icon name={item.icon} />}
+    />
+  )}
+/>
+```
+
+### Custom Trigger
+```tsx
+<Select
+  label="Custom Trigger"
+  value={value}
+  onValueChange={setValue}
+  items={items}
+  renderTrigger={(props) => (
+    <Button {...props}>
+      {value ? `Selected: ${value}` : 'Select an option'}
+    </Button>
+  )}
+/>
+```
+
+## Accessibility
+
+The Select component includes comprehensive accessibility support:
+
+```tsx
+<Select
+  label="Accessible Select"
+  value={value}
+  onValueChange={setValue}
+  items={items}
+  accessibilityLabel="Choose an option"
+  accessibilityHint="Opens a list of options to choose from"
+/>
+```
+
+## API Reference
+
+### Item Interface
+
+```tsx
+interface SelectItem {
+  label: string;
+  value: string;
+  disabled?: boolean;
+  leftIcon?: ReactNode;
+  rightIcon?: ReactNode;
+}
+```
+
+### Styles
+
+The Select component can be styled using:
+
+```tsx
+<Select
+  containerStyle={{ marginBottom: 16 }}
+  inputStyle={{ borderRadius: 8 }}
+  menuStyle={{ maxHeight: 200 }}
+  itemStyle={{ height: 48 }}
+/>
+```
+
+### Platform Specific
+
+Handle platform differences:
+
+```tsx
+<Select
+  menuStyle={Platform.select({
+    ios: { borderRadius: 10 },
+    android: { elevation: 4 }
+  })}
+/>
+```
+
+## Best Practices
+
+1. Always provide clear, descriptive labels
+2. Use searchable mode for long lists
+3. Handle loading states appropriately
+4. Show validation errors clearly
+5. Consider keyboard navigation
+6. Group related options when possible
+7. Provide meaningful helper text
+
+## Related Components
+
+- [TextField](text-field) - For text input
+- [AutoComplete](auto-complete) - For input with suggestions
+- [RadioGroup](radio-group) - For selecting single options
+- [CheckBox](checkbox) - For multiple selections

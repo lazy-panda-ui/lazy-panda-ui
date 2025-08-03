@@ -1,0 +1,171 @@
+---
+sidebar_position: 1
+---
+
+# Box
+
+The Box component serves as a wrapper component for most layout needs, offering a flexible container with common styling options.
+
+## Import
+
+```tsx
+import { Box } from '@lazy-panda-ui/lazy-panda-ui';
+```
+
+## Usage
+
+```tsx
+import React from 'react';
+import { Box, Typography } from '@lazy-panda-ui/lazy-panda-ui';
+
+function MyComponent() {
+  return (
+    <Box padding="md" variant="elevated">
+      <Typography>Content goes here</Typography>
+    </Box>
+  );
+}
+```
+
+## Props
+
+| Name | Type | Default | Description |
+|------|------|---------|-------------|
+| `variant` | `'elevated' \| 'outlined' \| 'filled' \| 'tonal'` | `'filled'` | The visual style variant of the box |
+| `backgroundColor` | `string` | - | Background color of the box |
+| `direction` | `'row' \| 'column' \| 'row-reverse' \| 'column-reverse'` | `'column'` | The flex direction of the box |
+| `align` | `'flex-start' \| 'center' \| 'flex-end' \| 'stretch' \| 'baseline'` | `'stretch'` | The align-items property |
+| `justify` | `'flex-start' \| 'center' \| 'flex-end' \| 'space-between' \| 'space-around' \| 'space-evenly'` | `'flex-start'` | The justify-content property |
+| `padding` | `'none' \| 'xs' \| 'sm' \| 'md' \| 'lg' \| 'xl'` | `'none'` | The padding of the box |
+| `margin` | `'none' \| 'xs' \| 'sm' \| 'md' \| 'lg' \| 'xl'` | `'none'` | The margin of the box |
+| `gap` | `number` | - | The gap between children when using flex layout |
+| `grow` | `boolean` | `false` | If true, flex-grow will be set to 1 |
+| `shrink` | `boolean` | `false` | If true, flex-shrink will be set to 1 |
+| `style` | `StyleProp<ViewStyle>` | - | Additional styles to apply |
+| `onPress` | `() => void` | - | Callback when box is pressed |
+
+## Variants
+
+### Filled (default)
+```tsx
+<Box variant="filled" padding="md">
+  <Typography>Default Box</Typography>
+</Box>
+```
+
+### Outlined
+```tsx
+<Box variant="outlined" padding="md">
+  <Typography>Outlined Box</Typography>
+</Box>
+```
+
+### Elevated
+```tsx
+<Box variant="elevated" padding="md">
+  <Typography>Elevated Box with Shadow</Typography>
+</Box>
+```
+
+### Tonal
+```tsx
+<Box variant="tonal" padding="md">
+  <Typography>Tonal Box</Typography>
+</Box>
+```
+
+## Examples
+
+### Flex Container
+```tsx
+<Box direction="row" justify="space-between" align="center" padding="md">
+  <Typography>Left</Typography>
+  <Typography>Right</Typography>
+</Box>
+```
+
+### Card-like Container
+```tsx
+<Box
+  variant="elevated"
+  padding="md"
+  style={{ borderRadius: 8 }}
+>
+  <Typography variant="h6">Card Title</Typography>
+  <Typography>Card content goes here</Typography>
+</Box>
+```
+
+### Grid-like Layout
+```tsx
+<Box direction="row" wrap gap={8} padding="md">
+  <Box style={{ width: '48%' }}>
+    <Typography>Item 1</Typography>
+  </Box>
+  <Box style={{ width: '48%' }}>
+    <Typography>Item 2</Typography>
+  </Box>
+</Box>
+```
+
+## Accessibility
+
+The Box component supports all standard React Native accessibility props:
+
+```tsx
+<Box
+  onPress={() => {}}
+  accessibilityLabel="Interactive box"
+  accessibilityHint="Shows a message when pressed"
+>
+  <Typography>Press me</Typography>
+</Box>
+```
+
+## API Reference
+
+### Styling
+
+The Box component can be styled using the following methods:
+
+1. **Theme-based props:**
+```tsx
+<Box padding="md" backgroundColor="primary" />
+```
+
+2. **Style prop:**
+```tsx
+<Box style={{ borderRadius: 8, opacity: 0.9 }} />
+```
+
+3. **Variant prop:**
+```tsx
+<Box variant="elevated" />
+```
+
+### Platform Specific
+
+On Android, the Box component supports ripple effects when used with `onPress`:
+
+```tsx
+<Box
+  onPress={() => {}}
+  android_ripple={{ color: 'rgba(0, 0, 0, 0.1)' }}
+>
+  <Typography>Pressable with Ripple</Typography>
+</Box>
+```
+
+## Best Practices
+
+1. Use the Box component as a fundamental layout building block
+2. Prefer theme-based spacing values over custom values
+3. Use the variant prop for consistent styling
+4. Provide accessibility props when making the Box interactive
+5. Consider using gap prop instead of margins for spacing between children
+
+## Related Components
+
+- [Paper](paper) - A surface-based container
+- [Card](card) - A more opinionated container
+- [Stack](stack) - A specialized container for linear layouts

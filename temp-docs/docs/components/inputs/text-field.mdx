@@ -1,0 +1,220 @@
+---
+sidebar_position: 6
+---
+
+# TextField
+
+The TextField component is a fully-featured text input that provides a flexible interface for collecting user input.
+
+## Import
+
+```tsx
+import { TextField } from '@lazy-panda-ui/lazy-panda-ui';
+```
+
+## Usage
+
+```tsx
+import React, { useState } from 'react';
+import { TextField } from '@lazy-panda-ui/lazy-panda-ui';
+
+function MyComponent() {
+  const [text, setText] = useState('');
+
+  return (
+    <TextField
+      label="Username"
+      value={text}
+      onChangeText={setText}
+    />
+  );
+}
+```
+
+## Props
+
+| Name | Type | Default | Description |
+|------|------|---------|-------------|
+| `label` | `string` | - | The label text |
+| `value` | `string` | - | The value of the input |
+| `onChangeText` | `(text: string) => void` | - | Callback when text changes |
+| `variant` | `'outlined' \| 'filled' \| 'standard'` | `'outlined'` | The variant to use |
+| `error` | `boolean` | `false` | Whether the input is in an error state |
+| `helperText` | `string` | - | Helper text to show below the input |
+| `disabled` | `boolean` | `false` | Whether the input is disabled |
+| `required` | `boolean` | `false` | Whether the input is required |
+| `startIcon` | `ReactNode` | - | Icon to show at the start |
+| `endIcon` | `ReactNode` | - | Icon to show at the end |
+| `secureTextEntry` | `boolean` | `false` | Whether to hide the text being entered |
+| `multiline` | `boolean` | `false` | Whether to allow multiple lines of text |
+| `maxLength` | `number` | - | Maximum length of text |
+| `autoCapitalize` | `'none' \| 'sentences' \| 'words' \| 'characters'` | `'none'` | Auto capitalize behavior |
+| `keyboardType` | `KeyboardType` | `'default'` | The keyboard type to show |
+
+## Examples
+
+### Basic Usage
+```tsx
+<TextField
+  label="Email"
+  value={email}
+  onChangeText={setEmail}
+  keyboardType="email-address"
+/>
+```
+
+### With Error
+```tsx
+<TextField
+  label="Password"
+  value={password}
+  onChangeText={setPassword}
+  error={!!passwordError}
+  helperText={passwordError}
+  secureTextEntry
+/>
+```
+
+### With Icons
+```tsx
+<TextField
+  label="Search"
+  value={search}
+  onChangeText={setSearch}
+  startIcon={<Icon name="search" />}
+  endIcon={<Icon name="clear" onPress={clearSearch} />}
+/>
+```
+
+### Multiline
+```tsx
+<TextField
+  label="Description"
+  value={description}
+  onChangeText={setDescription}
+  multiline
+  numberOfLines={4}
+/>
+```
+
+## Variants
+
+### Outlined
+```tsx
+<TextField
+  variant="outlined"
+  label="Outlined Input"
+/>
+```
+
+### Filled
+```tsx
+<TextField
+  variant="filled"
+  label="Filled Input"
+/>
+```
+
+### Standard
+```tsx
+<TextField
+  variant="standard"
+  label="Standard Input"
+/>
+```
+
+## Form Integration
+
+```tsx
+<form onSubmit={handleSubmit}>
+  <TextField
+    label="Username"
+    value={username}
+    onChangeText={setUsername}
+    required
+    error={!!errors.username}
+    helperText={errors.username}
+  />
+  <TextField
+    label="Password"
+    value={password}
+    onChangeText={setPassword}
+    secureTextEntry
+    required
+    error={!!errors.password}
+    helperText={errors.password}
+  />
+  <Button type="submit">Submit</Button>
+</form>
+```
+
+## Accessibility
+
+TextField includes comprehensive accessibility support:
+
+```tsx
+<TextField
+  label="Email"
+  value={email}
+  onChangeText={setEmail}
+  accessibilityLabel="Email input field"
+  accessibilityHint="Enter your email address"
+  accessibilityRequired
+/>
+```
+
+## API Reference
+
+### Input Types
+
+TextField supports various input types through keyboardType:
+
+```tsx
+<>
+  <TextField keyboardType="numeric" label="Number" />
+  <TextField keyboardType="email-address" label="Email" />
+  <TextField keyboardType="phone-pad" label="Phone" />
+</>
+```
+
+### Auto Capitalization
+
+Control text capitalization:
+
+```tsx
+<>
+  <TextField autoCapitalize="sentences" label="Sentences" />
+  <TextField autoCapitalize="words" label="Words" />
+  <TextField autoCapitalize="characters" label="Characters" />
+  <TextField autoCapitalize="none" label="None" />
+</>
+```
+
+### Platform Specific
+
+Handle platform differences:
+
+```tsx
+<TextField
+  style={Platform.select({
+    ios: { height: 40 },
+    android: { height: 48 }
+  })}
+/>
+```
+
+## Best Practices
+
+1. Always provide clear, descriptive labels
+2. Use appropriate keyboard types
+3. Show validation errors clearly
+4. Include helper text when needed
+5. Use consistent styling
+6. Handle text input securely
+7. Consider keyboard behavior
+
+## Related Components
+
+- [Select](select) - For selecting from predefined options
+- [AutoComplete](auto-complete) - For input with suggestions
+- [Form](form) - For form handling

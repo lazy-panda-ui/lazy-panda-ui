@@ -1,4 +1,4 @@
-import type {SidebarsConfig} from '@docusaurus/plugin-content-docs';
+import type { SidebarsConfig } from '@docusaurus/plugin-content-docs';
 
 // This runs in Node.js - Don't use client-side code here (browser APIs, JSX...)
 
@@ -15,31 +15,89 @@ import type {SidebarsConfig} from '@docusaurus/plugin-content-docs';
 const sidebars: SidebarsConfig = {
   tutorialSidebar: [
     {
-      type: 'doc',
-      id: 'getting-started',
-      label: 'Getting Started',
+      "type": "doc",
+      "label": "Getting Started",
+      "id": "getting-started"
     },
     {
-      type: 'category',
-      label: 'Components',
-      items: [
-        'components/accordion',
-        'components/alert',
-        'components/button-group',
-        'components/card',
-        'components/image-list',
-        'components/list',
-        'components/notification',
-        'components/popover',
-        'components/progress',
-        'components/skeleton',
-        'components/snackbar',
-        'components/spinner',
-        'components/stack',
-        'components/table',
-        'components/tabs',
-        'components/toast'
-      ],
+      "type": "category",
+      "label": "Customization",
+      "items": [
+        "customization/theme"
+      ]
+    },
+    {
+      "type": "category",
+      "label": "Components",
+      "items": [
+        {
+          "type": "category",
+          "label": "Inputs",
+          "items": [
+            "components/inputs/button",
+            "components/inputs/button-group",
+            "components/inputs/select",
+            "components/inputs/text-field"
+          ]
+        },
+        {
+          "type": "category",
+          "label": "Data Display",
+          "items": [
+            "components/data-display/accordion",
+            "components/data-display/avatar",
+            "components/data-display/badge",
+            "components/data-display/card",
+            "components/data-display/chip",
+            "components/data-display/icon",
+            "components/data-display/image-list",
+            "components/data-display/list",
+            "components/data-display/popover",
+            "components/data-display/table",
+            "components/data-display/tooltip"
+          ]
+        },
+        {
+          "type": "category",
+          "label": "Feedback",
+          "items": [
+            "components/feedback/alert",
+            "components/feedback/dialog",
+            "components/feedback/modal",
+            "components/feedback/notification",
+            "components/feedback/progress",
+            "components/feedback/skeleton",
+            "components/feedback/snackbar",
+            "components/feedback/spinner",
+            "components/feedback/toast"
+          ]
+        },
+        {
+          "type": "category",
+          "label": "Navigation",
+          "items": [
+            "components/navigation/drawer",
+            "components/navigation/menu",
+            "components/navigation/tabs"
+          ]
+        },
+        {
+          "type": "category",
+          "label": "Layout",
+          "items": [
+            "components/layout/box",
+            "components/layout/grid",
+            "components/layout/stack"
+          ]
+        },
+        {
+          "type": "category",
+          "label": "Typography",
+          "items": [
+            "components/typography"
+          ]
+        }
+      ]
     }
   ]
 };
