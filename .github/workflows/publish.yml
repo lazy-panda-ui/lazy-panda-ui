@@ -11,8 +11,9 @@ on:
   workflow_dispatch:
 
 permissions:
-  contents: read
+  contents: write
   packages: write
+  actions: read
 
 jobs:
   publish:
@@ -68,15 +69,23 @@ jobs:
         env:
           NODE_AUTH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
-      - name: Create GitHub Release
+      - name: Create Git Tag
         if: success() && steps.check_version.outputs.exists == 'false'
-        uses: softprops/action-gh-release@v2
-        with:
-          tag_name: v${{ steps.package_info.outputs.version }}
-          name: Release v${{ steps.package_info.outputs.version }}
-          body: |
-            Release version ${{ steps.package_info.outputs.version }}
-          draft: false
-          prerelease: false
+        run: |
+          git config --local user.email "action@github.com"
+          git config --local user.name "GitHub Action"
+          git tag "v${{ steps.package_info.outputs.version }}"
+          git push origin "v${{ steps.package_info.outputs.version }}"
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Output success message
+        if: steps.check_version.outputs.exists == 'false'
+        run: |
+          echo "✅ Successfully published ${{ steps.package_info.outputs.name }}@${{ steps.package_info.outputs.version }} to GitHub Packages"
+          echo "📦 Package URL: https://github.com/${{ github.repository }}/packages"
+          
+      - name: Skip publishing message
+        if: steps.check_version.outputs.exists == 'true'
+        run: |
+          echo "⚠️ Version ${{ steps.package_info.outputs.version }} already exists, skipping publish"
