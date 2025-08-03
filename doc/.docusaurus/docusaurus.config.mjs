@@ -6,8 +6,9 @@
 export default {
   "title": "Lazy Panda UI",
   "tagline": "Modern UI components for React Native",
-  "url": "https://your-docusaurus-site.example.com",
-  "baseUrl": "/",
+  "url": "https://lazy-panda-ui.github.io",
+  "baseUrl": "/lazy-panda-ui/",
+  "trailingSlash": false,
   "onBrokenLinks": "throw",
   "onBrokenMarkdownLinks": "warn",
   "favicon": "img/favicon.ico",
@@ -293,6 +294,11 @@ export default {
         "autoCollapseCategories": false
       }
     },
+    "blog": {
+      "sidebar": {
+        "groupByYear": true
+      }
+    },
     "metadata": [],
     "tableOfContents": {
       "minHeadingLevel": 2,
@@ -300,6 +306,28 @@ export default {
     }
   },
   "baseUrlIssueBanner": true,
+  "future": {
+    "v4": {
+      "removeLegacyPostBuildHeadAttribute": false,
+      "useCssCascadeLayers": false
+    },
+    "experimental_faster": {
+      "swcJsLoader": false,
+      "swcJsMinimizer": false,
+      "swcHtmlMinimizer": false,
+      "lightningCssMinimizer": false,
+      "mdxCrossCompilerCache": false,
+      "rspackBundler": false,
+      "rspackPersistentCache": false,
+      "ssgWorkerThreads": false
+    },
+    "experimental_storage": {
+      "type": "localStorage",
+      "namespace": false
+    },
+    "experimental_router": "browser"
+  },
+  "onBrokenAnchors": "warn",
   "onDuplicateRoutes": "warn",
   "staticDirectories": [
     "static"
@@ -314,6 +342,15 @@ export default {
   "titleDelimiter": "|",
   "noIndex": false,
   "markdown": {
-    "mermaid": false
+    "format": "mdx",
+    "mermaid": false,
+    "mdx1Compat": {
+      "comments": true,
+      "admonitions": true,
+      "headingIds": true
+    },
+    "anchors": {
+      "maintainCase": false
+    }
   }
 };

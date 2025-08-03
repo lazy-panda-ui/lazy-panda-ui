@@ -1,15 +1,14 @@
 // @ts-check
 // Note: type annotations allow type checking and IDEs autocompletion
 
-const lightCodeTheme = require('prism-react-renderer/themes/github');
-const darkCodeTheme = require('prism-react-renderer/themes/dracula');
+const {themes} = require('prism-react-renderer');
 
 /** @type {import('@docusaurus/types').Config} */
 const config = {
   title: 'Lazy Panda UI',
   tagline: 'Modern UI components for React Native',
   url: 'https://lazy-panda-ui.github.io',
-  baseUrl: '/',
+  baseUrl: '/lazy-panda-ui/',
   trailingSlash: false,
   onBrokenLinks: 'throw',
   onBrokenMarkdownLinks: 'warn',
@@ -85,8 +84,8 @@ const config = {
         copyright: `Copyright © ${new Date().getFullYear()} Lazy Panda UI. Built with Docusaurus.`,
       },
       prism: {
-        theme: lightCodeTheme,
-        darkTheme: darkCodeTheme,
+        theme: themes.github,
+        darkTheme: themes.dracula,
       },
     }),
 };

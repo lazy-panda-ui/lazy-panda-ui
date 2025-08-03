@@ -3,49 +3,61 @@ import ComponentCreator from '@docusaurus/ComponentCreator';
 
 export default [
   {
-    path: '/__docusaurus/debug',
-    component: ComponentCreator('/__docusaurus/debug', '255'),
+    path: '/lazy-panda-ui/__docusaurus/debug',
+    component: ComponentCreator('/lazy-panda-ui/__docusaurus/debug', 'e24'),
     exact: true
   },
   {
-    path: '/__docusaurus/debug/config',
-    component: ComponentCreator('/__docusaurus/debug/config', '60c'),
+    path: '/lazy-panda-ui/__docusaurus/debug/config',
+    component: ComponentCreator('/lazy-panda-ui/__docusaurus/debug/config', 'ec8'),
     exact: true
   },
   {
-    path: '/__docusaurus/debug/content',
-    component: ComponentCreator('/__docusaurus/debug/content', '13a'),
+    path: '/lazy-panda-ui/__docusaurus/debug/content',
+    component: ComponentCreator('/lazy-panda-ui/__docusaurus/debug/content', 'aca'),
     exact: true
   },
   {
-    path: '/__docusaurus/debug/globalData',
-    component: ComponentCreator('/__docusaurus/debug/globalData', '662'),
+    path: '/lazy-panda-ui/__docusaurus/debug/globalData',
+    component: ComponentCreator('/lazy-panda-ui/__docusaurus/debug/globalData', 'e63'),
     exact: true
   },
   {
-    path: '/__docusaurus/debug/metadata',
-    component: ComponentCreator('/__docusaurus/debug/metadata', 'fc1'),
+    path: '/lazy-panda-ui/__docusaurus/debug/metadata',
+    component: ComponentCreator('/lazy-panda-ui/__docusaurus/debug/metadata', '537'),
     exact: true
   },
   {
-    path: '/__docusaurus/debug/registry',
-    component: ComponentCreator('/__docusaurus/debug/registry', 'a05'),
+    path: '/lazy-panda-ui/__docusaurus/debug/registry',
+    component: ComponentCreator('/lazy-panda-ui/__docusaurus/debug/registry', 'bc1'),
     exact: true
   },
   {
-    path: '/__docusaurus/debug/routes',
-    component: ComponentCreator('/__docusaurus/debug/routes', '82a'),
+    path: '/lazy-panda-ui/__docusaurus/debug/routes',
+    component: ComponentCreator('/lazy-panda-ui/__docusaurus/debug/routes', '05a'),
     exact: true
   },
   {
-    path: '/docs',
-    component: ComponentCreator('/docs', 'bb8'),
+    path: '/lazy-panda-ui/docs',
+    component: ComponentCreator('/lazy-panda-ui/docs', '846'),
     routes: [
       {
-        path: '/docs/getting-started',
-        component: ComponentCreator('/docs/getting-started', 'df5'),
-        exact: true,
-        sidebar: "docs"
+        path: '/lazy-panda-ui/docs',
+        component: ComponentCreator('/lazy-panda-ui/docs', '2dc'),
+        routes: [
+          {
+            path: '/lazy-panda-ui/docs',
+            component: ComponentCreator('/lazy-panda-ui/docs', 'a7e'),
+            routes: [
+              {
+                path: '/lazy-panda-ui/docs/getting-started',
+                component: ComponentCreator('/lazy-panda-ui/docs/getting-started', '6b1'),
+                exact: true,
+                sidebar: "docs"
+              }
+            ]
+          }
+        ]
       }
     ]
   },
