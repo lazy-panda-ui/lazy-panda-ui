@@ -1,4 +1,4 @@
-import { Theme } from '../theme/ThemeProvider';
+import { Theme } from '../theme';
 import { ViewStyle } from 'react-native';
 
 interface VariantColors {

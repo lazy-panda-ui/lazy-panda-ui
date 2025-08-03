@@ -1,0 +1,279 @@
+---
+sidebar_position: 25
+---
+
+# Popover
+
+The Popover component displays floating content next to an anchor element. It's commonly used for complex interactive features that require more space than a tooltip but less prominence than a modal.
+
+## Import
+
+```tsx
+import { Popover } from 'lazy-panda-ui';
+```
+
+## Usage
+
+```tsx
+import React from 'react';
+import { Popover, Button } from 'lazy-panda-ui';
+
+function MyComponent() {
+  return (
+    <Popover
+      content={
+        <div>
+          <h3>Popover Content</h3>
+          <p>This is the content of the popover.</p>
+        </div>
+      }
+    >
+      <Button>Click me</Button>
+    </Popover>
+  );
+}
+```
+
+## Props
+
+| Name | Type | Default | Description |
+|------|------|---------|-------------|
+| `children` | `ReactNode` | - | The anchor element |
+| `content` | `ReactNode` | - | Content to display in popover |
+| `position` | `'top' \| 'right' \| 'bottom' \| 'left'` | `'bottom'` | Preferred position |
+| `align` | `'start' \| 'center' \| 'end'` | `'center'` | Alignment along the position axis |
+| `offset` | `number` | `8` | Distance from anchor |
+| `open` | `boolean` | - | Controlled open state |
+| `defaultOpen` | `boolean` | `false` | Initial open state |
+| `onOpenChange` | `(open: boolean) => void` | - | Open state change handler |
+| `trigger` | `'click' \| 'hover' \| 'focus'` | `'click'` | How popover is triggered |
+| `closeOnClickOutside` | `boolean` | `true` | Close when clicking outside |
+| `arrow` | `boolean` | `true` | Show arrow pointer |
+
+## Examples
+
+### Basic Popover
+```tsx
+<Popover
+  content={
+    <Stack spacing="md" p="md">
+      <Text weight="bold">Popover Title</Text>
+      <Text>This is a basic popover with some content.</Text>
+    </Stack>
+  }
+>
+  <Button>Open Popover</Button>
+</Popover>
+```
+
+### Different Positions
+```tsx
+function PositionExample() {
+  return (
+    <Stack direction="row" spacing="xl">
+      <Popover
+        position="top"
+        content="This appears above"
+      >
+        <Button>Top</Button>
+      </Popover>
+
+      <Popover
+        position="right"
+        content="This appears on the right"
+      >
+        <Button>Right</Button>
+      </Popover>
+
+      <Popover
+        position="bottom"
+        content="This appears below"
+      >
+        <Button>Bottom</Button>
+      </Popover>
+
+      <Popover
+        position="left"
+        content="This appears on the left"
+      >
+        <Button>Left</Button>
+      </Popover>
+    </Stack>
+  );
+}
+```
+
+### Hover Trigger
+```tsx
+<Popover
+  trigger="hover"
+  content={
+    <Text>This popover appears on hover</Text>
+  }
+>
+  <Button>Hover me</Button>
+</Popover>
+```
+
+### With Form
+```tsx
+<Popover
+  content={
+    <Stack spacing="md" p="md" style={{ width: '300px' }}>
+      <Text weight="bold">Edit Profile</Text>
+      <Input
+        label="Name"
+        placeholder="Enter your name"
+      />
+      <Input
+        label="Email"
+        type="email"
+        placeholder="Enter your email"
+      />
+      <Button>Save Changes</Button>
+    </Stack>
+  }
+>
+  <Button variant="outline">Edit Profile</Button>
+</Popover>
+```
+
+### Controlled Popover
+```tsx
+function ControlledExample() {
+  const [open, setOpen] = React.useState(false);
+
+  return (
+    <Popover
+      open={open}
+      onOpenChange={setOpen}
+      content={
+        <Stack spacing="md" p="md">
+          <Text>Controlled popover state</Text>
+          <Button onClick={() => setOpen(false)}>
+            Close
+          </Button>
+        </Stack>
+      }
+    >
+      <Button onClick={() => setOpen(true)}>
+        {open ? 'Close' : 'Open'} Popover
+      </Button>
+    </Popover>
+  );
+}
+```
+
+### With Complex Content
+```tsx
+<Popover
+  content={
+    <Stack spacing="md" p="md" style={{ width: '320px' }}>
+      <Stack direction="row" spacing="md" align="center">
+        <Avatar size="md" src="/user.jpg" />
+        <Stack spacing="xs">
+          <Text weight="bold">John Doe</Text>
+          <Text size="sm" color="gray">Software Engineer</Text>
+        </Stack>
+      </Stack>
+      <Divider />
+      <Stack spacing="sm">
+        <Button variant="ghost" leftIcon={<Icon name="message" />}>
+          Send Message
+        </Button>
+        <Button variant="ghost" leftIcon={<Icon name="user-plus" />}>
+          Add Contact
+        </Button>
+        <Button variant="ghost" leftIcon={<Icon name="block" />}>
+          Block User
+        </Button>
+      </Stack>
+    </Stack>
+  }
+>
+  <Avatar
+    size="md"
+    src="/user.jpg"
+    style={{ cursor: 'pointer' }}
+  />
+</Popover>
+```
+
+### Custom Animation
+```tsx
+<Popover
+  content={
+    <div className="fade-in">
+      Animated content
+    </div>
+  }
+  style={{
+    '--popover-animation-duration': '0.2s',
+  }}
+>
+  <Button>Animated Popover</Button>
+</Popover>
+```
+
+## Best Practices
+
+1. Keep content focused and concise
+2. Use appropriate triggers
+3. Consider mobile interactions
+4. Provide clear close options
+5. Handle overflow content
+6. Ensure keyboard accessibility
+7. Manage focus properly
+
+## API Reference
+
+### PopoverProps
+```tsx
+interface PopoverProps {
+  children: ReactNode;
+  content: ReactNode;
+  position?: 'top' | 'right' | 'bottom' | 'left';
+  align?: 'start' | 'center' | 'end';
+  offset?: number;
+  open?: boolean;
+  defaultOpen?: boolean;
+  onOpenChange?: (open: boolean) => void;
+  trigger?: 'click' | 'hover' | 'focus';
+  closeOnClickOutside?: boolean;
+  arrow?: boolean;
+  className?: string;
+  style?: CSSProperties;
+  portal?: boolean;
+  portalContainer?: HTMLElement;
+  closeOnEscape?: boolean;
+  disabled?: boolean;
+  zIndex?: number;
+}
+```
+
+### Theme Customization
+```tsx
+const theme = {
+  popover: {
+    background: '#ffffff',
+    borderRadius: '4px',
+    boxShadow: '0 2px 8px rgba(0, 0, 0, 0.15)',
+    zIndex: 1000,
+    arrow: {
+      size: '8px',
+      color: '#ffffff',
+    },
+    animation: {
+      duration: '0.2s',
+      timing: 'cubic-bezier(0.4, 0, 0.2, 1)',
+    },
+  },
+};
+```
+
+## Related Components
+
+- [Tooltip](tooltip) - For simple text hints
+- [Dialog](dialog) - For modal interactions
+- [Menu](menu) - For dropdown menus
+- [Select](select) - For option selection

@@ -1,6 +1,6 @@
 import React from 'react';
 import { View, TouchableOpacity, Text, StyleSheet, ViewStyle } from 'react-native';
-import { useTheme, Theme } from '../theme/ThemeProvider';
+import { useTheme, Theme } from '../theme';
 
 export interface RadioGroupProps {
   options: string[];

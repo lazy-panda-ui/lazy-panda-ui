@@ -1,0 +1,363 @@
+---
+sidebar_position: 27
+---
+
+# Table
+
+The Table component provides a way to organize and display data in rows and columns. It supports features like sorting, pagination, and row selection.
+
+## Import
+
+```tsx
+import { Table, TableHead, TableBody, TableRow, TableCell } from 'lazy-panda-ui';
+```
+
+## Usage
+
+```tsx
+import React from 'react';
+import { Table, TableHead, TableBody, TableRow, TableCell } from 'lazy-panda-ui';
+
+function MyComponent() {
+  return (
+    <Table>
+      <TableHead>
+        <TableRow>
+          <TableCell>Name</TableCell>
+          <TableCell>Age</TableCell>
+          <TableCell>Location</TableCell>
+        </TableRow>
+      </TableHead>
+      <TableBody>
+        <TableRow>
+          <TableCell>John Doe</TableCell>
+          <TableCell>28</TableCell>
+          <TableCell>New York</TableCell>
+        </TableRow>
+        <TableRow>
+          <TableCell>Jane Smith</TableCell>
+          <TableCell>32</TableCell>
+          <TableCell>London</TableCell>
+        </TableRow>
+      </TableBody>
+    </Table>
+  );
+}
+```
+
+## Props
+
+### Table Props
+| Name | Type | Default | Description |
+|------|------|---------|-------------|
+| `variant` | `'simple' \| 'striped'` | `'simple'` | Visual variant |
+| `size` | `'sm' \| 'md' \| 'lg'` | `'md'` | Size of the table |
+| `bordered` | `boolean` | `false` | Show borders |
+| `hoverable` | `boolean` | `false` | Hover effect on rows |
+| `compact` | `boolean` | `false` | Reduce padding |
+
+### TableCell Props
+| Name | Type | Default | Description |
+|------|------|---------|-------------|
+| `align` | `'left' \| 'center' \| 'right'` | `'left'` | Text alignment |
+| `width` | `string \| number` | - | Cell width |
+| `colSpan` | `number` | - | Number of columns to span |
+| `sortable` | `boolean` | `false` | Enable sorting |
+| `sortDirection` | `'asc' \| 'desc'` | - | Sort direction |
+
+## Examples
+
+### Basic Table
+```tsx
+<Table>
+  <TableHead>
+    <TableRow>
+      <TableCell>Product</TableCell>
+      <TableCell>Price</TableCell>
+      <TableCell>Status</TableCell>
+    </TableRow>
+  </TableHead>
+  <TableBody>
+    <TableRow>
+      <TableCell>Laptop</TableCell>
+      <TableCell>$999</TableCell>
+      <TableCell>In Stock</TableCell>
+    </TableRow>
+    <TableRow>
+      <TableCell>Phone</TableCell>
+      <TableCell>$699</TableCell>
+      <TableCell>Out of Stock</TableCell>
+    </TableRow>
+  </TableBody>
+</Table>
+```
+
+### Sortable Table
+```tsx
+function SortableExample() {
+  const [data, setData] = React.useState([
+    { name: 'John', age: 25, city: 'New York' },
+    { name: 'Jane', age: 30, city: 'London' },
+    { name: 'Bob', age: 28, city: 'Paris' },
+  ]);
+  const [sortConfig, setSortConfig] = React.useState({
+    key: null,
+    direction: 'asc',
+  });
+
+  const handleSort = (key) => {
+    const direction = 
+      sortConfig.key === key && sortConfig.direction === 'asc'
+        ? 'desc'
+        : 'asc';
+    
+    setSortConfig({ key, direction });
+    
+    const sortedData = [...data].sort((a, b) => {
+      if (direction === 'asc') {
+        return a[key] > b[key] ? 1 : -1;
+      }
+      return a[key] < b[key] ? 1 : -1;
+    });
+    
+    setData(sortedData);
+  };
+
+  return (
+    <Table>
+      <TableHead>
+        <TableRow>
+          <TableCell 
+            sortable 
+            sortDirection={sortConfig.key === 'name' ? sortConfig.direction : null}
+            onClick={() => handleSort('name')}
+          >
+            Name
+          </TableCell>
+          <TableCell 
+            sortable
+            sortDirection={sortConfig.key === 'age' ? sortConfig.direction : null}
+            onClick={() => handleSort('age')}
+          >
+            Age
+          </TableCell>
+          <TableCell 
+            sortable
+            sortDirection={sortConfig.key === 'city' ? sortConfig.direction : null}
+            onClick={() => handleSort('city')}
+          >
+            City
+          </TableCell>
+        </TableRow>
+      </TableHead>
+      <TableBody>
+        {data.map((row) => (
+          <TableRow key={row.name}>
+            <TableCell>{row.name}</TableCell>
+            <TableCell>{row.age}</TableCell>
+            <TableCell>{row.city}</TableCell>
+          </TableRow>
+        ))}
+      </TableBody>
+    </Table>
+  );
+}
+```
+
+### With Selection
+```tsx
+function SelectionExample() {
+  const [selected, setSelected] = React.useState([]);
+
+  const handleSelect = (id) => {
+    setSelected((prev) =>
+      prev.includes(id)
+        ? prev.filter((item) => item !== id)
+        : [...prev, id]
+    );
+  };
+
+  const handleSelectAll = () => {
+    setSelected((prev) =>
+      prev.length === data.length ? [] : data.map((row) => row.id)
+    );
+  };
+
+  return (
+    <Table>
+      <TableHead>
+        <TableRow>
+          <TableCell>
+            <Checkbox
+              checked={selected.length === data.length}
+              indeterminate={selected.length > 0 && selected.length < data.length}
+              onChange={handleSelectAll}
+            />
+          </TableCell>
+          <TableCell>Name</TableCell>
+          <TableCell>Status</TableCell>
+          <TableCell>Role</TableCell>
+        </TableRow>
+      </TableHead>
+      <TableBody>
+        {data.map((row) => (
+          <TableRow key={row.id} selected={selected.includes(row.id)}>
+            <TableCell>
+              <Checkbox
+                checked={selected.includes(row.id)}
+                onChange={() => handleSelect(row.id)}
+              />
+            </TableCell>
+            <TableCell>{row.name}</TableCell>
+            <TableCell>{row.status}</TableCell>
+            <TableCell>{row.role}</TableCell>
+          </TableRow>
+        ))}
+      </TableBody>
+    </Table>
+  );
+}
+```
+
+### With Pagination
+```tsx
+function PaginationExample() {
+  const [page, setPage] = React.useState(1);
+  const [rowsPerPage, setRowsPerPage] = React.useState(5);
+
+  const handlePageChange = (newPage) => {
+    setPage(newPage);
+  };
+
+  const handleRowsPerPageChange = (event) => {
+    setRowsPerPage(parseInt(event.target.value, 10));
+    setPage(1);
+  };
+
+  return (
+    <Stack spacing="md">
+      <Table>
+        <TableHead>
+          <TableRow>
+            <TableCell>ID</TableCell>
+            <TableCell>Name</TableCell>
+            <TableCell>Email</TableCell>
+          </TableRow>
+        </TableHead>
+        <TableBody>
+          {data
+            .slice((page - 1) * rowsPerPage, page * rowsPerPage)
+            .map((row) => (
+              <TableRow key={row.id}>
+                <TableCell>{row.id}</TableCell>
+                <TableCell>{row.name}</TableCell>
+                <TableCell>{row.email}</TableCell>
+              </TableRow>
+            ))}
+        </TableBody>
+      </Table>
+      
+      <Pagination
+        total={Math.ceil(data.length / rowsPerPage)}
+        current={page}
+        onChange={handlePageChange}
+        rowsPerPage={rowsPerPage}
+        onRowsPerPageChange={handleRowsPerPageChange}
+      />
+    </Stack>
+  );
+}
+```
+
+### Custom Styling
+```tsx
+<Table
+  style={{
+    '--table-border-color': '#e2e8f0',
+    '--table-header-bg': '#f7fafc',
+    '--table-row-hover-bg': '#edf2f7',
+  }}
+>
+  <TableHead>
+    <TableRow>
+      <TableCell style={{ fontWeight: 'bold' }}>Name</TableCell>
+      <TableCell style={{ fontWeight: 'bold' }}>Email</TableCell>
+      <TableCell style={{ fontWeight: 'bold' }}>Actions</TableCell>
+    </TableRow>
+  </TableHead>
+  <TableBody>
+    <TableRow>
+      <TableCell>John Doe</TableCell>
+      <TableCell>john@example.com</TableCell>
+      <TableCell>
+        <Button size="sm" variant="ghost">Edit</Button>
+      </TableCell>
+    </TableRow>
+  </TableBody>
+</Table>
+```
+
+## Best Practices
+
+1. Use clear column headers
+2. Implement sorting for large datasets
+3. Include pagination when needed
+4. Handle empty states gracefully
+5. Maintain consistent column widths
+6. Consider mobile responsiveness
+7. Use appropriate variants for context
+
+## API Reference
+
+### TableProps
+```tsx
+interface TableProps {
+  variant?: 'simple' | 'striped';
+  size?: 'sm' | 'md' | 'lg';
+  bordered?: boolean;
+  hoverable?: boolean;
+  compact?: boolean;
+  className?: string;
+  style?: CSSProperties;
+}
+```
+
+### Theme Customization
+```tsx
+const theme = {
+  table: {
+    variants: {
+      simple: {
+        borderColor: '#e2e8f0',
+        headerBackground: '#f7fafc',
+      },
+      striped: {
+        borderColor: '#e2e8f0',
+        headerBackground: '#f7fafc',
+        stripedBackground: '#f7fafc',
+      },
+    },
+    sizes: {
+      sm: {
+        fontSize: '0.875rem',
+        padding: '0.5rem',
+      },
+      md: {
+        fontSize: '1rem',
+        padding: '0.75rem',
+      },
+      lg: {
+        fontSize: '1.125rem',
+        padding: '1rem',
+      },
+    },
+  },
+};
+```
+
+## Related Components
+
+- [Pagination](pagination) - For navigating large datasets
+- [Select](select) - For rows per page selection
+- [Checkbox](checkbox) - For row selection
+- [DataGrid](data-grid) - For more complex data scenarios

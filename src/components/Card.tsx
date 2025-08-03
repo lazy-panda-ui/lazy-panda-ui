@@ -55,6 +55,11 @@ export interface CardProps {
   onPress?: () => void;
 
   /**
+   * Additional styles for the card
+   */
+  style?: ViewStyle;
+
+  /**
    * Additional styles for the container
    */
   containerStyle?: ViewStyle;
@@ -108,10 +113,11 @@ export const Card: React.FC<CardProps> = ({
   contentStyle,
   loadingOverlayStyle,
   LoadingComponent,
-  accessibilityRole,
+  accessibilityRole = onPress ? 'button' : undefined,
   accessibilityLabel,
   accessibilityHint,
   testID,
+  style,
 }) => {
   const theme = useTheme();
 
@@ -136,7 +142,6 @@ export const Card: React.FC<CardProps> = ({
   const styles = StyleSheet.create({
     container: {
       opacity: disabled ? 0.6 : 1,
-      ...theme.components?.card?.container,
     },
     card: {
       backgroundColor: variantColors.surface,
@@ -153,8 +158,6 @@ export const Card: React.FC<CardProps> = ({
         shadowRadius: elevation,
         elevation: getElevation(variant, elevation),
       }),
-      ...theme.components?.card?.content,
-      ...theme.components?.card?.variants?.[variant],
     },
     loadingOverlay: {
       ...StyleSheet.absoluteFillObject,
@@ -162,7 +165,6 @@ export const Card: React.FC<CardProps> = ({
       opacity: 0.7,
       justifyContent: 'center',
       alignItems: 'center',
-      ...theme.components?.card?.loadingOverlay,
     },
   });
 
@@ -170,7 +172,7 @@ export const Card: React.FC<CardProps> = ({
 
   return (
     <CardContainer
-      style={[styles.container, style]}
+      style={[styles.container, containerStyle]}
       onPress={disabled ? undefined : onPress}
       disabled={disabled || loading}
       testID={testID}
@@ -178,11 +180,11 @@ export const Card: React.FC<CardProps> = ({
       accessibilityHint={accessibilityHint}
       accessibilityState={{ disabled, busy: loading }}
     >
-      <View style={styles.card}>
-        {children}
+      <View style={[styles.card, style]}>
+        <View style={contentStyle}>{children}</View>
         {loading && (
-          <View style={styles.loadingOverlay}>
-            <ActivityIndicator color={variantColors.onSurface} />
+          <View style={[styles.loadingOverlay, loadingOverlayStyle]}>
+            {LoadingComponent || <ActivityIndicator color={variantColors.onSurface} />}
           </View>
         )}
       </View>

@@ -1,20 +1,81 @@
 import React from 'react';
-import { Image, View, StyleSheet, ViewStyle, Text } from 'react-native';
-import { useTheme, Theme } from '../theme/ThemeProvider';
+import { Image, View, StyleSheet, ViewStyle, Text, ImageSourcePropType, Pressable, ImageStyle } from 'react-native';
+import { useTheme } from '../theme/ThemeProvider';
 
-type AvatarSize = 'xs' | 'sm' | 'md' | 'lg' | 'xl';
+export type AvatarSize = 'xs' | 'sm' | 'md' | 'lg' | 'xl';
+export type AvatarVariant = 'circular' | 'rounded' | 'square';
 
 export interface AvatarProps {
-  source?: { uri: string };
+  /**
+   * Image source for the avatar
+   */
+  source?: ImageSourcePropType;
+  /**
+   * Text to show when image is not provided
+   */
   label?: string;
+  /**
+   * Size of the avatar
+   * @default 'md'
+   */
   size?: AvatarSize;
+  /**
+   * Shape of the avatar
+   * @default 'circular'
+   */
+  variant?: AvatarVariant;
+  /**
+   * Custom styles for the container
+   */
   style?: ViewStyle;
+  /**
+   * Custom styles for the image
+   */
+  imageStyle?: ImageStyle;
+  /**
+   * Background color for the avatar when showing text
+   */
+  backgroundColor?: string;
+  /**
+   * Text color for the label
+   */
+  textColor?: string;
+  /**
+   * Callback when avatar is pressed
+   */
+  onPress?: () => void;
+  /**
+   * Test ID for testing
+   */
+  testID?: string;
+  /**
+   * Whether to show a border
+   * @default false
+   */
+  showBorder?: boolean;
+  /**
+   * Color of the border
+   */
+  borderColor?: string;
 }
 
-export const Avatar: React.FC<AvatarProps> = ({ source, label, size = 'md', style }) => {
+export const Avatar: React.FC<AvatarProps> = ({
+  source,
+  label,
+  size = 'md',
+  variant = 'circular',
+  style,
+  imageStyle,
+  backgroundColor,
+  textColor,
+  onPress,
+  testID,
+  showBorder = false,
+  borderColor,
+}) => {
   const theme = useTheme();
 
-  const getFontSize = (size: AvatarSize, theme: Theme) => {
+  const getFontSize = () => {
     switch (size) {
       case 'xs':
         return theme.fontSize.caption;
@@ -29,44 +90,76 @@ export const Avatar: React.FC<AvatarProps> = ({ source, label, size = 'md', styl
     }
   };
 
-  const getStyles = (theme: Theme, size: AvatarSize) => {
-    const dimension = theme.sizing[size];
-    const fontSize = getFontSize(size, theme);
-
-    return StyleSheet.create({
-      container: {
-        width: dimension,
-        height: dimension,
-        borderRadius: dimension / 2,
-        backgroundColor: theme.colors.card,
-        alignItems: 'center',
-        justifyContent: 'center',
-        overflow: 'hidden',
-        borderWidth: 1,
-        borderColor: theme.colors.border,
-      },
-      image: {
-        width: dimension,
-        height: dimension,
-        borderRadius: dimension / 2,
-      },
-      label: {
-        color: theme.colors.text,
-        fontWeight: theme.fontWeight.semibold,
-        fontSize: fontSize,
-      },
-    });
+  const getDimension = () => {
+    switch (size) {
+      case 'xs':
+        return 24;
+      case 'sm':
+        return 32;
+      case 'md':
+        return 40;
+      case 'lg':
+        return 48;
+      case 'xl':
+        return 56;
+    }
   };
 
-  const styles = getStyles(theme, size);
+  const getBorderRadius = () => {
+    const dimension = getDimension();
+    switch (variant) {
+      case 'rounded':
+        return dimension / 4;
+      case 'square':
+        return 0;
+      default:
+        return dimension / 2;
+    }
+  };
+
+  const dimension = getDimension();
+  const fontSize = getFontSize();
+  const borderRadius = getBorderRadius();
+
+  const styles = StyleSheet.create({
+    container: {
+      width: dimension,
+      height: dimension,
+      borderRadius: borderRadius,
+      backgroundColor: backgroundColor || theme.colors.card,
+      alignItems: 'center',
+      justifyContent: 'center',
+      overflow: 'hidden',
+      ...(showBorder && {
+        borderWidth: 1,
+        borderColor: borderColor || theme.colors.border,
+      }),
+    },
+    image: {
+      width: dimension,
+      height: dimension,
+      borderRadius: borderRadius,
+    },
+    label: {
+      color: textColor || theme.colors.text,
+      fontWeight: theme.fontWeight.semibold,
+      fontSize: fontSize,
+    },
+  });
+
+  const Component = onPress ? Pressable : View;
 
   return (
-    <View style={[styles.container, style]}>
+    <Component 
+      style={[styles.container, style]}
+      onPress={onPress}
+      testID={testID}
+    >
       {source ? (
-        <Image source={source} style={styles.image} />
+        <Image source={source} style={[styles.image, imageStyle]} />
       ) : (
         <Text style={styles.label}>{label && label.length > 0 ? label[0] : '?'}</Text>
       )}
-    </View>
+    </Component>
   );
 };

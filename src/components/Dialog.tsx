@@ -1,6 +1,6 @@
 import React from 'react';
 import { Modal, View, StyleSheet, ViewStyle, Text } from 'react-native';
-import { useTheme, Theme } from '../theme/ThemeProvider';
+import { useTheme, Theme } from '../theme';
 
 export interface DialogProps {
   open: boolean;

@@ -1,0 +1,194 @@
+---
+sidebar_position: 2
+---
+
+# Button
+
+The Button component is used to trigger an action or event, such as submitting a form, opening a dialog, canceling an action, or performing a delete operation.
+
+## Import
+
+```tsx
+import { Button } from 'lazy-panda-ui';
+```
+
+## Usage
+
+```tsx
+import React from 'react';
+import { Button } from 'lazy-panda-ui';
+
+function MyComponent() {
+  return (
+    <Button
+      variant="contained"
+      onPress={() => console.log('Button pressed')}
+    >
+      Press Me
+    </Button>
+  );
+}
+```
+
+## Props
+
+| Name | Type | Default | Description |
+|------|------|---------|-------------|
+| `variant` | `'text' \| 'contained' \| 'outlined' \| 'tonal'` | `'text'` | The variant to use |
+| `size` | `'small' \| 'medium' \| 'large'` | `'medium'` | The size of the button |
+| `color` | `'primary' \| 'secondary' \| 'error' \| 'warning' \| 'info' \| 'success'` | `'primary'` | The color of the button |
+| `disabled` | `boolean` | `false` | If true, the button will be disabled |
+| `loading` | `boolean` | `false` | If true, shows a loading spinner |
+| `startIcon` | `ReactNode` | - | Element placed before the children |
+| `endIcon` | `ReactNode` | - | Element placed after the children |
+| `fullWidth` | `boolean` | `false` | If true, the button will take up the full width |
+| `onPress` | `() => void` | - | Callback fired when the button is pressed |
+| `style` | `StyleProp<ViewStyle>` | - | Additional styles for the button |
+
+## Variants
+
+### Text
+```tsx
+<Button variant="text">Text Button</Button>
+```
+
+### Contained
+```tsx
+<Button variant="contained">Contained Button</Button>
+```
+
+### Outlined
+```tsx
+<Button variant="outlined">Outlined Button</Button>
+```
+
+### Tonal
+```tsx
+<Button variant="tonal">Tonal Button</Button>
+```
+
+## Examples
+
+### With Icon
+```tsx
+import { Icon } from 'lazy-panda-ui';
+
+<Button
+  variant="contained"
+  startIcon={<Icon name="star" />}
+>
+  With Icon
+</Button>
+```
+
+### Loading State
+```tsx
+<Button
+  variant="contained"
+  loading
+>
+  Loading
+</Button>
+```
+
+### Full Width
+```tsx
+<Button
+  variant="contained"
+  fullWidth
+>
+  Full Width Button
+</Button>
+```
+
+### Custom Styled
+```tsx
+<Button
+  variant="contained"
+  style={{
+    borderRadius: 25,
+    paddingHorizontal: 32
+  }}
+>
+  Rounded Button
+</Button>
+```
+
+## Accessibility
+
+The Button component is accessible by default and includes the following features:
+
+- Built-in support for Android ripple effect
+- Proper accessibility roles and states
+- Loading state announcement
+- Disabled state handling
+
+```tsx
+<Button
+  accessibilityLabel="Submit form"
+  accessibilityHint="Submits the form and saves your data"
+  onPress={() => {}}
+>
+  Submit
+</Button>
+```
+
+## API Reference
+
+### Colors
+
+Buttons can use any of the theme colors:
+
+```tsx
+<>
+  <Button color="primary" variant="contained">Primary</Button>
+  <Button color="secondary" variant="contained">Secondary</Button>
+  <Button color="error" variant="contained">Error</Button>
+  <Button color="warning" variant="contained">Warning</Button>
+  <Button color="info" variant="contained">Info</Button>
+  <Button color="success" variant="contained">Success</Button>
+</>
+```
+
+### Sizes
+
+Available sizes for buttons:
+
+```tsx
+<>
+  <Button size="small">Small</Button>
+  <Button size="medium">Medium</Button>
+  <Button size="large">Large</Button>
+</>
+```
+
+### Platform Specific
+
+On Android, buttons use Material Design's ripple effect:
+
+```tsx
+<Button
+  variant="contained"
+  android_ripple={{ color: 'rgba(255, 255, 255, 0.3)' }}
+>
+  Android Ripple
+</Button>
+```
+
+## Best Practices
+
+1. Use clear and action-oriented labels
+2. Choose appropriate variants for different actions:
+   - Contained for primary actions
+   - Outlined for secondary actions
+   - Text for tertiary actions
+3. Use consistent sizing within your application
+4. Include loading states for async actions
+5. Provide proper accessibility labels
+6. Use color to convey meaning and importance
+
+## Related Components
+
+- [IconButton](icon-button) - A round button with an icon
+- [Fab](fab) - A floating action button
+- [ToggleButton](toggle-button) - A button that can be toggled

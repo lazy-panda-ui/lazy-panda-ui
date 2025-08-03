@@ -1,0 +1,308 @@
+---
+sidebar_position: 17
+---
+
+# Drawer
+
+The Drawer component is a panel that slides in from the edge of the screen. It's commonly used for navigation menus, filters, or additional content that complements the main view.
+
+## Import
+
+```tsx
+import { Drawer } from 'lazy-panda-ui';
+```
+
+## Usage
+
+```tsx
+import React from 'react';
+import { Drawer, Button } from 'lazy-panda-ui';
+
+function MyComponent() {
+  const [open, setOpen] = useState(false);
+
+  return (
+    <>
+      <Button onClick={() => setOpen(true)}>
+        Open Drawer
+      </Button>
+
+      <Drawer open={open} onClose={() => setOpen(false)}>
+        <Drawer.Header>Drawer Title</Drawer.Header>
+        <Drawer.Content>
+          This is the drawer content.
+        </Drawer.Content>
+        <Drawer.Footer>
+          <Button onClick={() => setOpen(false)}>
+            Close
+          </Button>
+        </Drawer.Footer>
+      </Drawer>
+    </>
+  );
+}
+```
+
+## Props
+
+### Drawer Props
+| Name | Type | Default | Description |
+|------|------|---------|-------------|
+| `open` | `boolean` | - | Whether drawer is visible |
+| `onClose` | `() => void` | - | Called when drawer closes |
+| `placement` | `'left' \| 'right' \| 'top' \| 'bottom'` | `'right'` | Drawer placement |
+| `size` | `'sm' \| 'md' \| 'lg' \| 'xl' \| 'full'` | `'md'` | Drawer size |
+| `closeOnOverlayClick` | `boolean` | `true` | Close on overlay click |
+| `closeOnEscape` | `boolean` | `true` | Close on Escape key |
+| `trapFocus` | `boolean` | `true` | Trap keyboard focus |
+| `returnFocus` | `boolean` | `true` | Return focus on close |
+| `overlayColor` | `string` | `'rgba(0, 0, 0, 0.5)'` | Overlay background color |
+
+### Drawer.Header Props
+| Name | Type | Default | Description |
+|------|------|---------|-------------|
+| `showCloseButton` | `boolean` | `true` | Show close button |
+| `closeButtonProps` | `ButtonProps` | - | Close button props |
+
+## Examples
+
+### Basic Drawer
+```tsx
+<Drawer open={open} onClose={onClose}>
+  <Drawer.Header>Navigation</Drawer.Header>
+  <Drawer.Content>
+    <Stack spacing="md">
+      <Button variant="ghost">Home</Button>
+      <Button variant="ghost">Profile</Button>
+      <Button variant="ghost">Settings</Button>
+    </Stack>
+  </Drawer.Content>
+</Drawer>
+```
+
+### Different Placements
+```tsx
+{['left', 'right', 'top', 'bottom'].map((placement) => (
+  <Button
+    key={placement}
+    onClick={() => openDrawer(placement)}
+  >
+    Open {placement} drawer
+  </Button>
+))}
+
+<Drawer
+  open={open}
+  onClose={onClose}
+  placement={placement}
+>
+  <Drawer.Header>
+    {placement} Drawer
+  </Drawer.Header>
+  <Drawer.Content>
+    Content for {placement} drawer
+  </Drawer.Content>
+</Drawer>
+```
+
+### Different Sizes
+```tsx
+<Drawer
+  open={open}
+  onClose={onClose}
+  size={size} // 'sm', 'md', 'lg', 'xl', 'full'
+>
+  <Drawer.Header>
+    {size} Drawer
+  </Drawer.Header>
+  <Drawer.Content>
+    Content for {size} drawer
+  </Drawer.Content>
+</Drawer>
+```
+
+### Navigation Drawer
+```tsx
+<Drawer open={open} onClose={onClose} placement="left">
+  <Drawer.Header>Menu</Drawer.Header>
+  <Drawer.Content>
+    <List>
+      <List.Item
+        icon={<Icon name="home" />}
+        onClick={() => navigate('/')}
+      >
+        Home
+      </List.Item>
+      <List.Item
+        icon={<Icon name="user" />}
+        onClick={() => navigate('/profile')}
+      >
+        Profile
+      </List.Item>
+      <List.Item
+        icon={<Icon name="settings" />}
+        onClick={() => navigate('/settings')}
+      >
+        Settings
+      </List.Item>
+      <List.Divider />
+      <List.Item
+        icon={<Icon name="logout" />}
+        onClick={handleLogout}
+      >
+        Logout
+      </List.Item>
+    </List>
+  </Drawer.Content>
+</Drawer>
+```
+
+### Filter Drawer
+```tsx
+<Drawer open={open} onClose={onClose} placement="right">
+  <Drawer.Header>Filters</Drawer.Header>
+  <Drawer.Content>
+    <Stack spacing="lg">
+      <Select
+        label="Category"
+        value={category}
+        onChange={setCategory}
+        items={categories}
+      />
+      <RangeSlider
+        label="Price Range"
+        value={priceRange}
+        onChange={setPriceRange}
+        min={0}
+        max={1000}
+      />
+      <CheckboxGroup
+        label="Brands"
+        value={brands}
+        onChange={setBrands}
+        options={availableBrands}
+      />
+    </Stack>
+  </Drawer.Content>
+  <Drawer.Footer>
+    <Button variant="outlined" onClick={resetFilters}>
+      Reset
+    </Button>
+    <Button onClick={applyFilters}>
+      Apply Filters
+    </Button>
+  </Drawer.Footer>
+</Drawer>
+```
+
+## Customization
+
+### Custom Styles
+```tsx
+<Drawer
+  open={open}
+  onClose={onClose}
+  containerStyle={{
+    background: '#f8f9fa',
+    boxShadow: '0 0 20px rgba(0,0,0,0.1)',
+  }}
+  overlayStyle={{
+    backgroundColor: 'rgba(0,0,0,0.7)',
+  }}
+>
+  <Drawer.Header style={{ borderBottom: '2px solid #e9ecef' }}>
+    Styled Drawer
+  </Drawer.Header>
+  <Drawer.Content>
+    Custom styled content
+  </Drawer.Content>
+</Drawer>
+```
+
+### Custom Transitions
+```tsx
+<Drawer
+  open={open}
+  onClose={onClose}
+  motionProps={{
+    initial: { x: '100%' },
+    animate: { x: 0 },
+    exit: { x: '100%' },
+    transition: { type: 'spring', damping: 20 }
+  }}
+>
+  {/* Drawer content */}
+</Drawer>
+```
+
+## Best Practices
+
+1. Use appropriate placement
+2. Consider content hierarchy
+3. Implement proper navigation
+4. Handle mobile views
+5. Maintain focus management
+6. Provide clear closing options
+7. Use consistent patterns
+
+## API Reference
+
+### Size Values
+```tsx
+const drawerSizes = {
+  sm: '256px',
+  md: '320px',
+  lg: '400px',
+  xl: '480px',
+  full: '100%',
+};
+```
+
+### Theme Customization
+```tsx
+const theme = {
+  drawer: {
+    overlay: {
+      background: 'rgba(0, 0, 0, 0.5)',
+      zIndex: 1000,
+    },
+    container: {
+      background: 'white',
+      boxShadow: '0 0 10px rgba(0, 0, 0, 0.1)',
+    },
+    header: {
+      padding: '16px 24px',
+      borderBottom: '1px solid #eee',
+    },
+    content: {
+      padding: '24px',
+    },
+    footer: {
+      padding: '16px 24px',
+      borderTop: '1px solid #eee',
+    },
+  },
+};
+```
+
+## Accessibility
+
+### Keyboard Navigation
+```tsx
+<Drawer
+  open={open}
+  onClose={onClose}
+  trapFocus
+  returnFocus
+  aria-label="Navigation menu"
+>
+  {/* Drawer content */}
+</Drawer>
+```
+
+## Related Components
+
+- [Dialog](dialog) - For modal dialogs
+- [Menu](menu) - For dropdown menus
+- [Sidebar](sidebar) - For permanent side content
+- [Sheet](sheet) - For bottom sheets on mobile

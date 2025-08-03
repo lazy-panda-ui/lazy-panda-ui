@@ -8,7 +8,7 @@ import {
   Pressable,
   AccessibilityRole,
 } from 'react-native';
-import { useTheme, Theme } from '../theme/ThemeProvider';
+import { useTheme } from '../theme/ThemeProvider';
 
 export type AlertType = 'success' | 'info' | 'warning' | 'error';
 
@@ -77,7 +77,7 @@ export interface AlertProps {
   testID?: string;
 }
 
-const getTypeColor = (theme: Theme, type: AlertType) => {
+const getTypeColor = (theme: ReturnType<typeof useTheme>, type: AlertType): string => {
   switch (type) {
     case 'success':
       return theme.colors.success;
@@ -112,7 +112,7 @@ export const Alert: React.FC<AlertProps> = ({
   };
 
   const Container = dismissible ? Pressable : View;
-  const styles = getStyles(theme, type);
+  const styles = React.useMemo(() => createStyles(theme, type), [theme, type]);
 
   return (
     <Container
@@ -144,7 +144,7 @@ export const Alert: React.FC<AlertProps> = ({
   );
 };
 
-const getStyles = (theme: Theme, type: AlertType) => StyleSheet.create({
+const createStyles = (theme: ReturnType<typeof useTheme>, type: AlertType) => StyleSheet.create({
   container: {
     backgroundColor: getTypeColor(theme, type),
     borderRadius: theme.borderRadius.md,
@@ -152,39 +152,31 @@ const getStyles = (theme: Theme, type: AlertType) => StyleSheet.create({
     overflow: 'hidden',
     flexDirection: 'row',
     alignItems: 'center',
-    ...theme.components?.alert?.container,
-    ...theme.components?.alert?.variants?.[type]?.container,
   },
   content: {
     flex: 1,
     flexDirection: 'row',
     alignItems: 'center',
     padding: theme.spacing.md,
-    ...theme.components?.alert?.content,
   },
   iconContainer: {
     marginRight: theme.spacing.sm,
-    ...theme.components?.alert?.iconContainer,
   },
   text: {
     flex: 1,
-    color: '#fff',
+    color: theme.colors.onPrimary,
     fontWeight: theme.fontWeight.medium,
     fontSize: theme.fontSize.body1,
-    ...theme.components?.alert?.text,
-    ...theme.components?.alert?.variants?.[type]?.text,
   },
   dismissButton: {
     padding: theme.spacing.sm,
     justifyContent: 'center',
     alignItems: 'center',
     alignSelf: 'stretch',
-    ...theme.components?.alert?.dismissButton,
   },
   dismissIcon: {
-    color: '#fff',
-    fontSize: 20,
-    lineHeight: 20,
-    ...theme.components?.alert?.dismissIcon,
+    color: theme.colors.onPrimary,
+    fontSize: theme.fontSize.h6,
+    lineHeight: theme.fontSize.h6,
   },
 });

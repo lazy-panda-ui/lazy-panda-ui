@@ -1,6 +1,6 @@
 import React from 'react';
 import { View, ViewStyle } from 'react-native';
-import { useTheme, Theme } from '../theme/ThemeProvider';
+import { useTheme, Theme } from '../theme';
 
 export type StackSpacing = keyof Theme['spacing'] | number;
 export type StackAlignment = 'start' | 'center' | 'end' | 'stretch' | 'baseline';

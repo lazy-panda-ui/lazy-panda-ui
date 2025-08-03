@@ -1,0 +1,310 @@
+---
+sidebar_position: 16
+---
+
+# Dialog
+
+The Dialog (Modal) component is used to create focused interactions that require user attention or input. It displays content that temporarily blocks interactions with the main view.
+
+## Import
+
+```tsx
+import { Dialog } from 'lazy-panda-ui';
+```
+
+## Usage
+
+```tsx
+import React from 'react';
+import { Dialog, Button } from 'lazy-panda-ui';
+
+function MyComponent() {
+  const [open, setOpen] = useState(false);
+
+  return (
+    <>
+      <Button onClick={() => setOpen(true)}>
+        Open Dialog
+      </Button>
+
+      <Dialog open={open} onClose={() => setOpen(false)}>
+        <Dialog.Header>Dialog Title</Dialog.Header>
+        <Dialog.Content>
+          This is the dialog content.
+        </Dialog.Content>
+        <Dialog.Footer>
+          <Button onClick={() => setOpen(false)}>
+            Close
+          </Button>
+        </Dialog.Footer>
+      </Dialog>
+    </>
+  );
+}
+```
+
+## Props
+
+### Dialog Props
+| Name | Type | Default | Description |
+|------|------|---------|-------------|
+| `open` | `boolean` | - | Whether dialog is visible |
+| `onClose` | `() => void` | - | Called when dialog closes |
+| `size` | `'sm' \| 'md' \| 'lg' \| 'xl' \| 'full'` | `'md'` | Dialog size |
+| `closeOnOverlayClick` | `boolean` | `true` | Close on overlay click |
+| `closeOnEscape` | `boolean` | `true` | Close on Escape key |
+| `centered` | `boolean` | `true` | Center vertically |
+| `scrollBehavior` | `'inside' \| 'outside'` | `'inside'` | Scroll behavior |
+| `trapFocus` | `boolean` | `true` | Trap keyboard focus |
+| `returnFocus` | `boolean` | `true` | Return focus on close |
+
+### Dialog.Header Props
+| Name | Type | Default | Description |
+|------|------|---------|-------------|
+| `showCloseButton` | `boolean` | `true` | Show close button |
+| `closeButtonProps` | `ButtonProps` | - | Close button props |
+
+## Examples
+
+### Basic Dialog
+```tsx
+<Dialog open={open} onClose={onClose}>
+  <Dialog.Header>Confirmation</Dialog.Header>
+  <Dialog.Content>
+    Are you sure you want to continue?
+  </Dialog.Content>
+  <Dialog.Footer>
+    <Button variant="outlined" onClick={onClose}>
+      Cancel
+    </Button>
+    <Button onClick={onConfirm}>
+      Confirm
+    </Button>
+  </Dialog.Footer>
+</Dialog>
+```
+
+### Different Sizes
+```tsx
+<Stack spacing="md">
+  {['sm', 'md', 'lg', 'xl', 'full'].map((size) => (
+    <Button
+      key={size}
+      onClick={() => openDialog(size)}
+    >
+      Open {size} dialog
+    </Button>
+  ))}
+</Stack>
+```
+
+### Custom Animation
+```tsx
+<Dialog
+  open={open}
+  onClose={onClose}
+  motionProps={{
+    initial: { opacity: 0, y: -20 },
+    animate: { opacity: 1, y: 0 },
+    exit: { opacity: 0, y: 20 },
+    transition: { duration: 0.2 }
+  }}
+>
+  <Dialog.Header>Animated Dialog</Dialog.Header>
+  <Dialog.Content>
+    This dialog has custom animation.
+  </Dialog.Content>
+</Dialog>
+```
+
+### Nested Dialogs
+```tsx
+<Dialog open={open} onClose={onClose}>
+  <Dialog.Header>Parent Dialog</Dialog.Header>
+  <Dialog.Content>
+    <Button onClick={() => setNestedOpen(true)}>
+      Open nested dialog
+    </Button>
+  </Dialog.Content>
+
+  <Dialog open={nestedOpen} onClose={onNestedClose}>
+    <Dialog.Header>Nested Dialog</Dialog.Header>
+    <Dialog.Content>
+      This is a nested dialog.
+    </Dialog.Content>
+  </Dialog>
+</Dialog>
+```
+
+### Form Dialog
+```tsx
+<Dialog open={open} onClose={onClose}>
+  <Dialog.Header>Create Account</Dialog.Header>
+  <Dialog.Content>
+    <Stack spacing="md">
+      <TextField
+        label="Username"
+        value={username}
+        onChange={setUsername}
+      />
+      <TextField
+        label="Email"
+        type="email"
+        value={email}
+        onChange={setEmail}
+      />
+      <TextField
+        label="Password"
+        type="password"
+        value={password}
+        onChange={setPassword}
+      />
+    </Stack>
+  </Dialog.Content>
+  <Dialog.Footer>
+    <Button variant="outlined" onClick={onClose}>
+      Cancel
+    </Button>
+    <Button onClick={handleSubmit}>
+      Create
+    </Button>
+  </Dialog.Footer>
+</Dialog>
+```
+
+## Scroll Behavior
+
+### Inside Dialog
+```tsx
+<Dialog
+  open={open}
+  onClose={onClose}
+  scrollBehavior="inside"
+>
+  <Dialog.Header>Scrollable Content</Dialog.Header>
+  <Dialog.Content>
+    {/* Long content that scrolls inside dialog */}
+  </Dialog.Content>
+</Dialog>
+```
+
+### Outside Dialog
+```tsx
+<Dialog
+  open={open}
+  onClose={onClose}
+  scrollBehavior="outside"
+>
+  <Dialog.Header>Fixed Header</Dialog.Header>
+  <Dialog.Content>
+    {/* Content that causes page to scroll */}
+  </Dialog.Content>
+  <Dialog.Footer>Fixed Footer</Dialog.Footer>
+</Dialog>
+```
+
+## Customization
+
+### Custom Styles
+```tsx
+<Dialog
+  open={open}
+  onClose={onClose}
+  containerStyle={{
+    background: 'linear-gradient(45deg, #FE6B8B 30%, #FF8E53 90%)',
+    borderRadius: '16px',
+  }}
+  overlayStyle={{
+    backgroundColor: 'rgba(0, 0, 0, 0.8)',
+  }}
+>
+  <Dialog.Header
+    style={{ color: 'white' }}
+  >
+    Styled Dialog
+  </Dialog.Header>
+  <Dialog.Content
+    style={{ color: 'white' }}
+  >
+    This dialog has custom styling.
+  </Dialog.Content>
+</Dialog>
+```
+
+### Custom Transitions
+```tsx
+<Dialog
+  open={open}
+  onClose={onClose}
+  transitions={{
+    overlay: {
+      enter: 'fade-in',
+      exit: 'fade-out',
+    },
+    dialog: {
+      enter: 'slide-up',
+      exit: 'slide-down',
+    },
+  }}
+>
+  {/* Dialog content */}
+</Dialog>
+```
+
+## Best Practices
+
+1. Keep content focused and concise
+2. Provide clear actions
+3. Handle keyboard interactions
+4. Consider mobile viewports
+5. Maintain proper focus management
+6. Use appropriate sizes
+7. Implement proper error handling
+
+## API Reference
+
+### Size Values
+```tsx
+const dialogSizes = {
+  sm: '400px',
+  md: '560px',
+  lg: '720px',
+  xl: '880px',
+  full: '100vw',
+};
+```
+
+### Theme Customization
+```tsx
+const theme = {
+  dialog: {
+    overlay: {
+      background: 'rgba(0, 0, 0, 0.5)',
+      zIndex: 1000,
+    },
+    container: {
+      background: 'white',
+      borderRadius: '8px',
+      boxShadow: '0 4px 6px rgba(0, 0, 0, 0.1)',
+    },
+    header: {
+      padding: '16px 24px',
+      borderBottom: '1px solid #eee',
+    },
+    content: {
+      padding: '24px',
+    },
+    footer: {
+      padding: '16px 24px',
+      borderTop: '1px solid #eee',
+    },
+  },
+};
+```
+
+## Related Components
+
+- [Modal](modal) - Alternative name for Dialog
+- [Drawer](drawer) - Side-sliding panel
+- [Popover](popover) - For smaller overlays
+- [Alert](alert) - For simple messages

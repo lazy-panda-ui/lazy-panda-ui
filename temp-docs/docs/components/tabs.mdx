@@ -1,0 +1,316 @@
+---
+sidebar_position: 26
+---
+
+# Tabs
+
+The Tabs component allows users to switch between different views within the same context, organizing content into multiple sections that can be navigated easily.
+
+## Import
+
+```tsx
+import { Tabs, TabList, Tab, TabPanel } from 'lazy-panda-ui';
+```
+
+## Usage
+
+```tsx
+import React from 'react';
+import { Tabs, TabList, Tab, TabPanel } from 'lazy-panda-ui';
+
+function MyComponent() {
+  return (
+    <Tabs defaultValue="account">
+      <TabList>
+        <Tab value="account">Account</Tab>
+        <Tab value="security">Security</Tab>
+        <Tab value="notifications">Notifications</Tab>
+      </TabList>
+
+      <TabPanel value="account">Account settings content</TabPanel>
+      <TabPanel value="security">Security settings content</TabPanel>
+      <TabPanel value="notifications">Notification preferences content</TabPanel>
+    </Tabs>
+  );
+}
+```
+
+## Props
+
+### Tabs Props
+| Name | Type | Default | Description |
+|------|------|---------|-------------|
+| `value` | `string` | - | Controlled value |
+| `defaultValue` | `string` | - | Default selected tab |
+| `onChange` | `(value: string) => void` | - | Change callback |
+| `orientation` | `'horizontal' \| 'vertical'` | `'horizontal'` | Tab layout direction |
+| `variant` | `'line' \| 'enclosed' \| 'pill'` | `'line'` | Visual variant |
+| `size` | `'sm' \| 'md' \| 'lg'` | `'md'` | Size of the tabs |
+| `isDisabled` | `boolean` | `false` | Disable all tabs |
+
+### Tab Props
+| Name | Type | Default | Description |
+|------|------|---------|-------------|
+| `value` | `string` | - | Unique identifier |
+| `isDisabled` | `boolean` | `false` | Disable tab |
+| `icon` | `ReactNode` | - | Leading icon |
+
+### TabPanel Props
+| Name | Type | Default | Description |
+|------|------|---------|-------------|
+| `value` | `string` | - | Matches tab value |
+| `padding` | `string \| number` | `'md'` | Inner padding |
+| `keepMounted` | `boolean` | `false` | Keep DOM mounted |
+
+## Examples
+
+### Basic Tabs
+```tsx
+<Tabs defaultValue="tab1">
+  <TabList>
+    <Tab value="tab1">First Tab</Tab>
+    <Tab value="tab2">Second Tab</Tab>
+    <Tab value="tab3">Third Tab</Tab>
+  </TabList>
+
+  <TabPanel value="tab1">
+    <Text>Content of first tab</Text>
+  </TabPanel>
+  <TabPanel value="tab2">
+    <Text>Content of second tab</Text>
+  </TabPanel>
+  <TabPanel value="tab3">
+    <Text>Content of third tab</Text>
+  </TabPanel>
+</Tabs>
+```
+
+### Different Variants
+```tsx
+function VariantExample() {
+  return (
+    <Stack spacing="xl">
+      <Tabs variant="line" defaultValue="tab1">
+        <TabList>
+          <Tab value="tab1">Line Tab 1</Tab>
+          <Tab value="tab2">Line Tab 2</Tab>
+        </TabList>
+        <TabPanel value="tab1">Line variant content 1</TabPanel>
+        <TabPanel value="tab2">Line variant content 2</TabPanel>
+      </Tabs>
+
+      <Tabs variant="enclosed" defaultValue="tab1">
+        <TabList>
+          <Tab value="tab1">Enclosed Tab 1</Tab>
+          <Tab value="tab2">Enclosed Tab 2</Tab>
+        </TabList>
+        <TabPanel value="tab1">Enclosed variant content 1</TabPanel>
+        <TabPanel value="tab2">Enclosed variant content 2</TabPanel>
+      </Tabs>
+
+      <Tabs variant="pill" defaultValue="tab1">
+        <TabList>
+          <Tab value="tab1">Pill Tab 1</Tab>
+          <Tab value="tab2">Pill Tab 2</Tab>
+        </TabList>
+        <TabPanel value="tab1">Pill variant content 1</TabPanel>
+        <TabPanel value="tab2">Pill variant content 2</TabPanel>
+      </Tabs>
+    </Stack>
+  );
+}
+```
+
+### With Icons
+```tsx
+<Tabs defaultValue="profile">
+  <TabList>
+    <Tab value="profile" icon={<Icon name="user" />}>
+      Profile
+    </Tab>
+    <Tab value="settings" icon={<Icon name="settings" />}>
+      Settings
+    </Tab>
+    <Tab value="notifications" icon={<Icon name="bell" />}>
+      Notifications
+    </Tab>
+  </TabList>
+
+  <TabPanel value="profile">Profile content</TabPanel>
+  <TabPanel value="settings">Settings content</TabPanel>
+  <TabPanel value="notifications">Notifications content</TabPanel>
+</Tabs>
+```
+
+### Vertical Orientation
+```tsx
+<Tabs orientation="vertical" defaultValue="tab1">
+  <TabList>
+    <Tab value="tab1">Section 1</Tab>
+    <Tab value="tab2">Section 2</Tab>
+    <Tab value="tab3">Section 3</Tab>
+  </TabList>
+
+  <TabPanel value="tab1">Content for section 1</TabPanel>
+  <TabPanel value="tab2">Content for section 2</TabPanel>
+  <TabPanel value="tab3">Content for section 3</TabPanel>
+</Tabs>
+```
+
+### Controlled Tabs
+```tsx
+function ControlledExample() {
+  const [value, setValue] = React.useState('tab1');
+
+  return (
+    <Tabs value={value} onChange={setValue}>
+      <TabList>
+        <Tab value="tab1">Tab 1</Tab>
+        <Tab value="tab2">Tab 2</Tab>
+      </TabList>
+
+      <TabPanel value="tab1">
+        <Text>Selected tab: {value}</Text>
+      </TabPanel>
+      <TabPanel value="tab2">
+        <Text>Selected tab: {value}</Text>
+      </TabPanel>
+    </Tabs>
+  );
+}
+```
+
+### With Complex Content
+```tsx
+<Tabs defaultValue="overview">
+  <TabList>
+    <Tab value="overview">Overview</Tab>
+    <Tab value="analytics">Analytics</Tab>
+    <Tab value="reports">Reports</Tab>
+  </TabList>
+
+  <TabPanel value="overview">
+    <Stack spacing="lg" p="lg">
+      <Text size="xl" weight="bold">Project Overview</Text>
+      <Grid columns={3} gap="md">
+        <Card>
+          <Stack spacing="sm">
+            <Text weight="bold">Total Users</Text>
+            <Text size="2xl">1,234</Text>
+            <Text color="success">↑ 12%</Text>
+          </Stack>
+        </Card>
+        <Card>
+          <Stack spacing="sm">
+            <Text weight="bold">Revenue</Text>
+            <Text size="2xl">$12,345</Text>
+            <Text color="success">↑ 8%</Text>
+          </Stack>
+        </Card>
+        <Card>
+          <Stack spacing="sm">
+            <Text weight="bold">Active Projects</Text>
+            <Text size="2xl">45</Text>
+            <Text color="warning">↓ 3%</Text>
+          </Stack>
+        </Card>
+      </Grid>
+    </Stack>
+  </TabPanel>
+  <TabPanel value="analytics">Analytics content</TabPanel>
+  <TabPanel value="reports">Reports content</TabPanel>
+</Tabs>
+```
+
+### Lazy Loading
+```tsx
+function LazyExample() {
+  return (
+    <Tabs defaultValue="tab1">
+      <TabList>
+        <Tab value="tab1">Instant</Tab>
+        <Tab value="tab2">Lazy</Tab>
+      </TabList>
+
+      <TabPanel value="tab1">
+        This content is always mounted
+      </TabPanel>
+      <TabPanel value="tab2" keepMounted={false}>
+        This content is only mounted when tab is active
+      </TabPanel>
+    </Tabs>
+  );
+}
+```
+
+## Best Practices
+
+1. Use clear and concise labels
+2. Maintain consistent content structure
+3. Choose appropriate variant
+4. Consider mobile responsiveness
+5. Use icons judiciously
+6. Handle loading states
+7. Implement proper keyboard navigation
+
+## API Reference
+
+### TabsProps
+```tsx
+interface TabsProps {
+  value?: string;
+  defaultValue?: string;
+  onChange?: (value: string) => void;
+  orientation?: 'horizontal' | 'vertical';
+  variant?: 'line' | 'enclosed' | 'pill';
+  size?: 'sm' | 'md' | 'lg';
+  isDisabled?: boolean;
+  className?: string;
+  style?: CSSProperties;
+}
+```
+
+### Theme Customization
+```tsx
+const theme = {
+  tabs: {
+    variants: {
+      line: {
+        borderColor: '#e2e8f0',
+        activeColor: '#3182ce',
+      },
+      enclosed: {
+        background: '#f7fafc',
+        borderColor: '#e2e8f0',
+        activeColor: '#ffffff',
+      },
+      pill: {
+        background: '#edf2f7',
+        activeColor: '#ffffff',
+        activeBackground: '#3182ce',
+      },
+    },
+    sizes: {
+      sm: {
+        fontSize: '0.875rem',
+        padding: '0.5rem 1rem',
+      },
+      md: {
+        fontSize: '1rem',
+        padding: '0.75rem 1.5rem',
+      },
+      lg: {
+        fontSize: '1.125rem',
+        padding: '1rem 2rem',
+      },
+    },
+  },
+};
+```
+
+## Related Components
+
+- [Accordion](accordion) - For collapsible content
+- [Menu](menu) - For dropdown options
+- [Stepper](stepper) - For step-by-step flows
+- [SegmentedControl](segmented-control) - For exclusive options

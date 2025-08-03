@@ -1,0 +1,209 @@
+---
+sidebar_position: 10
+---
+
+# Icon
+
+The Icon component is used to display vector icons and symbols. It supports multiple icon libraries and custom SVG icons.
+
+## Import
+
+```tsx
+import { Icon } from 'lazy-panda-ui';
+```
+
+## Usage
+
+```tsx
+import React from 'react';
+import { Icon } from 'lazy-panda-ui';
+
+function MyComponent() {
+  return (
+    <Icon name="heart" color="red" size="md" />
+  );
+}
+```
+
+## Props
+
+| Name | Type | Default | Description |
+|------|------|---------|-------------|
+| `name` | `string` | - | Name of the icon |
+| `size` | `'xs' \| 'sm' \| 'md' \| 'lg' \| 'xl' \| number` | `'md'` | Size of the icon |
+| `color` | `string` | `'currentColor'` | Color of the icon |
+| `variant` | `'solid' \| 'outline' \| 'duotone'` | `'solid'` | Visual style variant |
+| `rotate` | `number` | - | Rotation in degrees |
+| `spin` | `boolean` | `false` | Whether icon should spin |
+| `pulse` | `boolean` | `false` | Whether icon should pulse |
+| `strokeWidth` | `number` | `2` | Width of stroke for outline variant |
+
+## Examples
+
+### Basic Icons
+```tsx
+<Stack direction="row" spacing="md">
+  <Icon name="home" />
+  <Icon name="search" />
+  <Icon name="settings" />
+  <Icon name="notification" />
+</Stack>
+```
+
+### Icon Sizes
+```tsx
+<Stack direction="row" spacing="md" align="center">
+  <Icon name="star" size="xs" />
+  <Icon name="star" size="sm" />
+  <Icon name="star" size="md" />
+  <Icon name="star" size="lg" />
+  <Icon name="star" size="xl" />
+</Stack>
+```
+
+### Icon Colors
+```tsx
+<Stack direction="row" spacing="md">
+  <Icon name="heart" color="red" />
+  <Icon name="info" color="blue" />
+  <Icon name="check" color="green" />
+  <Icon name="warning" color="orange" />
+  <Icon name="close" color="gray" />
+</Stack>
+```
+
+### Icon Variants
+```tsx
+<Stack direction="row" spacing="md">
+  <Icon name="message" variant="solid" />
+  <Icon name="message" variant="outline" />
+  <Icon name="message" variant="duotone" />
+</Stack>
+```
+
+## Animation
+
+### Spinning Icons
+```tsx
+<Stack direction="row" spacing="md">
+  <Icon name="loading" spin />
+  <Icon name="refresh" spin />
+  <Icon name="sync" spin />
+</Stack>
+```
+
+### Pulsing Icons
+```tsx
+<Stack direction="row" spacing="md">
+  <Icon name="bell" pulse />
+  <Icon name="heart" pulse />
+  <Icon name="star" pulse />
+</Stack>
+```
+
+### Rotating Icons
+```tsx
+<Stack direction="row" spacing="md">
+  <Icon name="arrow-right" rotate={90} />
+  <Icon name="arrow-right" rotate={180} />
+  <Icon name="arrow-right" rotate={270} />
+</Stack>
+```
+
+## Customization
+
+### Custom Sizes
+```tsx
+<Stack direction="row" spacing="md" align="center">
+  <Icon name="custom" size={24} />
+  <Icon name="custom" size={36} />
+  <Icon name="custom" size={48} />
+</Stack>
+```
+
+### Custom Colors
+```tsx
+<Stack direction="row" spacing="md">
+  <Icon name="brush" color="#FF6B6B" />
+  <Icon name="brush" color="rgb(75, 192, 192)" />
+  <Icon name="brush" color="hsl(150, 60%, 50%)" />
+</Stack>
+```
+
+### With Gradients
+```tsx
+<Icon
+  name="star"
+  size="xl"
+  style={{
+    fill: 'url(#gradient)',
+  }}
+>
+  <defs>
+    <linearGradient id="gradient">
+      <stop offset="0%" stopColor="#FFD700" />
+      <stop offset="100%" stopColor="#FFA500" />
+    </linearGradient>
+  </defs>
+</Icon>
+```
+
+## Icon Libraries
+
+### Default Library
+```tsx
+// Using icons from the default library
+<Stack direction="row" spacing="md">
+  <Icon name="user" />
+  <Icon name="cart" />
+  <Icon name="menu" />
+</Stack>
+```
+
+### Custom SVG Icons
+```tsx
+<Icon viewBox="0 0 24 24">
+  <path d="M12 2L2 7l10 5 10-5-10-5zM2 17l10 5 10-5M2 12l10 5 10-5" />
+</Icon>
+```
+
+## Best Practices
+
+1. Use consistent sizes within context
+2. Choose appropriate colors for meaning
+3. Consider accessibility implications
+4. Optimize SVG paths for performance
+5. Use semantic icon names
+6. Maintain visual consistency
+7. Include proper ARIA labels
+
+## API Reference
+
+### Size Values
+```tsx
+const iconSizes = {
+  xs: 12,
+  sm: 16,
+  md: 20,
+  lg: 24,
+  xl: 32
+};
+```
+
+### Default Colors
+```tsx
+const iconColors = {
+  primary: 'currentColor',
+  success: 'green',
+  warning: 'orange',
+  error: 'red',
+  info: 'blue'
+};
+```
+
+## Related Components
+
+- [IconButton](icon-button) - For clickable icons
+- [Button](button) - For buttons with icons
+- [Avatar](avatar) - For user avatars
+- [Badge](badge) - For notification badges

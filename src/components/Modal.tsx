@@ -23,30 +23,26 @@ export interface ModalProps {
    */
   visible: boolean;
   /**
-   * Called when the modal is dismissed
+   * Callback when modal is closed
    */
   onDismiss: () => void;
-  /**
-   * Content to display inside the modal
-   */
-  children: React.ReactNode;
-  /**
-   * Visual variant of the modal
-   * @default 'basic'
-   */
-  variant?: ModalVariant;
   /**
    * Size of the modal
    * @default 'medium'
    */
   size?: ModalSize;
   /**
-   * Animation type for the modal
+   * Variant of the modal
+   * @default 'basic'
+   */
+  variant?: ModalVariant;
+  /**
+   * Animation type
    * @default 'slide'
    */
   animation?: ModalAnimation;
   /**
-   * Whether to show a dimmed background
+   * Whether to show backdrop
    * @default true
    */
   backdrop?: boolean;
@@ -55,6 +51,11 @@ export interface ModalProps {
    * @default true
    */
   dismissable?: boolean;
+  /**
+   * Whether to close on back button press
+   * @default true
+   */
+  closeOnBack?: boolean;
   /**
    * Whether to avoid keyboard
    * @default true
@@ -73,6 +74,10 @@ export interface ModalProps {
    * Custom footer component
    */
   footer?: React.ReactNode;
+  /**
+   * Children to render
+   */
+  children: React.ReactNode;
   /**
    * Additional styles for the container
    */
@@ -96,6 +101,7 @@ export const Modal: React.FC<ModalProps> = ({
   animation = 'slide',
   backdrop = true,
   dismissable = true,
+  closeOnBack = true,
   avoidKeyboard = true,
   scrollable = true,
   header,
@@ -188,6 +194,10 @@ export const Modal: React.FC<ModalProps> = ({
         };
       case 'sheet':
         return {
+          position: 'absolute',
+          bottom: 0,
+          left: 0,
+          right: 0,
           borderTopLeftRadius: theme.borderRadius.lg,
           borderTopRightRadius: theme.borderRadius.lg,
           borderBottomLeftRadius: 0,
@@ -262,7 +272,7 @@ export const Modal: React.FC<ModalProps> = ({
   return (
     <RNModal
       visible={visible}
-      onRequestClose={onDismiss}
+      onRequestClose={closeOnBack ? onDismiss : undefined}
       transparent
       statusBarTranslucent
       animationType="none"

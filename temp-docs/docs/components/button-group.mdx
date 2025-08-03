@@ -156,24 +156,37 @@ function Example() {
 
 | Prop | Type | Default | Description |
 |------|------|---------|-------------|
-| `buttons` | { label: string; onPress: () => void; disabled?: boolean }[] | Required | Array of button configurations |
-| `selectedIndex` | number | - | Index of the selected button |
-| `variant` | 'outlined' \| 'contained' \| 'text' | 'outlined' | Visual variant of the button group |
-| `size` | 'small' \| 'medium' \| 'large' | 'medium' | Size of the buttons |
-| `direction` | 'horizontal' \| 'vertical' | 'horizontal' | Direction of the button group |
-| `disabled` | boolean | false | Whether the entire button group is disabled |
+| `buttons` | `ButtonConfig[]` | Required | Array of button configurations. Each button has `label`, `onPress`, and optional `disabled` props |
+| `selectedIndex` | `number` | - | Index of the selected button |
+| `variant` | `"outlined"` \| `"contained"` \| `"text"` | `"outlined"` | Visual variant of the button group |
+| `size` | `"small"` \| `"medium"` \| `"large"` | `"medium"` | Size of the buttons |
+| `direction` | `"horizontal"` \| `"vertical"` | `"horizontal"` | Direction of the button group |
+| `disabled` | `boolean` | `false` | Whether the entire button group is disabled |
+
+Where ButtonConfig is:
+
+```typescript
+interface ButtonConfig {
+  /** The text to display in the button */
+  label: string;
+  /** Function to call when button is pressed */
+  onPress: () => void;
+  /** Whether the button is disabled */
+  disabled?: boolean;
+}
+```
 
 ### Style Props
 
 | Prop | Type | Description |
 |------|------|-------------|
-| `style` | ViewStyle | Additional styles for the container |
+| `style` | `object` | Additional styles for the container. Uses React Native ViewStyle |
 
 ### Accessibility Props
 
 | Prop | Type | Description |
 |------|------|-------------|
-| `testID` | string | Test ID for testing |
+| `testID` | `string` | Test ID for testing |
 
 ## Theme Customization
 
@@ -197,31 +210,25 @@ const theme = {
       },
       variants: {
         contained: {
-          // contained variant styles
-          backgroundColor: theme.colors.primaryContainer,
+          backgroundColor: '#E3F2FD',  // example color
         },
         text: {
-          // text variant styles
           backgroundColor: 'transparent',
         },
         outlined: {
-          // outlined variant styles
           borderWidth: 1,
-          borderColor: theme.colors.outline,
+          borderColor: '#BDBDBD',  // example color
         },
       },
       sizes: {
         small: {
-          // small size styles
-          padding: theme.spacing.sm,
+          padding: 8,  // example spacing
         },
         medium: {
-          // medium size styles
-          padding: theme.spacing.md,
+          padding: 16,  // example spacing
         },
         large: {
-          // large size styles
-          padding: theme.spacing.lg,
+          padding: 24,  // example spacing
         },
       },
     },

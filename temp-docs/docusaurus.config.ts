@@ -37,6 +37,12 @@ const config: Config = {
       },
       items: [
         {
+          type: 'docSidebar',
+          sidebarId: 'tutorialSidebar',
+          position: 'left',
+          label: 'Components',
+        },
+        {
           href: 'https://github.com/lazy-panda-ui/lazy-panda-ui',
           label: 'GitHub',
           position: 'right',

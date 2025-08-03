@@ -1,0 +1,254 @@
+---
+sidebar_position: 11
+---
+
+# Badge
+
+The Badge component is used to highlight and display status information, notifications, or counts. It can be used standalone or to decorate other components.
+
+## Import
+
+```tsx
+import { Badge } from 'lazy-panda-ui';
+```
+
+## Usage
+
+```tsx
+import React from 'react';
+import { Badge } from 'lazy-panda-ui';
+
+function MyComponent() {
+  return (
+    <Badge content={3}>
+      <Icon name="notification" />
+    </Badge>
+  );
+}
+```
+
+## Props
+
+| Name | Type | Default | Description |
+|------|------|---------|-------------|
+| `content` | `string \| number \| ReactNode` | - | Content to display in badge |
+| `variant` | `'dot' \| 'standard'` | `'standard'` | Visual variant of badge |
+| `color` | `'primary' \| 'secondary' \| 'success' \| 'warning' \| 'error'` | `'primary'` | Color scheme |
+| `max` | `number` | `99` | Maximum value to display |
+| `showZero` | `boolean` | `false` | Whether to show when content is 0 |
+| `overlap` | `'circular' \| 'rectangular'` | `'rectangular'` | Shape of overlap |
+| `horizontal` | `'left' \| 'right'` | `'right'` | Horizontal positioning |
+| `vertical` | `'top' \| 'bottom'` | `'top'` | Vertical positioning |
+| `invisible` | `boolean` | `false` | Whether badge is hidden |
+
+## Examples
+
+### Basic Badges
+```tsx
+<Stack direction="row" spacing="lg">
+  <Badge content={4}>
+    <Icon name="mail" />
+  </Badge>
+  <Badge content="new">
+    <Icon name="message" />
+  </Badge>
+  <Badge variant="dot">
+    <Icon name="notification" />
+  </Badge>
+</Stack>
+```
+
+### Badge Colors
+```tsx
+<Stack direction="row" spacing="lg">
+  <Badge content={1} color="primary">
+    <Box>Primary</Box>
+  </Badge>
+  <Badge content={2} color="secondary">
+    <Box>Secondary</Box>
+  </Badge>
+  <Badge content={3} color="success">
+    <Box>Success</Box>
+  </Badge>
+  <Badge content={4} color="warning">
+    <Box>Warning</Box>
+  </Badge>
+  <Badge content={5} color="error">
+    <Box>Error</Box>
+  </Badge>
+</Stack>
+```
+
+### Badge Variants
+```tsx
+<Stack direction="row" spacing="lg">
+  <Badge variant="standard" content={99}>
+    <Avatar />
+  </Badge>
+  <Badge variant="dot" color="success">
+    <Avatar />
+  </Badge>
+</Stack>
+```
+
+### Maximum Value
+```tsx
+<Stack direction="row" spacing="lg">
+  <Badge content={100} max={99}>
+    <Icon name="inbox" />
+  </Badge>
+  <Badge content={1000} max={999}>
+    <Icon name="message" />
+  </Badge>
+</Stack>
+```
+
+## Positioning
+
+### Horizontal and Vertical
+```tsx
+<Stack direction="row" spacing="lg">
+  <Badge
+    content={4}
+    horizontal="right"
+    vertical="top"
+  >
+    <Box>Top Right</Box>
+  </Badge>
+  <Badge
+    content={4}
+    horizontal="left"
+    vertical="top"
+  >
+    <Box>Top Left</Box>
+  </Badge>
+  <Badge
+    content={4}
+    horizontal="right"
+    vertical="bottom"
+  >
+    <Box>Bottom Right</Box>
+  </Badge>
+</Stack>
+```
+
+### Overlap Styles
+```tsx
+<Stack direction="row" spacing="lg">
+  <Badge
+    content={4}
+    overlap="circular"
+  >
+    <Avatar />
+  </Badge>
+  <Badge
+    content={4}
+    overlap="rectangular"
+  >
+    <Box>Rectangle</Box>
+  </Badge>
+</Stack>
+```
+
+## Customization
+
+### Custom Content
+```tsx
+<Badge
+  content={
+    <Icon
+      name="check"
+      size="xs"
+      color="white"
+    />
+  }
+>
+  <Avatar />
+</Badge>
+```
+
+### Custom Styles
+```tsx
+<Badge
+  content={5}
+  style={{
+    backgroundColor: '#FF6B6B',
+    padding: '0 8px',
+    borderRadius: '16px'
+  }}
+>
+  <Box>Custom Badge</Box>
+</Badge>
+```
+
+### Dynamic Visibility
+```tsx
+<Badge
+  content={messageCount}
+  invisible={messageCount === 0}
+>
+  <Icon name="mail" />
+</Badge>
+```
+
+## Accessibility
+
+### ARIA Support
+```tsx
+<Badge
+  content={4}
+  aria-label="4 unread messages"
+>
+  <Icon name="mail" />
+</Badge>
+```
+
+## Best Practices
+
+1. Use clear and concise content
+2. Choose appropriate colors for context
+3. Consider maximum values for clarity
+4. Use consistent positioning
+5. Handle zero states appropriately
+6. Maintain readability
+7. Include proper ARIA attributes
+
+## API Reference
+
+### Badge Placement
+```tsx
+interface BadgePlacement {
+  horizontal: 'left' | 'right';
+  vertical: 'top' | 'bottom';
+  offset?: {
+    x?: number;
+    y?: number;
+  };
+}
+```
+
+### Theme Customization
+```tsx
+const theme = {
+  badge: {
+    colors: {
+      primary: '#007AFF',
+      secondary: '#5856D6',
+      success: '#34C759',
+      warning: '#FF9500',
+      error: '#FF3B30'
+    },
+    sizes: {
+      dot: 8,
+      standard: 20
+    }
+  }
+};
+```
+
+## Related Components
+
+- [Avatar](avatar) - For user avatars
+- [Icon](icon) - For icons
+- [Chip](chip) - For status and selections
+- [Button](button) - For actions with badges

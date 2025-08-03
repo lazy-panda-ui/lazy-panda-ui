@@ -1,0 +1,287 @@
+---
+sidebar_position: 18
+---
+
+# Progress
+
+The Progress component displays the current progress or loading status of an operation, task, or process.
+
+## Import
+
+```tsx
+import { Progress } from 'lazy-panda-ui';
+```
+
+## Usage
+
+```tsx
+import React from 'react';
+import { Progress } from 'lazy-panda-ui';
+
+function MyComponent() {
+  return (
+    <Progress
+      value={75}
+      max={100}
+      variant="determinate"
+    />
+  );
+}
+```
+
+## Props
+
+| Name | Type | Default | Description |
+|------|------|---------|-------------|
+| `value` | `number` | `0` | Current progress value |
+| `max` | `number` | `100` | Maximum progress value |
+| `min` | `number` | `0` | Minimum progress value |
+| `variant` | `'determinate' \| 'indeterminate'` | `'determinate'` | Progress variant |
+| `size` | `'xs' \| 'sm' \| 'md' \| 'lg'` | `'md'` | Size of the progress bar |
+| `color` | `'primary' \| 'secondary' \| 'success' \| 'warning' \| 'error'` | `'primary'` | Color scheme |
+| `radius` | `'none' \| 'sm' \| 'md' \| 'lg' \| 'full'` | `'sm'` | Border radius |
+| `showValue` | `boolean` | `false` | Show progress value |
+| `valueFormat` | `(value: number) => string` | `(v) => \`\${v}%\`` | Value format function |
+| `animated` | `boolean` | `false` | Enable animation |
+| `striped` | `boolean` | `false` | Show striped pattern |
+
+## Examples
+
+### Basic Progress
+```tsx
+<Stack spacing="md">
+  <Progress value={25} />
+  <Progress value={50} />
+  <Progress value={75} />
+  <Progress value={100} />
+</Stack>
+```
+
+### Progress Variants
+```tsx
+<Stack spacing="md">
+  <Progress
+    variant="determinate"
+    value={75}
+  />
+  <Progress
+    variant="indeterminate"
+  />
+</Stack>
+```
+
+### Progress Colors
+```tsx
+<Stack spacing="md">
+  <Progress value={75} color="primary" />
+  <Progress value={75} color="secondary" />
+  <Progress value={75} color="success" />
+  <Progress value={75} color="warning" />
+  <Progress value={75} color="error" />
+</Stack>
+```
+
+### Progress Sizes
+```tsx
+<Stack spacing="md">
+  <Progress value={75} size="xs" />
+  <Progress value={75} size="sm" />
+  <Progress value={75} size="md" />
+  <Progress value={75} size="lg" />
+</Stack>
+```
+
+### With Value Label
+```tsx
+<Progress
+  value={75}
+  showValue
+  valueFormat={(v) => `${v}/100`}
+/>
+```
+
+### Animated Progress
+```tsx
+<Progress
+  value={75}
+  animated
+  striped
+/>
+```
+
+### Custom Range
+```tsx
+<Progress
+  value={7.5}
+  min={0}
+  max={10}
+  valueFormat={(v) => `${v.toFixed(1)}/10`}
+  showValue
+/>
+```
+
+## Circular Progress
+
+### Basic Circular Progress
+```tsx
+<CircularProgress value={75} />
+```
+
+### Circular Progress Sizes
+```tsx
+<Stack direction="row" spacing="md">
+  <CircularProgress value={75} size="xs" />
+  <CircularProgress value={75} size="sm" />
+  <CircularProgress value={75} size="md" />
+  <CircularProgress value={75} size="lg" />
+</Stack>
+```
+
+### Circular Progress with Label
+```tsx
+<CircularProgress
+  value={75}
+  showValue
+  size="lg"
+  thickness={4}
+/>
+```
+
+## Loading Progress
+
+### Auto Incrementing
+```tsx
+function LoadingProgress() {
+  const [progress, setProgress] = useState(0);
+
+  useEffect(() => {
+    const timer = setInterval(() => {
+      setProgress((prev) => 
+        prev >= 100 ? 0 : prev + 10
+      );
+    }, 800);
+
+    return () => clearInterval(timer);
+  }, []);
+
+  return (
+    <Progress
+      value={progress}
+      animated
+    />
+  );
+}
+```
+
+### Upload Progress
+```tsx
+function UploadProgress({ onUpload }) {
+  const [progress, setProgress] = useState(0);
+
+  const handleUpload = async () => {
+    for (let i = 0; i <= 100; i += 10) {
+      setProgress(i);
+      await new Promise(r => setTimeout(r, 500));
+    }
+    onUpload();
+  };
+
+  return (
+    <Stack spacing="md">
+      <Progress
+        value={progress}
+        showValue
+        color={progress === 100 ? 'success' : 'primary'}
+      />
+      <Button
+        onClick={handleUpload}
+        disabled={progress > 0 && progress < 100}
+      >
+        {progress === 100 ? 'Complete' : 'Upload'}
+      </Button>
+    </Stack>
+  );
+}
+```
+
+## Customization
+
+### Custom Styles
+```tsx
+<Progress
+  value={75}
+  style={{
+    height: 8,
+    background: '#f0f0f0',
+    '& .progress-bar': {
+      background: 'linear-gradient(45deg, #FE6B8B 30%, #FF8E53 90%)',
+      transition: 'width 0.3s ease-in-out',
+    },
+  }}
+/>
+```
+
+### Custom Track Color
+```tsx
+<Progress
+  value={75}
+  trackColor="#e0e0e0"
+  color="#2196f3"
+/>
+```
+
+## Best Practices
+
+1. Use appropriate variants
+2. Show clear progress status
+3. Maintain consistent sizing
+4. Consider mobile viewports
+5. Use meaningful colors
+6. Provide context when needed
+7. Handle edge cases
+
+## API Reference
+
+### Size Values
+```tsx
+const progressSizes = {
+  xs: 2,
+  sm: 4,
+  md: 6,
+  lg: 8,
+};
+```
+
+### Theme Customization
+```tsx
+const theme = {
+  progress: {
+    sizes: progressSizes,
+    colors: {
+      primary: '#2196f3',
+      secondary: '#9c27b0',
+      success: '#4caf50',
+      warning: '#ff9800',
+      error: '#f44336',
+    },
+    track: {
+      background: '#e0e0e0',
+    },
+    variants: {
+      determinate: {
+        transition: 'width 0.3s ease',
+      },
+      indeterminate: {
+        animation: 'progress-indeterminate 1.5s infinite',
+      },
+    },
+  },
+};
+```
+
+## Related Components
+
+- [Spinner](spinner) - For loading indicators
+- [CircularProgress](circular-progress) - For circular progress
+- [LoadingBar](loading-bar) - For page-level loading
+- [Skeleton](skeleton) - For content loading states

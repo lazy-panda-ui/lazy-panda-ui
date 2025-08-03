@@ -1,7 +1,7 @@
 import React from 'react';
 import { View, StyleSheet, ViewStyle } from 'react-native';
 import { Button } from './Button';
-import { useTheme, Theme } from '../theme/ThemeProvider';
+import { useTheme, Theme } from '../theme';
 
 export type ButtonGroupSize = 'small' | 'medium' | 'large';
 export type ButtonGroupVariant = 'outlined' | 'contained' | 'text';

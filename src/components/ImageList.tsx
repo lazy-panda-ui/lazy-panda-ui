@@ -11,7 +11,7 @@ import {
   ImageErrorEventData,
   NativeSyntheticEvent,
 } from 'react-native';
-import { useTheme, Theme } from '../theme/ThemeProvider';
+import { useTheme, Theme } from '../theme';
 
 export type ImageListVariant = 'grid' | 'masonry';
 

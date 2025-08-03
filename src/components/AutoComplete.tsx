@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { View, TextInput, FlatList, TouchableOpacity, Text, StyleSheet, ViewStyle } from 'react-native';
-import { useTheme, Theme } from '../theme/ThemeProvider';
+import { useTheme, Theme } from '../theme';
 
 export interface AutoCompleteProps {
   data: string[];

@@ -1,28 +1,45 @@
-import React, { useState } from 'react';
+import React, { useCallback, useRef, useState } from 'react';
 import {
-  View,
-  Text,
-  TouchableOpacity,
-  Modal,
-  FlatList,
-  StyleSheet,
-  ViewStyle,
-  TextStyle,
   ActivityIndicator,
   Animated,
+  BackHandler,
+  Dimensions,
+  FlatList,
   Keyboard,
-  TextInput,
   ListRenderItemInfo,
+  Modal,
+  Pressable,
+  StyleSheet,
+  Text,
+  TextInput,
+  TextStyle,
+  View,
+  ViewStyle
 } from 'react-native';
 import { useTheme } from '../theme/ThemeProvider';
 
-export type SelectVariant = 'outlined' | 'filled' | 'standard';
+export type SelectVariant = 'outlined' | 'filled' | 'standard' | 'underlined';
 export type SelectSize = 'small' | 'medium' | 'large';
+export type SelectPosition = 'top' | 'bottom' | 'auto';
 
 export interface SelectOption {
   label: string;
   value: string;
   disabled?: boolean;
+  icon?: React.ReactNode;
+  description?: string;
+  color?: string;
+}
+
+export interface SelectStyleProps {
+  container?: ViewStyle;
+  label?: TextStyle;
+  dropdown?: ViewStyle;
+  option?: ViewStyle;
+  text?: TextStyle;
+  error?: TextStyle;
+  helper?: TextStyle;
+  search?: ViewStyle;
 }
 
 export interface SelectProps {
@@ -31,13 +48,13 @@ export interface SelectProps {
    */
   options: SelectOption[];
   /**
-   * Currently selected value
+   * Currently selected value(s)
    */
-  value?: string;
+  value?: string | string[];
   /**
    * Callback when value changes
    */
-  onChange: (value: string) => void;
+  onChange: (value: string | string[]) => void;
   /**
    * Placeholder text when no value is selected
    */
@@ -89,44 +106,195 @@ export interface SelectProps {
    */
   multiple?: boolean;
   /**
+   * Maximum number of items that can be selected when multiple is true
+   */
+  maxSelectedItems?: number;
+  /**
    * Custom render function for option
    */
-  renderOption?: ({ item }: { item: SelectOption }) => React.ReactElement;
+  renderOption?: (option: SelectOption) => React.ReactElement;
   /**
-   * Start icon
+   * Leading icon or component
    */
   startIcon?: React.ReactNode;
   /**
-   * End icon
+   * Trailing icon or component
    */
   endIcon?: React.ReactNode;
   /**
-   * Additional styles for container
+   * Whether to close the dropdown on selecting an option
+   * @default true for single select, false for multiple select
    */
-  containerStyle?: ViewStyle;
+  closeOnSelect?: boolean;
   /**
-   * Additional styles for the select button
+   * Dropdown position
+   * @default 'auto'
    */
-  style?: ViewStyle;
+  dropdownPosition?: SelectPosition;
   /**
-   * Additional styles for option items
+   * Additional styles for components
    */
-  optionStyle?: ViewStyle;
-  /**
-   * Additional styles for selected text
-   */
-  textStyle?: TextStyle;
+  style?: SelectStyleProps;
   /**
    * Test ID for testing
    */
   testID?: string;
 }
 
-export const Select: React.FC<SelectProps> = ({
+const getInitialValue = (value: string | string[] | undefined, multiple: boolean): string[] => {
+  if (!value) return [];
+  if (multiple) {
+    return Array.isArray(value) ? value : [value];
+  }
+  return Array.isArray(value) ? [value[0]] : [value];
+};
+
+const getDropdownPosition = (
+  spaceBelow: number,
+  spaceAbove: number,
+  position: SelectPosition
+): 'top' | 'bottom' => {
+  if (position !== 'auto') return position;
+  return spaceBelow >= 200 || spaceBelow >= spaceAbove ? 'bottom' : 'top';
+};
+
+const createStyles = (
+  theme: ReturnType<typeof useTheme>,
+  variant: SelectVariant,
+  size: SelectSize,
+  error?: string
+) => {
+  const getFontSize = (baseSize: number): number => {
+    switch (size) {
+      case 'small': return baseSize - 2;
+      case 'large': return baseSize + 2;
+      default: return baseSize;
+    }
+  };
+
+  const getPadding = (): number => {
+    switch (size) {
+      case 'small': return theme.spacing.sm;
+      case 'large': return theme.spacing.lg;
+      default: return theme.spacing.md;
+    }
+  };
+
+  return StyleSheet.create({
+    container: {
+      position: 'relative',
+      width: '100%',
+    },
+    inputContainer: {
+      borderWidth: variant === 'standard' ? 0 : 1,
+      borderBottomWidth: variant === 'standard' ? 0 : 1,
+      borderColor: error ? theme.colors.error : theme.colors.outline,
+      borderRadius: (variant === 'standard' || variant === 'underlined') ? 0 : theme.borderRadius.sm,
+      backgroundColor: variant === 'filled' ? theme.colors.surfaceVariant : 'transparent',
+      opacity: 1,
+      overflow: 'hidden',
+    },
+    content: {
+      flexDirection: 'row',
+      alignItems: 'center',
+      padding: getPadding(),
+      minHeight: size === 'small' ? 40 : size === 'large' ? 56 : 48,
+    },
+    label: {
+      position: variant === 'standard' ? 'relative' : 'absolute',
+      top: variant === 'standard' ? 0 : -8,
+      left: variant === 'standard' ? 0 : 8,
+      backgroundColor: variant === 'standard' ? 'transparent' : theme.colors.background,
+      paddingHorizontal: theme.spacing.xs,
+      color: error ? theme.colors.error : theme.colors.onSurface,
+      fontSize: getFontSize(14),
+    },
+    value: {
+      flex: 1,
+      color: theme.colors.onSurface,
+      fontSize: getFontSize(16),
+    },
+    placeholder: {
+      color: theme.colors.onSurfaceVariant,
+    },
+    startIcon: {
+      marginRight: theme.spacing.sm,
+    },
+    endIcon: {
+      marginLeft: theme.spacing.sm,
+    },
+    dropdown: {
+      position: 'absolute',
+      backgroundColor: theme.colors.surface,
+      borderRadius: theme.borderRadius.sm,
+      elevation: 8,
+      shadowColor: theme.colors.outline,
+      shadowOffset: { width: 0, height: 2 },
+      shadowOpacity: 0.25,
+      shadowRadius: 3.84,
+      maxHeight: 300,
+    },
+    searchContainer: {
+      padding: theme.spacing.sm,
+      borderBottomWidth: 1,
+      borderBottomColor: theme.colors.outline,
+    },
+    searchInput: {
+      backgroundColor: theme.colors.background,
+      padding: theme.spacing.sm,
+      borderRadius: theme.borderRadius.sm,
+      color: theme.colors.onSurface,
+    },
+    option: {
+      flexDirection: 'row',
+      alignItems: 'center',
+      padding: theme.spacing.md,
+      minHeight: 48,
+    },
+    optionSelected: {
+      backgroundColor: theme.colors.primaryContainer,
+    },
+    optionDisabled: {
+      opacity: 0.5,
+    },
+    optionIcon: {
+      marginRight: theme.spacing.sm,
+    },
+    optionContent: {
+      flex: 1,
+    },
+    optionLabel: {
+      fontSize: getFontSize(16),
+      color: theme.colors.onSurface,
+    },
+    optionDescription: {
+      fontSize: getFontSize(14),
+      color: theme.colors.onSurfaceVariant,
+      marginTop: theme.spacing.xs,
+    },
+    checkmark: {
+      marginLeft: theme.spacing.sm,
+      color: theme.colors.primary,
+      fontSize: getFontSize(18),
+    },
+    error: {
+      color: theme.colors.error,
+      fontSize: getFontSize(12),
+      marginTop: theme.spacing.xs,
+    },
+    helper: {
+      color: theme.colors.onSurfaceVariant,
+      fontSize: getFontSize(12),
+      marginTop: theme.spacing.xs,
+    },
+  });
+};
+
+export const Select: React.FC<SelectProps> = React.memo(({
   options,
   value,
   onChange,
-  placeholder = 'Select...',
+  placeholder = 'Select an option',
   variant = 'outlined',
   size = 'medium',
   label,
@@ -137,276 +305,302 @@ export const Select: React.FC<SelectProps> = ({
   searchable = false,
   searchPlaceholder = 'Search...',
   multiple = false,
+  maxSelectedItems,
   renderOption,
   startIcon,
   endIcon,
-  containerStyle,
+  closeOnSelect,
+  dropdownPosition = 'auto',
   style,
-  optionStyle,
-  textStyle,
   testID,
 }) => {
   const theme = useTheme();
-  const [visible, setVisible] = useState(false);
+  const [isOpen, setIsOpen] = useState(false);
   const [searchQuery, setSearchQuery] = useState('');
-  const [animation] = useState(new Animated.Value(0));
+  const [selectedValues, setSelectedValues] = useState<string[]>(() => 
+    getInitialValue(value, multiple)
+  );
+  const [dropdownLayout, setDropdownLayout] = useState<{
+    width: number;
+    height: number;
+    x: number;
+    y: number;
+  } | null>(null);
 
-  const getSelectedLabel = () => {
-    if (!value) return '';
-    const option = options.find(opt => opt.value === value);
-    return option ? option.label : '';
-  };
+  const containerRef = useRef<View>(null);
+  const fadeAnim = useRef(new Animated.Value(0)).current;
+  const slideAnim = useRef(new Animated.Value(0)).current;
 
-  const getVariantStyles = (): ViewStyle => {
-    switch (variant) {
-      case 'filled':
-        return {
-          backgroundColor: error
-            ? theme.colors.error + '10'
-            : theme.colors.surfaceVariant,
-          borderWidth: 0,
-          borderBottomWidth: 2,
-          borderBottomColor: error
-            ? theme.colors.error
-            : theme.colors.outline,
-        };
-      case 'standard':
-        return {
-          backgroundColor: 'transparent',
-          borderWidth: 0,
-          borderBottomWidth: 1,
-          borderBottomColor: error
-            ? theme.colors.error
-            : theme.colors.outline,
-        };
-      default: // outlined
-        return {
-          backgroundColor: error
-            ? theme.colors.error + '10'
-            : theme.colors.surface,
-          borderWidth: 1,
-          borderColor: error
-            ? theme.colors.error
-            : theme.colors.outline,
-        };
-    }
-  };
+  const styles = React.useMemo(
+    () => createStyles(theme, variant, size, error),
+    [theme, variant, size, error]
+  );
 
-  const getSizeStyles = (): ViewStyle => {
-    switch (size) {
-      case 'small':
-        return {
-          paddingVertical: theme.spacing.xs,
-          paddingHorizontal: theme.spacing.sm,
-          minHeight: 32,
-        };
-      case 'large':
-        return {
-          paddingVertical: theme.spacing.md,
-          paddingHorizontal: theme.spacing.lg,
-          minHeight: 56,
-        };
-      default: // medium
-        return {
-          paddingVertical: theme.spacing.sm,
-          paddingHorizontal: theme.spacing.md,
-          minHeight: 44,
-        };
-    }
-  };
+  React.useEffect(() => {
+    const backHandler = BackHandler.addEventListener(
+      'hardwareBackPress',
+      () => {
+        if (isOpen) {
+          closeDropdown();
+          return true;
+        }
+        return false;
+      }
+    );
 
-  const styles = StyleSheet.create({
-    container: {
-      marginBottom: theme.spacing.md,
-    },
-    label: {
-      marginBottom: theme.spacing.xs,
-      color: error ? theme.colors.error : theme.colors.onSurface,
-      fontSize: theme.fontSize.caption,
-      fontWeight: theme.fontWeight.medium,
-    },
-    select: {
-      flexDirection: 'row',
-      alignItems: 'center',
-      borderRadius: theme.borderRadius.md,
-      ...getVariantStyles(),
-      ...getSizeStyles(),
-    },
-    disabled: {
-      opacity: 0.6,
-    },
-    text: {
-      flex: 1,
-      color: value
-        ? theme.colors.onSurface
-        : theme.colors.onSurfaceVariant,
-      ...getSizeStyles(),
-      paddingVertical: 0,
-      fontSize: theme.fontSize.body2,
-    },
-    icon: {
-      marginHorizontal: theme.spacing.xs,
-    },
-    overlay: {
-      flex: 1,
-      backgroundColor: 'rgba(0,0,0,0.5)',
-      justifyContent: 'center',
-      alignItems: 'center',
-      padding: theme.spacing.lg,
-    },
-    modal: {
-      backgroundColor: theme.colors.surface,
-      borderRadius: theme.borderRadius.lg,
-      width: '100%',
-      maxHeight: '80%',
-      elevation: 5,
-      shadowColor: theme.colors.onSurface,
-      shadowOffset: { width: 0, height: 2 },
-      shadowOpacity: 0.25,
-      shadowRadius: 4,
-    },
-    modalHeader: {
-      padding: theme.spacing.md,
-      borderBottomWidth: 1,
-      borderBottomColor: theme.colors.outline,
-    },
-    searchInput: {
-      padding: theme.spacing.sm,
-      borderBottomWidth: 1,
-      borderBottomColor: theme.colors.outline,
-    },
-    optionList: {
-      maxHeight: 300,
-    },
-    option: {
-      flexDirection: 'row',
-      alignItems: 'center',
-      padding: theme.spacing.md,
-      borderBottomWidth: StyleSheet.hairlineWidth,
-      borderBottomColor: theme.colors.outline,
-    },
-    optionText: {
-      color: theme.colors.onSurface,
-      fontSize: theme.fontSize.body2,
-    },
-    optionDisabled: {
-      opacity: 0.5,
-    },
-    selectedOption: {
-      backgroundColor: theme.colors.primaryContainer,
-    },
-    selectedOptionText: {
-      color: theme.colors.onPrimaryContainer,
-      fontWeight: theme.fontWeight.medium,
-    },
-    helperText: {
-      marginTop: theme.spacing.xs,
-      color: error ? theme.colors.error : theme.colors.onSurfaceVariant,
-      fontSize: theme.fontSize.caption,
-    },
-  });
+    return () => backHandler.remove();
+  }, [isOpen]);
 
-  const renderOptionItem = ({ item }: { item: SelectOption }) => {
-    const isSelected = value === item.value;
+  const openDropdown = useCallback(() => {
+    Keyboard.dismiss();
+    containerRef.current?.measureInWindow((x, y, width, height) => {
+      const screenHeight = Dimensions.get('window').height;
+      const spaceBelow = screenHeight - y - height;
+      const spaceAbove = y;
+      const position = getDropdownPosition(spaceBelow, spaceAbove, dropdownPosition);
+
+      setDropdownLayout({
+        width,
+        height,
+        x,
+        y: position === 'bottom' ? y + height : y - Math.min(300, spaceAbove),
+      });
+    });
+
+    Animated.parallel([
+      Animated.timing(fadeAnim, {
+        toValue: 1,
+        duration: 200,
+        useNativeDriver: true,
+      }),
+      Animated.timing(slideAnim, {
+        toValue: 1,
+        duration: 200,
+        useNativeDriver: true,
+      }),
+    ]).start();
+  }, [fadeAnim, slideAnim, dropdownPosition]);
+
+  const closeDropdown = useCallback(() => {
+    Animated.parallel([
+      Animated.timing(fadeAnim, {
+        toValue: 0,
+        duration: 200,
+        useNativeDriver: true,
+      }),
+      Animated.timing(slideAnim, {
+        toValue: 0,
+        duration: 200,
+        useNativeDriver: true,
+      }),
+    ]).start(() => {
+      setIsOpen(false);
+      setDropdownLayout(null);
+      setSearchQuery('');
+    });
+  }, [fadeAnim, slideAnim]);
+
+  const toggleDropdown = useCallback(() => {
+    if (disabled || loading) return;
     
+    if (isOpen) {
+      closeDropdown();
+    } else {
+      setIsOpen(true);
+      openDropdown();
+    }
+  }, [disabled, loading, isOpen, openDropdown, closeDropdown]);
+
+  const handleOptionPress = useCallback((option: SelectOption) => {
+    if (option.disabled) return;
+
+    if (multiple) {
+      setSelectedValues(prev => {
+        if (prev.includes(option.value)) {
+          const newValues = prev.filter(v => v !== option.value);
+          onChange(newValues);
+          return newValues;
+        }
+        
+        if (maxSelectedItems && prev.length >= maxSelectedItems) {
+          return prev;
+        }
+
+        const newValues = [...prev, option.value];
+        onChange(newValues);
+        return newValues;
+      });
+
+      if (closeOnSelect) {
+        closeDropdown();
+      }
+    } else {
+      setSelectedValues([option.value]);
+      onChange(option.value);
+      closeDropdown();
+    }
+  }, [multiple, maxSelectedItems, onChange, closeOnSelect, closeDropdown]);
+
+  const filteredOptions = React.useMemo(() => 
+    options.filter(option =>
+      searchQuery
+        ? option.label.toLowerCase().includes(searchQuery.toLowerCase())
+        : true
+    ),
+    [options, searchQuery]
+  );
+
+  const renderOptionItem = useCallback(({ item }: ListRenderItemInfo<SelectOption>) => {
+    if (renderOption) return renderOption(item);
+
+    const isSelected = selectedValues.includes(item.value);
+
     return (
-      <TouchableOpacity
-        testID={`select-option-${item.value}`}
+      <Pressable
+        onPress={() => handleOptionPress(item)}
+        disabled={item.disabled}
         style={[
           styles.option,
-          isSelected && styles.selectedOption,
+          isSelected && styles.optionSelected,
           item.disabled && styles.optionDisabled,
-          optionStyle,
+          style?.option,
         ]}
-        onPress={() => {
-          if (!item.disabled) {
-            onChange(item.value);
-            setVisible(false);
-          }
-        }}
-        disabled={item.disabled}
+        accessibilityRole="button"
+        accessibilityState={{ selected: isSelected, disabled: item.disabled }}
       >
-        <Text style={[
-          styles.optionText,
-          isSelected && styles.selectedOptionText,
-        ]}>
-          {item.label}
-        </Text>
-      </TouchableOpacity>
+        {item.icon && (
+          <View style={styles.optionIcon}>
+            {item.icon}
+          </View>
+        )}
+        <View style={styles.optionContent}>
+          <Text
+            style={[
+              styles.optionLabel,
+              { color: item.color || theme.colors.onSurface },
+              style?.text,
+            ]}
+            numberOfLines={1}
+          >
+            {item.label}
+          </Text>
+          {item.description && (
+            <Text style={[styles.optionDescription, style?.text]}>
+              {item.description}
+            </Text>
+          )}
+        </View>
+        {multiple && isSelected && (
+          <Text style={styles.checkmark}>✓</Text>
+        )}
+      </Pressable>
     );
-  };
+  }, [
+    renderOption,
+    selectedValues,
+    handleOptionPress,
+    styles,
+    style,
+    multiple,
+    theme.colors,
+  ]);
+
+  const selectedLabels = React.useMemo(() => {
+    if (!selectedValues.length) return placeholder;
+    if (multiple) return `${selectedValues.length} selected`;
+    const selectedOption = options.find(o => o.value === selectedValues[0]);
+    return selectedOption?.label || placeholder;
+  }, [selectedValues, options, multiple, placeholder]);
 
   return (
-    <View style={[styles.container, containerStyle]} testID={testID}>
-      {label && <Text style={styles.label}>{label}</Text>}
-      <TouchableOpacity
-        testID="select-trigger"
-        style={[
-          styles.select,
-          disabled && styles.disabled,
-          style,
-        ]}
-        onPress={() => {
-          if (!disabled && !loading) {
-            setVisible(true);
-          }
-        }}
-        activeOpacity={disabled ? 1 : 0.7}
-      >
-        {startIcon && <View style={styles.icon}>{startIcon}</View>}
-        <Text 
-          style={[styles.text, textStyle]}
-          numberOfLines={1}
-        >
-          {getSelectedLabel() || placeholder}
+    <View style={[styles.container, style?.container]} testID={testID} ref={containerRef}>
+      {label && (
+        <Text style={[styles.label, style?.label]}>
+          {label}
         </Text>
-        {loading ? (
-          <ActivityIndicator size="small" color={theme.colors.primary} style={styles.icon} />
-        ) : (
-          endIcon && <View style={styles.icon}>{endIcon}</View>
-        )}
-      </TouchableOpacity>
+      )}
+      <View style={[styles.inputContainer, disabled && { opacity: 0.5 }]}>
+        <Pressable
+          onPress={toggleDropdown}
+          style={styles.content}
+          disabled={disabled || loading}
+        >
+          {startIcon && <View style={styles.startIcon}>{startIcon}</View>}
+          <Text
+            style={[
+              styles.value,
+              !selectedValues.length && styles.placeholder,
+              style?.text,
+            ]}
+            numberOfLines={1}
+          >
+            {selectedLabels}
+          </Text>
+          {endIcon || (
+            <View style={styles.endIcon}>
+              {loading ? (
+                <ActivityIndicator size="small" color={theme.colors.primary} />
+              ) : (
+                <Text style={{ color: theme.colors.onSurfaceVariant }}>▼</Text>
+              )}
+            </View>
+          )}
+        </Pressable>
+      </View>
       {(error || helperText) && (
-        <Text style={styles.helperText}>
+        <Text style={[error ? styles.error : styles.helper, error ? style?.error : style?.helper]}>
           {error || helperText}
         </Text>
       )}
       <Modal
-        visible={visible}
+        visible={isOpen}
         transparent
-        animationType="fade"
-        onRequestClose={() => setVisible(false)}
+        onRequestClose={closeDropdown}
+        animationType="none"
       >
-        <TouchableOpacity 
-          style={styles.overlay}
-          activeOpacity={1}
-          onPress={() => setVisible(false)}
-        >
-          <TouchableOpacity 
-            activeOpacity={1}
-            style={styles.modal}
-          >
-            {searchable && (
-              <TextInput
-                style={styles.searchInput}
-                placeholder={searchPlaceholder}
-                placeholderTextColor={theme.colors.onSurfaceVariant}
-                onChangeText={setSearchQuery}
-                autoCapitalize="none"
-              />
-            )}
-            <FlatList
-              data={options.filter(opt => 
-                !searchQuery || 
-                opt.label.toLowerCase().includes(searchQuery.toLowerCase())
+        <Pressable style={StyleSheet.absoluteFill} onPress={closeDropdown}>
+          {dropdownLayout && (
+            <Animated.View
+              style={[
+                styles.dropdown,
+                {
+                  top: dropdownLayout.y,
+                  width: dropdownLayout.width,
+                  left: dropdownLayout.x,
+                  opacity: fadeAnim,
+                  transform: [{
+                    translateY: slideAnim.interpolate({
+                      inputRange: [0, 1],
+                      outputRange: [dropdownPosition === 'top' ? 20 : -20, 0],
+                    }),
+                  }],
+                },
+                style?.dropdown,
+              ]}
+            >
+              {searchable && (
+                <View style={styles.searchContainer}>
+                  <TextInput
+                    value={searchQuery}
+                    onChangeText={setSearchQuery}
+                    placeholder={searchPlaceholder}
+                    placeholderTextColor={theme.colors.onSurfaceVariant}
+                    style={[styles.searchInput, style?.search]}
+                    autoFocus
+                  />
+                </View>
               )}
-              keyExtractor={item => item.value}
-              renderItem={renderOption || renderOptionItem}
-              style={styles.optionList}
-            />
-          </TouchableOpacity>
-        </TouchableOpacity>
+              <FlatList
+                data={filteredOptions}
+                renderItem={renderOptionItem}
+                keyExtractor={item => item.value}
+                keyboardShouldPersistTaps="handled"
+                showsVerticalScrollIndicator={false}
+              />
+            </Animated.View>
+          )}
+        </Pressable>
       </Modal>
     </View>
   );
-};
+});

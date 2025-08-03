@@ -1,0 +1,193 @@
+---
+sidebar_position: 4
+---
+
+# Typography
+
+Typography component is used to present your design and content as clearly and efficiently as possible.
+
+## Import
+
+```tsx
+import { Typography } from 'lazy-panda-ui';
+```
+
+## Usage
+
+```tsx
+import React from 'react';
+import { Typography } from 'lazy-panda-ui';
+
+function MyComponent() {
+  return (
+    <>
+      <Typography variant="h1">Heading 1</Typography>
+      <Typography variant="body1">Regular text content</Typography>
+    </>
+  );
+}
+```
+
+## Props
+
+| Name | Type | Default | Description |
+|------|------|---------|-------------|
+| `variant` | `'h1' \| 'h2' \| 'h3' \| 'h4' \| 'h5' \| 'h6' \| 'subtitle1' \| 'subtitle2' \| 'body1' \| 'body2' \| 'caption' \| 'overline'` | `'body1'` | The variant to use |
+| `color` | `string` | `'text'` | The color of the text |
+| `align` | `'left' \| 'center' \| 'right' \| 'justify'` | `'left'` | Text alignment |
+| `numberOfLines` | `number` | - | Maximum number of lines to show |
+| `style` | `StyleProp<TextStyle>` | - | Additional styles for the text |
+
+## Variants
+
+### Headings
+```tsx
+<>
+  <Typography variant="h1">Heading 1</Typography>
+  <Typography variant="h2">Heading 2</Typography>
+  <Typography variant="h3">Heading 3</Typography>
+  <Typography variant="h4">Heading 4</Typography>
+  <Typography variant="h5">Heading 5</Typography>
+  <Typography variant="h6">Heading 6</Typography>
+</>
+```
+
+### Body Text
+```tsx
+<>
+  <Typography variant="body1">
+    Body 1. Default text style for content.
+  </Typography>
+  <Typography variant="body2">
+    Body 2. Slightly smaller text.
+  </Typography>
+</>
+```
+
+### Other Variants
+```tsx
+<>
+  <Typography variant="subtitle1">Subtitle 1</Typography>
+  <Typography variant="subtitle2">Subtitle 2</Typography>
+  <Typography variant="caption">Caption text</Typography>
+  <Typography variant="overline">OVERLINE TEXT</Typography>
+</>
+```
+
+## Examples
+
+### With Custom Color
+```tsx
+<Typography
+  variant="h6"
+  color="primary"
+>
+  Colored Heading
+</Typography>
+```
+
+### Multiline Text with Ellipsis
+```tsx
+<Typography
+  variant="body1"
+  numberOfLines={2}
+>
+  This is a very long text that will be truncated after two lines.
+  Any text beyond the second line will be replaced with an ellipsis.
+</Typography>
+```
+
+### Custom Styled Text
+```tsx
+<Typography
+  style={{
+    textDecorationLine: 'underline',
+    fontStyle: 'italic'
+  }}
+>
+  Custom styled text
+</Typography>
+```
+
+### Responsive Text
+```tsx
+<Typography
+  variant="h1"
+  style={[
+    { fontSize: 24 }, // Base size
+    { '@media (min-width: 768px)': { fontSize: 32 } } // Larger on tablets
+  ]}
+>
+  Responsive heading
+</Typography>
+```
+
+## Accessibility
+
+The Typography component supports all Text accessibility props:
+
+```tsx
+<Typography
+  accessibilityLabel="Important heading"
+  accessibilityRole="header"
+>
+  Important Information
+</Typography>
+```
+
+## API Reference
+
+### Theme Integration
+
+Typography uses the theme's typography settings:
+
+```tsx
+// In your theme
+const theme = {
+  typography: {
+    h1: {
+      fontSize: 32,
+      fontWeight: 'bold',
+      lineHeight: 40,
+    },
+    body1: {
+      fontSize: 16,
+      lineHeight: 24,
+    },
+    // ... other variants
+  }
+};
+```
+
+### Platform Specific
+
+The component handles platform-specific font families:
+
+```tsx
+<Typography
+  style={{
+    fontFamily: Platform.select({
+      ios: 'San Francisco',
+      android: 'Roboto',
+    })
+  }}
+>
+  Platform specific font
+</Typography>
+```
+
+## Best Practices
+
+1. Use appropriate variants for content hierarchy
+2. Maintain consistent text styles throughout your app
+3. Consider readability when choosing colors and sizes
+4. Use responsive typography for different screen sizes
+5. Follow platform typography guidelines
+6. Consider line height for readability
+7. Use appropriate text alignment for different languages
+
+## Related Components
+
+- [Text](text) - Basic text component
+- [Link](link) - Text component for links
+- [Label](label) - Text component for form labels
