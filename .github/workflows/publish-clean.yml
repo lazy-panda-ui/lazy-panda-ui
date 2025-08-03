@@ -54,7 +54,15 @@ jobs:
         env:
           NODE_AUTH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
+      - name: Tag as latest
+        run: |
+          echo "Tagging version ${{ steps.version.outputs.version }} as latest"
+          npm dist-tag add @lazy-panda-ui/lazy-panda-ui@${{ steps.version.outputs.version }} latest || echo "Failed to tag as latest"
+        env:
+          NODE_AUTH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
       - name: Success message
         run: |
           echo "✅ Workflow completed for version ${{ steps.version.outputs.version }}"
+          echo "🏷️ Tagged as latest: @lazy-panda-ui/lazy-panda-ui@${{ steps.version.outputs.version }}"
           echo "📦 Check packages at: https://github.com/${{ github.repository }}/packages"
