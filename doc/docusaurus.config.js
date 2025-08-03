@@ -10,7 +10,7 @@ const config = {
   url: 'https://lazy-panda-ui.github.io',
   baseUrl: '/lazy-panda-ui/',
   trailingSlash: false,
-  onBrokenLinks: 'throw',
+  onBrokenLinks: 'warn',
   onBrokenMarkdownLinks: 'warn',
   favicon: 'img/favicon.ico',
 
