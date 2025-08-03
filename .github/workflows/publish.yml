@@ -10,6 +10,10 @@ on:
       - '.github/workflows/publish.yml'
   workflow_dispatch:
 
+permissions:
+  contents: read
+  packages: write
+
 jobs:
   publish:
     runs-on: ubuntu-latest
@@ -21,8 +25,7 @@ jobs:
         uses: actions/setup-node@v4
         with:
           node-version: '20.x'
-          registry-url: 'https://npm.pkg.github.com/'
-          scope: '@lazy-panda-ui'
+          registry-url: 'https://npm.pkg.github.com'
 
       - name: Install dependencies
         run: npm ci
@@ -42,13 +45,38 @@ jobs:
           echo "version=$(node -p "require('./package.json').version")" >> $GITHUB_OUTPUT
           echo "name=$(node -p "require('./package.json').name")" >> $GITHUB_OUTPUT
 
-      - name: Publish version to GitHub NPM Registry
-        run: npm publish --access public
+      - name: Check if version exists
+        id: check_version
+        run: |
+          if npm view ${{ steps.package_info.outputs.name }}@${{ steps.package_info.outputs.version }} > /dev/null 2>&1; then
+            echo "exists=true" >> $GITHUB_OUTPUT
+          else
+            echo "exists=false" >> $GITHUB_OUTPUT
+          fi
         env:
           NODE_AUTH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
-      - name: Tag latest version
+      - name: Configure npm registry
+        if: steps.check_version.outputs.exists == 'false'
         run: |
-          npm dist-tag add ${{ steps.package_info.outputs.name }}@${{ steps.package_info.outputs.version }} latest
+          echo "@lazy-panda-ui:registry=https://npm.pkg.github.com" >> ~/.npmrc
+          echo "//npm.pkg.github.com/:_authToken=${{ secrets.GITHUB_TOKEN }}" >> ~/.npmrc
+
+      - name: Publish to GitHub Packages
+        if: steps.check_version.outputs.exists == 'false'
+        run: npm publish
         env:
           NODE_AUTH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Create GitHub Release
+        if: success() && steps.check_version.outputs.exists == 'false'
+        uses: softprops/action-gh-release@v2
+        with:
+          tag_name: v${{ steps.package_info.outputs.version }}
+          name: Release v${{ steps.package_info.outputs.version }}
+          body: |
+            Release version ${{ steps.package_info.outputs.version }}
+          draft: false
+          prerelease: false
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
