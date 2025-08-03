@@ -101,7 +101,7 @@ export const Badge: React.FC<BadgeProps> = ({
   const [pulseAnim] = React.useState(new Animated.Value(1));
 
   React.useEffect(() => {
-    if (pulse) {
+    if (showPulse) {
       Animated.loop(
         Animated.sequence([
           Animated.timing(pulseAnim, {
@@ -117,7 +117,10 @@ export const Badge: React.FC<BadgeProps> = ({
         ])
       ).start();
     }
-  }, [pulse, pulseAnim]);
+    return () => {
+      pulseAnim.stopAnimation();
+    };
+  }, [showPulse, pulseAnim]);
 
   const getColor = (color: BadgeColor) => {
     return theme.colors[color];

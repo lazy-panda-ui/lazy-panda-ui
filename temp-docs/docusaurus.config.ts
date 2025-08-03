@@ -11,6 +11,17 @@ const config: Config = {
   organizationName: 'lazy-panda-ui',
   projectName: 'lazy-panda-ui',
   trailingSlash: true,
+  onBrokenLinks: 'ignore',
+  onBrokenMarkdownLinks: 'ignore',
+
+  markdown: {
+    format: 'detect',
+    mdx1Compat: {
+      comments: true,
+      admonitions: true,
+      headingIds: true,
+    },
+  },
 
   presets: [
     [
@@ -18,7 +29,15 @@ const config: Config = {
       {
         docs: {
           routeBasePath: '/',
-          sidebarPath: './sidebars.ts',
+          sidebarPath: require.resolve('./sidebars.ts'),
+          editUrl: 'https://github.com/lazy-panda-ui/lazy-panda-ui/tree/main/temp-docs/',
+          exclude: [
+            '**/_*.{js,jsx,ts,tsx,md,mdx}',
+            '**/_*/**',
+          ],
+          remarkPlugins: [
+            require('remark-gfm'),
+          ],
         },
         blog: false,
         theme: {

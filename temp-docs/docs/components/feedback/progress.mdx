@@ -41,7 +41,7 @@ function MyComponent() {
 | `color` | `'primary' \| 'secondary' \| 'success' \| 'warning' \| 'error'` | `'primary'` | Color scheme |
 | `radius` | `'none' \| 'sm' \| 'md' \| 'lg' \| 'full'` | `'sm'` | Border radius |
 | `showValue` | `boolean` | `false` | Show progress value |
-| `valueFormat` | `(value: number) => string` | `(v) => \`\${v}%\`` | Value format function |
+| `valueFormat` | `(value: number) => string` | `(value) => value + '%'` | Value format function |
 | `animated` | `boolean` | `false` | Enable animation |
 | `striped` | `boolean` | `false` | Show striped pattern |
 
@@ -281,7 +281,7 @@ const theme = {
 
 ## Related Components
 
-- [Spinner](spinner) - For loading indicators
-- [CircularProgress](circular-progress) - For circular progress
-- [LoadingBar](loading-bar) - For page-level loading
-- [Skeleton](skeleton) - For content loading states
+- [Spinner](../spinner) - For loading indicators
+- [CircularProgress](progress#circular-progress-variant) - For circular progress
+- [LoadingBar](progress#indeterminate-variant) - For page-level loading
+- [Skeleton](../skeleton) - For content loading states
