@@ -14,13 +14,24 @@ export interface AvatarProps {
 export const Avatar: React.FC<AvatarProps> = ({ source, label, size = 'md', style }) => {
   const theme = useTheme();
 
+  const getFontSize = (size: AvatarSize, theme: Theme) => {
+    switch (size) {
+      case 'xs':
+        return theme.fontSize.caption;
+      case 'sm':
+        return theme.fontSize.body2;
+      case 'lg':
+        return theme.fontSize.h5;
+      case 'xl':
+        return theme.fontSize.h4;
+      default:
+        return theme.fontSize.body1;
+    }
+  };
+
   const getStyles = (theme: Theme, size: AvatarSize) => {
     const dimension = theme.sizing[size];
-    const fontSize = size === 'xs' ? theme.fontSize.caption : 
-                    size === 'sm' ? theme.fontSize.body2 :
-                    size === 'lg' ? theme.fontSize.h5 :
-                    size === 'xl' ? theme.fontSize.h4 :
-                    theme.fontSize.body1;
+    const fontSize = getFontSize(size, theme);
 
     return StyleSheet.create({
       container: {
@@ -59,5 +70,3 @@ export const Avatar: React.FC<AvatarProps> = ({ source, label, size = 'md', styl
     </View>
   );
 };
-  },
-});
