@@ -4,12 +4,12 @@ on:
   push:
     branches: ["main"]
     paths:
-      - "doc/**"
+      - "docusaurus/**"
   workflow_dispatch:
   pull_request:
     branches: ["main"]
     paths:
-      - "doc/**"
+      - "docusaurus/**"
   release:
     types: [published]
 
@@ -27,7 +27,7 @@ jobs:
     runs-on: ubuntu-latest
     defaults:
       run:
-        working-directory: doc
+        working-directory: docusaurus
 
     steps:
       - name: Checkout
@@ -36,29 +36,31 @@ jobs:
       - name: Setup Node.js
         uses: actions/setup-node@v4
         with:
-          node-version: '18'
+          node-version: '20'
           cache: 'npm'
-          cache-dependency-path: doc/package-lock.json
+          cache-dependency-path: docusaurus/package-lock.json
 
       - name: Setup Pages
         uses: actions/configure-pages@v4
 
       - name: Install dependencies
-        run: npm install
+        run: |
+          npm install -g npm@latest
+          npm ci
 
       - name: Build website
         env:
-          NODE_OPTIONS: --max-old-space-size=4096
+          NODE_OPTIONS: --max-old-space-size=8192
         run: npm run build
 
       - name: Upload artifact
         uses: actions/upload-pages-artifact@v3
         with:
-          path: doc/build
+          path: docs
 
       - name: Deploy
         uses: JamesIves/github-pages-deploy-action@v4
         with:
-          folder: doc/build
+          folder: docs
           branch: gh-pages
           clean: true
