@@ -140,12 +140,12 @@ export const ButtonGroup: React.FC<ButtonGroupProps> = ({
 };
 
 const styles = (theme: Theme) => StyleSheet.create({
+  button: {
+    borderRadius: 0,
+    flex: 1,
+  },
   container: {
     alignItems: 'stretch',
-  },
-  button: {
-    flex: 1,
-    borderRadius: 0,
   },
   notFirstHorizontal: {
     marginLeft: -1, // Overlap borders

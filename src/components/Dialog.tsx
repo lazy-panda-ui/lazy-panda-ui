@@ -17,7 +17,7 @@ export const Dialog: React.FC<DialogProps> = ({ open, onClose, children, style, 
       <View style={styles(theme).overlay}>
         <View style={[styles(theme).dialog, style]}>
           {typeof title === 'string' && (
-            <Text testID="dialog-title" style={[styles(theme).title]}>{title}</Text>
+            <Text testID="dialog-title" style={styles(theme).title}>{title}</Text>
           )}
           {children}
         </View>
@@ -27,24 +27,24 @@ export const Dialog: React.FC<DialogProps> = ({ open, onClose, children, style, 
 };
 
 const styles = (theme: Theme) => StyleSheet.create({
-  overlay: {
-    flex: 1,
-    backgroundColor: 'rgba(0,0,0,0.3)',
-    justifyContent: 'center',
-    alignItems: 'center',
-  },
   dialog: {
     backgroundColor: theme.colors.card,
     borderRadius: theme.borderRadius.md,
-    padding: theme.spacing.lg,
-    minWidth: 250,
-    maxWidth: '90%',
     elevation: 4,
+    maxWidth: '90%',
+    minWidth: 250,
+    padding: theme.spacing.lg,
+  },
+  overlay: {
+    alignItems: 'center',
+    backgroundColor: 'rgba(0,0,0,0.3)',
+    flex: 1,
+    justifyContent: 'center',
   },
   title: {
-    fontWeight: theme.fontWeight.bold,
-    fontSize: theme.fontSize.h4,
-    marginBottom: theme.spacing.sm,
     color: theme.colors.text,
+    fontSize: theme.fontSize.h4,
+    fontWeight: theme.fontWeight.bold,
+    marginBottom: theme.spacing.sm,
   },
 });

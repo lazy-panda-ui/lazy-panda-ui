@@ -226,48 +226,48 @@ export const Divider: React.FC<DividerProps> = ({
   };
 
   const styles = StyleSheet.create({
+    arrow: {
+      borderRightWidth: getThicknessValue(thickness),
+      borderTopWidth: getThicknessValue(thickness),
+      height: 8,
+      transform: [{ rotate: '45deg' }],
+      width: 8,
+    },
+    arrowContainer: {
+      padding: theme.spacing.xs,
+    },
     container: {
-      flexDirection: orientation === 'horizontal' ? 'row' : 'column',
       alignItems: 'center',
-      marginVertical: orientation === 'horizontal' ? theme.spacing[spacing] : 0,
+      flexDirection: orientation === 'horizontal' ? 'row' : 'column',
+      marginBottom: orientation === 'vertical' ? getInsetValue(inset) : undefined,
       marginHorizontal: orientation === 'vertical' ? theme.spacing[spacing] : 0,
       marginLeft: orientation === 'horizontal' ? getInsetValue(inset) : undefined,
       marginRight: orientation === 'horizontal' ? getInsetValue(inset) : undefined,
       marginTop: orientation === 'vertical' ? getInsetValue(inset) : undefined,
-      marginBottom: orientation === 'vertical' ? getInsetValue(inset) : undefined,
+      marginVertical: orientation === 'horizontal' ? theme.spacing[spacing] : 0,
     },
     divider: {
       flexGrow: fullSize ? 1 : 0,
       flexShrink: 0,
       ...getDividerStyle(),
     },
-    textContainer: {
+    gradientContainer: {
+      height: '100%',
       position: 'absolute',
       width: '100%',
-      height: '100%',
-      justifyContent: 'center',
-      paddingHorizontal: theme.spacing.md,
     },
     text: {
       backgroundColor: theme.colors.background,
-      paddingHorizontal: theme.spacing.sm,
       fontSize: theme.fontSize.caption,
       fontWeight: theme.fontWeight.medium,
+      paddingHorizontal: theme.spacing.sm,
     },
-    arrowContainer: {
-      padding: theme.spacing.xs,
-    },
-    arrow: {
-      width: 8,
-      height: 8,
-      borderRightWidth: getThicknessValue(thickness),
-      borderTopWidth: getThicknessValue(thickness),
-      transform: [{ rotate: '45deg' }],
-    },
-    gradientContainer: {
+    textContainer: {
+      height: '100%',
+      justifyContent: 'center',
+      paddingHorizontal: theme.spacing.md,
       position: 'absolute',
       width: '100%',
-      height: '100%',
     },
   });
 

@@ -181,101 +181,34 @@ const createStyles = (
   };
 
   return StyleSheet.create({
+    checkmark: {
+      color: theme.colors.primary,
+      fontSize: getFontSize(18),
+      marginLeft: theme.spacing.sm,
+    },
     container: {
       position: 'relative',
       width: '100%',
     },
-    inputContainer: {
-      borderWidth: variant === 'standard' ? 0 : 1,
-      borderBottomWidth: variant === 'standard' ? 0 : 1,
-      borderColor: error ? theme.colors.error : theme.colors.outline,
-      borderRadius: (variant === 'standard' || variant === 'underlined') ? 0 : theme.borderRadius.sm,
-      backgroundColor: variant === 'filled' ? theme.colors.surfaceVariant : 'transparent',
-      opacity: 1,
-      overflow: 'hidden',
-    },
     content: {
-      flexDirection: 'row',
       alignItems: 'center',
-      padding: getPadding(),
+      flexDirection: 'row',
       minHeight: size === 'small' ? 40 : size === 'large' ? 56 : 48,
-    },
-    label: {
-      position: variant === 'standard' ? 'relative' : 'absolute',
-      top: variant === 'standard' ? 0 : -8,
-      left: variant === 'standard' ? 0 : 8,
-      backgroundColor: variant === 'standard' ? 'transparent' : theme.colors.background,
-      paddingHorizontal: theme.spacing.xs,
-      color: error ? theme.colors.error : theme.colors.onSurface,
-      fontSize: getFontSize(14),
-    },
-    value: {
-      flex: 1,
-      color: theme.colors.onSurface,
-      fontSize: getFontSize(16),
-    },
-    placeholder: {
-      color: theme.colors.onSurfaceVariant,
-    },
-    startIcon: {
-      marginRight: theme.spacing.sm,
-    },
-    endIcon: {
-      marginLeft: theme.spacing.sm,
+      padding: getPadding(),
     },
     dropdown: {
-      position: 'absolute',
       backgroundColor: theme.colors.surface,
       borderRadius: theme.borderRadius.sm,
       elevation: 8,
+      maxHeight: 300,
+      position: 'absolute',
       shadowColor: theme.colors.outline,
       shadowOffset: { width: 0, height: 2 },
       shadowOpacity: 0.25,
       shadowRadius: 3.84,
-      maxHeight: 300,
     },
-    searchContainer: {
-      padding: theme.spacing.sm,
-      borderBottomWidth: 1,
-      borderBottomColor: theme.colors.outline,
-    },
-    searchInput: {
-      backgroundColor: theme.colors.background,
-      padding: theme.spacing.sm,
-      borderRadius: theme.borderRadius.sm,
-      color: theme.colors.onSurface,
-    },
-    option: {
-      flexDirection: 'row',
-      alignItems: 'center',
-      padding: theme.spacing.md,
-      minHeight: 48,
-    },
-    optionSelected: {
-      backgroundColor: theme.colors.primaryContainer,
-    },
-    optionDisabled: {
-      opacity: 0.5,
-    },
-    optionIcon: {
-      marginRight: theme.spacing.sm,
-    },
-    optionContent: {
-      flex: 1,
-    },
-    optionLabel: {
-      fontSize: getFontSize(16),
-      color: theme.colors.onSurface,
-    },
-    optionDescription: {
-      fontSize: getFontSize(14),
-      color: theme.colors.onSurfaceVariant,
-      marginTop: theme.spacing.xs,
-    },
-    checkmark: {
+    endIcon: {
       marginLeft: theme.spacing.sm,
-      color: theme.colors.primary,
-      fontSize: getFontSize(18),
     },
     error: {
       color: theme.colors.error,
@@ -286,6 +219,73 @@ const createStyles = (
       color: theme.colors.onSurfaceVariant,
       fontSize: getFontSize(12),
       marginTop: theme.spacing.xs,
+    },
+    inputContainer: {
+      backgroundColor: variant === 'filled' ? theme.colors.surfaceVariant : 'transparent',
+      borderBottomWidth: variant === 'standard' ? 0 : 1,
+      borderColor: error ? theme.colors.error : theme.colors.outline,
+      borderRadius: (variant === 'standard' || variant === 'underlined') ? 0 : theme.borderRadius.sm,
+      borderWidth: variant === 'standard' ? 0 : 1,
+      opacity: 1,
+      overflow: 'hidden',
+    },
+    label: {
+      backgroundColor: variant === 'standard' ? 'transparent' : theme.colors.background,
+      color: error ? theme.colors.error : theme.colors.onSurface,
+      fontSize: getFontSize(14),
+      left: variant === 'standard' ? 0 : 8,
+      paddingHorizontal: theme.spacing.xs,
+      position: variant === 'standard' ? 'relative' : 'absolute',
+      top: variant === 'standard' ? 0 : -8,
+    },
+    option: {
+      alignItems: 'center',
+      flexDirection: 'row',
+      minHeight: 48,
+      padding: theme.spacing.md,
+    },
+    optionContent: {
+      flex: 1,
+    },
+    optionDescription: {
+      color: theme.colors.onSurfaceVariant,
+      fontSize: getFontSize(14),
+      marginTop: theme.spacing.xs,
+    },
+    optionDisabled: {
+      opacity: 0.5,
+    },
+    optionIcon: {
+      marginRight: theme.spacing.sm,
+    },
+    optionLabel: {
+      color: theme.colors.onSurface,
+      fontSize: getFontSize(16),
+    },
+    optionSelected: {
+      backgroundColor: theme.colors.primaryContainer,
+    },
+    placeholder: {
+      color: theme.colors.onSurfaceVariant,
+    },
+    searchContainer: {
+      borderBottomColor: theme.colors.outline,
+      borderBottomWidth: 1,
+      padding: theme.spacing.sm,
+    },
+    searchInput: {
+      backgroundColor: theme.colors.background,
+      borderRadius: theme.borderRadius.sm,
+      color: theme.colors.onSurface,
+      padding: theme.spacing.sm,
+    },
+    startIcon: {
+      marginRight: theme.spacing.sm,
+    },
+    value: {
+      color: theme.colors.onSurface,
+      flex: 1,
+      fontSize: getFontSize(16),
     },
   });
 };

@@ -432,16 +432,28 @@ const getListStyles = (
   size: ListSize
 ) => StyleSheet.create({
   container: {
-    flex: 1,
     backgroundColor: variant === 'contained' ? theme.colors.surface : theme.colors.background,
+    flex: 1,
+  },
+  disabledItem: {
+    opacity: 0.5,
+  },
+  expandIcon: {
+    color: theme.colors.onSurfaceVariant,
+    fontSize: size === 'large' ? theme.fontSize.body1 : theme.fontSize.caption,
+    marginLeft: theme.spacing.sm,
+  },
+  iconContainer: {
+    justifyContent: 'center',
+    marginHorizontal: density === 'compact' ? theme.spacing.xs : theme.spacing.sm,
   },
   item: {
-    flexDirection: 'row',
     alignItems: 'center',
-    padding: density === 'compact' ? theme.spacing.sm : theme.spacing.md,
     backgroundColor: theme.colors.background,
-    borderBottomWidth: showDividers ? StyleSheet.hairlineWidth : 0,
     borderBottomColor: theme.colors.border,
+    borderBottomWidth: showDividers ? StyleSheet.hairlineWidth : 0,
+    flexDirection: 'row',
+    padding: density === 'compact' ? theme.spacing.sm : theme.spacing.md,
     ...(variant === 'outlined' && {
       borderWidth: StyleSheet.hairlineWidth,
       borderColor: theme.colors.border,
@@ -461,24 +473,6 @@ const getListStyles = (
       elevation: 2,
     }),
   },
-  selectedItem: {
-    backgroundColor: theme.colors.primaryContainer,
-  },
-  disabledItem: {
-    opacity: 0.5,
-  },
-  lastItem: {
-    borderBottomWidth: 0,
-  },
-  iconContainer: {
-    marginHorizontal: density === 'compact' ? theme.spacing.xs : theme.spacing.sm,
-    justifyContent: 'center',
-  },
-  textContainer: {
-    flex: 1,
-    justifyContent: 'center',
-    marginVertical: density === 'compact' ? theme.spacing.xs : theme.spacing.sm,
-  },
   label: {
     color: theme.colors.text,
     fontSize: (() => {
@@ -487,6 +481,15 @@ const getListStyles = (
       return theme.fontSize.body1;
     })(),
     fontWeight: theme.fontWeight.regular,
+  },
+  lastItem: {
+    borderBottomWidth: 0,
+  },
+  nestedList: {
+    marginLeft: theme.spacing.lg,
+  },
+  selectedItem: {
+    backgroundColor: theme.colors.primaryContainer,
   },
   subtitle: {
     color: theme.colors.onSurfaceVariant,
@@ -497,12 +500,9 @@ const getListStyles = (
     })(),
     marginTop: density === 'compact' ? 2 : 4,
   },
-  nestedList: {
-    marginLeft: theme.spacing.lg,
-  },
-  expandIcon: {
-    marginLeft: theme.spacing.sm,
-    fontSize: size === 'large' ? theme.fontSize.body1 : theme.fontSize.caption,
-    color: theme.colors.onSurfaceVariant,
+  textContainer: {
+    flex: 1,
+    justifyContent: 'center',
+    marginVertical: density === 'compact' ? theme.spacing.xs : theme.spacing.sm,
   },
 });

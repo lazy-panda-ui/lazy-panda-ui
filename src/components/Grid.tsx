@@ -188,18 +188,18 @@ export const Grid: React.FC<GridProps> = ({
 
   const containerStyles = StyleSheet.create({
     container: {
+      alignItems,
       flexDirection: direction,
       flexWrap: wrap,
-      alignItems,
       justifyContent,
-      width: container ? '100%' : undefined,
       marginHorizontal: disableGutters ? 0 : -getSpacingValue(theme, columnSpacing || spacing) / 2,
       marginVertical: disableGutters ? 0 : -getSpacingValue(theme, rowSpacing || spacing) / 2,
+      width: container ? '100%' : undefined,
     },
     item: {
+      height: equalHeight ? '100%' : undefined,
       paddingHorizontal: disableGutters ? 0 : getSpacingValue(theme, columnSpacing || spacing) / 2,
       paddingVertical: disableGutters ? 0 : getSpacingValue(theme, rowSpacing || spacing) / 2,
-      height: equalHeight ? '100%' : undefined,
     },
   });
 

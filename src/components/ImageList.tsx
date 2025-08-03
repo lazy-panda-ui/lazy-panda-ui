@@ -192,29 +192,29 @@ const styles = (theme: Theme) => StyleSheet.create({
   container: {
     width: '100%',
   },
-  masonryContainer: {
-    flexDirection: 'row',
-    width: '100%',
-  },
-  imageContainer: {
-    position: 'relative',
+  fallbackContainer: {
+    ...StyleSheet.absoluteFillObject,
+    alignItems: 'center',
     backgroundColor: theme.colors.surfaceVariant,
-    borderRadius: theme.borderRadius.md,
-    overflow: 'hidden',
+    justifyContent: 'center',
   },
   image: {
     borderRadius: theme.borderRadius.md,
   },
+  imageContainer: {
+    backgroundColor: theme.colors.surfaceVariant,
+    borderRadius: theme.borderRadius.md,
+    overflow: 'hidden',
+    position: 'relative',
+  },
   loadingContainer: {
     ...StyleSheet.absoluteFillObject,
     alignItems: 'center',
-    justifyContent: 'center',
     backgroundColor: theme.colors.surfaceVariant,
+    justifyContent: 'center',
   },
-  fallbackContainer: {
-    ...StyleSheet.absoluteFillObject,
-    alignItems: 'center',
-    justifyContent: 'center',
-    backgroundColor: theme.colors.surfaceVariant,
+  masonryContainer: {
+    flexDirection: 'row',
+    width: '100%',
   },
 });

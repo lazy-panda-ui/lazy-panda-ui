@@ -231,21 +231,21 @@ export const Chip: React.FC<ChipProps> = ({
 };
 
 const createStyles = (theme: Theme) => StyleSheet.create({
-  container: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    borderWidth: 1,
-    borderRadius: theme.borderRadius.full,
+  closeButton: {
+    marginLeft: theme.spacing.xs,
+    padding: theme.spacing.xs,
   },
-  label: {
-    fontWeight: theme.fontWeight.medium,
+  container: {
+    alignItems: 'center',
+    borderRadius: theme.borderRadius.full,
+    borderWidth: 1,
+    flexDirection: 'row',
   },
   icon: {
     marginRight: theme.spacing.xs,
   },
-  closeButton: {
-    marginLeft: theme.spacing.xs,
-    padding: theme.spacing.xs,
+  label: {
+    fontWeight: theme.fontWeight.medium,
   },
 });
 

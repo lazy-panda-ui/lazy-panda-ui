@@ -167,22 +167,22 @@ const styles = (theme: any) => StyleSheet.create({
   container: {
     width: '100%',
   },
+  label: {
+    color: theme.colors.text,
+    fontSize: theme.fontSize.caption,
+  },
   labelContainer: {
     flexDirection: 'row',
     justifyContent: 'space-between',
     marginBottom: 8,
   },
-  label: {
-    color: theme.colors.text,
-    fontSize: theme.fontSize.caption,
+  slider: {
+    height: 40,
+    width: '100%',
   },
   value: {
     color: theme.colors.primary,
     fontSize: theme.fontSize.caption,
     fontWeight: theme.fontWeight.medium,
-  },
-  slider: {
-    width: '100%',
-    height: 40,
   },
 });

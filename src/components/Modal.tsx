@@ -210,12 +210,6 @@ export const Modal: React.FC<ModalProps> = ({
   };
 
   const styles = StyleSheet.create({
-    overlay: {
-      flex: 1,
-      backgroundColor: backdrop ? 'rgba(0, 0, 0, 0.5)' : 'transparent',
-      justifyContent: 'center',
-      alignItems: 'center',
-    },
     container: {
       ...getModalSize(),
       backgroundColor: theme.colors.surface,
@@ -227,18 +221,24 @@ export const Modal: React.FC<ModalProps> = ({
       shadowRadius: 4,
       ...getVariantStyles(),
     },
-    header: {
-      padding: theme.spacing.md,
-      borderBottomWidth: 1,
-      borderBottomColor: theme.colors.outline,
-    },
     content: {
       padding: theme.spacing.md,
     },
     footer: {
-      padding: theme.spacing.md,
-      borderTopWidth: 1,
       borderTopColor: theme.colors.outline,
+      borderTopWidth: 1,
+      padding: theme.spacing.md,
+    },
+    header: {
+      borderBottomColor: theme.colors.outline,
+      borderBottomWidth: 1,
+      padding: theme.spacing.md,
+    },
+    overlay: {
+      alignItems: 'center',
+      backgroundColor: backdrop ? 'rgba(0, 0, 0, 0.5)' : 'transparent',
+      flex: 1,
+      justifyContent: 'center',
     },
     scrollContent: {
       flexGrow: 1,

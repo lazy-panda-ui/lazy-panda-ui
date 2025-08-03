@@ -101,23 +101,23 @@ export const Badge: React.FC<BadgeProps> = ({
   const [pulseAnim] = React.useState(new Animated.Value(1));
 
   React.useEffect(() => {
-    if (showPulse) {
+    if (pulse) {
       Animated.loop(
         Animated.sequence([
           Animated.timing(pulseAnim, {
-            toValue: 1.2,
+            toValue: 1,
             duration: 1000,
             useNativeDriver: true,
           }),
           Animated.timing(pulseAnim, {
-            toValue: 1,
+            toValue: 0.5,
             duration: 1000,
             useNativeDriver: true,
           }),
         ])
       ).start();
     }
-  }, [showPulse]);
+  }, [pulse, pulseAnim]);
 
   const getColor = (color: BadgeColor) => {
     return theme.colors[color];
@@ -230,25 +230,25 @@ export const Badge: React.FC<BadgeProps> = ({
 
 
   const styles = StyleSheet.create({
-    wrapper: {
-      position: 'relative',
-    },
     container: {
       ...sizeStyle,
-      borderRadius: theme.borderRadius.full,
-      backgroundColor,
-      borderWidth: variant === 'outlined' ? 1 : 0,
-      borderColor: getColor(color),
       alignItems: 'center',
+      backgroundColor,
+      borderColor: getColor(color),
+      borderRadius: theme.borderRadius.full,
+      borderWidth: variant === 'outlined' ? 1 : 0,
       justifyContent: 'center',
       position: children ? 'absolute' : 'relative',
       ...(children && getPositionStyle()),
     },
     text: {
       color: getTextColor(),
-      fontWeight: theme.fontWeight.semibold,
-      fontSize,
       display: variant === 'dot' ? 'none' : 'flex',
+      fontSize,
+      fontWeight: theme.fontWeight.semibold,
+    },
+    wrapper: {
+      position: 'relative',
     },
   });
 

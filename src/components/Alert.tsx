@@ -146,37 +146,37 @@ export const Alert: React.FC<AlertProps> = ({
 
 const createStyles = (theme: ReturnType<typeof useTheme>, type: AlertType) => StyleSheet.create({
   container: {
+    alignItems: 'center',
     backgroundColor: getTypeColor(theme, type),
     borderRadius: theme.borderRadius.md,
+    flexDirection: 'row',
     marginVertical: theme.spacing.sm,
     overflow: 'hidden',
-    flexDirection: 'row',
-    alignItems: 'center',
   },
   content: {
+    alignItems: 'center',
     flex: 1,
     flexDirection: 'row',
-    alignItems: 'center',
     padding: theme.spacing.md,
   },
-  iconContainer: {
-    marginRight: theme.spacing.sm,
-  },
-  text: {
-    flex: 1,
-    color: theme.colors.onPrimary,
-    fontWeight: theme.fontWeight.medium,
-    fontSize: theme.fontSize.body1,
-  },
   dismissButton: {
-    padding: theme.spacing.sm,
-    justifyContent: 'center',
     alignItems: 'center',
     alignSelf: 'stretch',
+    justifyContent: 'center',
+    padding: theme.spacing.sm,
   },
   dismissIcon: {
     color: theme.colors.onPrimary,
     fontSize: theme.fontSize.h6,
     lineHeight: theme.fontSize.h6,
+  },
+  iconContainer: {
+    marginRight: theme.spacing.sm,
+  },
+  text: {
+    color: theme.colors.onPrimary,
+    flex: 1,
+    fontSize: theme.fontSize.body1,
+    fontWeight: theme.fontWeight.medium,
   },
 });

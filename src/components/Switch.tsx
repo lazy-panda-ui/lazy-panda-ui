@@ -127,7 +127,7 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
   },
   outlineContainer: {
-    padding: 2,
     borderRadius: 16,
+    padding: 2,
   },
 });

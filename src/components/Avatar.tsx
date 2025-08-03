@@ -123,27 +123,27 @@ export const Avatar: React.FC<AvatarProps> = ({
 
   const styles = StyleSheet.create({
     container: {
-      width: dimension,
-      height: dimension,
-      borderRadius: borderRadius,
-      backgroundColor: backgroundColor || theme.colors.card,
       alignItems: 'center',
+      backgroundColor: backgroundColor || theme.colors.card,
+      borderRadius: borderRadius,
+      height: dimension,
       justifyContent: 'center',
       overflow: 'hidden',
+      width: dimension,
       ...(showBorder && {
         borderWidth: 1,
         borderColor: borderColor || theme.colors.border,
       }),
     },
     image: {
-      width: dimension,
-      height: dimension,
       borderRadius: borderRadius,
+      height: dimension,
+      width: dimension,
     },
     label: {
       color: textColor || theme.colors.text,
-      fontWeight: theme.fontWeight.semibold,
       fontSize: fontSize,
+      fontWeight: theme.fontWeight.semibold,
     },
   });
 

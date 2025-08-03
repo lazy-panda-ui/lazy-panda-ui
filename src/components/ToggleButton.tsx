@@ -29,20 +29,20 @@ export const ToggleButton: React.FC<ToggleButtonProps> = ({ selected, onPress, l
 
 const styles = (theme: any) => StyleSheet.create({
   button: {
-    borderWidth: 1,
+    alignItems: 'center',
+    backgroundColor: theme.colors.background,
     borderColor: theme.colors.primary,
     borderRadius: theme.borderRadius,
-    padding: theme.spacing.sm,
-    backgroundColor: theme.colors.background,
-    alignItems: 'center',
+    borderWidth: 1,
     justifyContent: 'center',
-  },
-  selected: {
-    backgroundColor: theme.colors.primary,
+    padding: theme.spacing.sm,
   },
   label: {
     color: theme.colors.text,
-    fontWeight: theme.fontWeight.semibold,
     fontSize: theme.fontSize.body1,
+    fontWeight: theme.fontWeight.semibold,
+  },
+  selected: {
+    backgroundColor: theme.colors.primary,
   },
 });

@@ -57,24 +57,24 @@ export const AutoComplete: React.FC<AutoCompleteProps> = ({ data, onSelect, plac
 
 const styles = (theme: Theme) => StyleSheet.create({
   input: {
-    borderWidth: 1,
+    backgroundColor: theme.colors.background,
     borderColor: theme.colors.border,
     borderRadius: theme.borderRadius.md,
-    padding: theme.spacing.sm,
+    borderWidth: 1,
     color: theme.colors.text,
-    backgroundColor: theme.colors.background,
     fontSize: theme.fontSize.body1,
+    padding: theme.spacing.sm,
+  },
+  item: {
+    borderBottomColor: theme.colors.border,
+    borderBottomWidth: 1,
+    padding: theme.spacing.sm,
   },
   list: {
     backgroundColor: theme.colors.card,
     borderRadius: theme.borderRadius.md,
     marginTop: theme.spacing.xs,
     maxHeight: theme.sizing.xl * 2,
-  },
-  item: {
-    padding: theme.spacing.sm,
-    borderBottomWidth: 1,
-    borderBottomColor: theme.colors.border,
   },
   text: {
     color: theme.colors.text,

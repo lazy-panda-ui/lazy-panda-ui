@@ -203,17 +203,32 @@ export const Snackbar: React.FC<SnackbarProps> = ({
   };
 
   const styles = StyleSheet.create({
+    action: {
+      marginLeft: theme.spacing.sm,
+      paddingHorizontal: theme.spacing.sm,
+      paddingVertical: theme.spacing.xs,
+    },
+    actionContainer: {
+      alignItems: 'center',
+      flexDirection: 'row',
+      marginLeft: theme.spacing.md,
+    },
+    actionText: {
+      color: action?.color || getTextColor(),
+      fontSize: theme.fontSize.body2,
+      fontWeight: theme.fontWeight.medium,
+    },
     container: {
-      position: 'absolute',
       left: theme.spacing.md,
+      position: 'absolute',
       right: theme.spacing.md,
       ...(position === 'bottom' ? {
         bottom: Platform.select({ ios: 48, android: 32 }),
       } : {
         top: Platform.select({ ios: 48, android: 32 }),
       }),
-      minHeight: 48,
       borderRadius: theme.borderRadius.lg,
+      minHeight: 48,
       ...getVariantStyles(),
       elevation: 6,
       shadowColor: theme.colors.onSurface,
@@ -223,42 +238,27 @@ export const Snackbar: React.FC<SnackbarProps> = ({
       zIndex: 1000,
     },
     content: {
-      flexDirection: 'row',
       alignItems: 'center',
+      flexDirection: 'row',
       justifyContent: 'space-between',
       padding: theme.spacing.md,
     },
-    messageContainer: {
-      flex: 1,
-      flexDirection: 'row',
-      alignItems: 'center',
+    dismissButton: {
+      marginLeft: theme.spacing.sm,
+      padding: theme.spacing.xs,
     },
     icon: {
       marginRight: theme.spacing.sm,
     },
     message: {
       color: getTextColor(),
-      fontSize: theme.fontSize.body2,
       flexShrink: 1,
-    },
-    actionContainer: {
-      flexDirection: 'row',
-      alignItems: 'center',
-      marginLeft: theme.spacing.md,
-    },
-    action: {
-      marginLeft: theme.spacing.sm,
-      paddingVertical: theme.spacing.xs,
-      paddingHorizontal: theme.spacing.sm,
-    },
-    actionText: {
-      color: action?.color || getTextColor(),
       fontSize: theme.fontSize.body2,
-      fontWeight: theme.fontWeight.medium,
     },
-    dismissButton: {
-      padding: theme.spacing.xs,
-      marginLeft: theme.spacing.sm,
+    messageContainer: {
+      alignItems: 'center',
+      flex: 1,
+      flexDirection: 'row',
     },
   });
 

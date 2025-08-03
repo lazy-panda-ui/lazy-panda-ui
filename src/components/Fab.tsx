@@ -143,12 +143,10 @@ export const Fab: React.FC<FabProps> = ({
 
   return (
     <Animated.View
-      style={[
-        {
+      style={{
           transform: [{ scale: scaleAnim }],
           opacity: disabled ? 0.5 : 1,
-        },
-      ]}
+        }}
       testID={testID}
     >
       <TouchableOpacity
@@ -186,25 +184,25 @@ export const Fab: React.FC<FabProps> = ({
 
 const styles = (theme: Theme) => StyleSheet.create({
   fab: {
-    flexDirection: 'row',
     alignItems: 'center',
-    justifyContent: 'center',
     backgroundColor: theme.colors.primary,
     elevation: 6,
+    flexDirection: 'row',
+    justifyContent: 'center',
+    minWidth: 0,
+    position: 'absolute',
     shadowColor: '#000',
     shadowOffset: { width: 0, height: 3 },
     shadowOpacity: 0.3,
     shadowRadius: 4.65,
-    position: 'absolute',
-    minWidth: 0,
   },
   icon: {
     marginRight: 8,
   },
   label: {
     color: theme.colors.onPrimary,
-    fontWeight: theme.fontWeight.medium,
     fontSize: theme.fontSize.body1,
+    fontWeight: theme.fontWeight.medium,
     marginLeft: theme.spacing.xs,
   },
 });

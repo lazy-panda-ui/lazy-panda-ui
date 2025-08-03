@@ -213,27 +213,27 @@ export const Button: React.FC<ButtonProps> = ({
 
   const styles = React.useMemo(() => StyleSheet.create({
     button: {
-      flexDirection: 'row',
       alignItems: 'center',
-      justifyContent: 'center',
-      borderRadius: theme.borderRadius.md,
       backgroundColor: getBackgroundColor(),
-      borderWidth: variant === 'outlined' ? 1 : 0,
       borderColor: disabled ? theme.colors.disabled : theme.colors[color],
+      borderRadius: theme.borderRadius.md,
+      borderWidth: variant === 'outlined' ? 1 : 0,
+      flexDirection: 'row',
+      justifyContent: 'center',
       width: fullWidth ? '100%' : undefined,
       ...getSizeStyle(),
       ...getShadow(),
+    },
+    iconContainer: {
+      alignItems: 'center',
+      flexDirection: 'row',
+      justifyContent: 'center',
     },
     text: {
       color: getTextColor(),
       fontSize: getFontSize(),
       fontWeight: theme.fontWeight.semibold,
       textAlign: 'center',
-    },
-    iconContainer: {
-      flexDirection: 'row',
-      alignItems: 'center',
-      justifyContent: 'center',
     },
   }), [
     theme,

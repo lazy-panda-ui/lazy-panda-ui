@@ -177,34 +177,34 @@ export const TextField: React.FC<TextFieldProps> = ({
     container: {
       marginBottom: theme.spacing.md,
     },
+    disabled: {
+      opacity: 0.6,
+    },
+    helperText: {
+      color: error ? theme.colors.error : theme.colors.onSurfaceVariant,
+      fontSize: theme.fontSize.caption,
+      marginTop: theme.spacing.xs,
+    },
+    iconContainer: {
+      alignItems: 'center',
+      justifyContent: 'center',
+      paddingHorizontal: theme.spacing.xs,
+    },
+    input: {
+      color: editable ? theme.colors.onSurface : theme.colors.disabled,
+      flex: 1,
+      ...getSizeStyles(),
+    },
+    inputWrapper: {
+      alignItems: 'center',
+      flexDirection: 'row',
+      ...getVariantStyles(),
+    },
     label: {
-      marginBottom: theme.spacing.xs,
       color: error ? theme.colors.error : theme.colors.onSurface,
       fontSize: theme.fontSize.caption,
       fontWeight: theme.fontWeight.medium,
-    },
-    inputWrapper: {
-      flexDirection: 'row',
-      alignItems: 'center',
-      ...getVariantStyles(),
-    },
-    input: {
-      flex: 1,
-      color: editable ? theme.colors.onSurface : theme.colors.disabled,
-      ...getSizeStyles(),
-    },
-    helperText: {
-      marginTop: theme.spacing.xs,
-      color: error ? theme.colors.error : theme.colors.onSurfaceVariant,
-      fontSize: theme.fontSize.caption,
-    },
-    iconContainer: {
-      paddingHorizontal: theme.spacing.xs,
-      justifyContent: 'center',
-      alignItems: 'center',
-    },
-    disabled: {
-      opacity: 0.6,
+      marginBottom: theme.spacing.xs,
     },
   });
 

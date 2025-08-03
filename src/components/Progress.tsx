@@ -17,16 +17,16 @@ export const Progress: React.FC<ProgressProps> = ({ value, style }) => {
 };
 
 const styles = (theme: Theme) => StyleSheet.create({
-  container: {
-    height: 8,
-    backgroundColor: theme.colors.border,
-    borderRadius: 4,
-    overflow: 'hidden',
-    width: '100%',
-  },
   bar: {
-    height: 8,
     backgroundColor: theme.colors.primary,
     borderRadius: 4,
+    height: 8,
+  },
+  container: {
+    backgroundColor: theme.colors.border,
+    borderRadius: 4,
+    height: 8,
+    overflow: 'hidden',
+    width: '100%',
   },
 });

@@ -28,9 +28,9 @@ export const Container: React.FC<ContainerProps> = ({
 
 const styles = (theme: Theme, maxWidth: number, padding: keyof Theme['spacing']) => StyleSheet.create({
   container: {
-    width: '100%',
-    maxWidth: maxWidth,
     alignSelf: 'center',
+    maxWidth: maxWidth,
     paddingHorizontal: theme.spacing[padding],
+    width: '100%',
   },
 });

@@ -107,14 +107,14 @@ export const Skeleton: React.FC<SkeletonProps> = ({
 };
 
 const styles = (theme: any) => StyleSheet.create({
+  shimmer: {
+    backgroundColor: theme.colors.surface,
+    height: '100%',
+    opacity: 0.5,
+    position: 'absolute',
+    width: '100%',
+  },
   skeleton: {
     backgroundColor: theme.colors.surfaceVariant,
-  },
-  shimmer: {
-    width: '100%',
-    height: '100%',
-    position: 'absolute',
-    backgroundColor: theme.colors.surface,
-    opacity: 0.5,
   },
 });

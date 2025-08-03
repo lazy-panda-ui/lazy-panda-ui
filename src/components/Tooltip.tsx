@@ -228,11 +228,16 @@ export const Tooltip: React.FC<TooltipProps> = ({
 };
 
 const getStyles = (theme: ReturnType<typeof useTheme>) => StyleSheet.create({
+  text: {
+    color: theme.colors.onSurfaceVariant,
+    fontSize: theme.fontSize.body2,
+  },
   tooltip: {
-    position: 'absolute',
     backgroundColor: theme.colors.surfaceVariant,
-    padding: theme.spacing.md,
     borderRadius: theme.borderRadius.md,
+    elevation: 5,
+    padding: theme.spacing.md,
+    position: 'absolute',
     shadowColor: '#000',
     shadowOffset: {
       width: 0,
@@ -240,11 +245,6 @@ const getStyles = (theme: ReturnType<typeof useTheme>) => StyleSheet.create({
     },
     shadowOpacity: 0.25,
     shadowRadius: 3.84,
-    elevation: 5,
     zIndex: 100,
-  },
-  text: {
-    color: theme.colors.onSurfaceVariant,
-    fontSize: theme.fontSize.body2,
   },
 });

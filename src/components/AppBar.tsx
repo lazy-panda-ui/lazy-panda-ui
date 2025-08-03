@@ -308,62 +308,62 @@ export const AppBar: React.FC<AppBarProps> = ({
 };
 
 const styles = (theme: any) => StyleSheet.create({
+  actionButton: {
+    alignItems: 'center',
+    borderRadius: theme.borderRadius.sm,
+    flexDirection: 'row',
+    gap: theme.spacing.xs,
+    justifyContent: 'center',
+    padding: theme.spacing.sm,
+  },
+  actionLabel: {
+    color: theme.colors.onPrimary,
+    fontSize: theme.fontSize.caption,
+    marginLeft: theme.spacing.xs,
+  },
   container: {
-    width: '100%',
-    zIndex: 1000,
-    top: 0,
     left: 0,
+    overflow: 'hidden',
     right: 0,
     shadowColor: '#000',
     shadowOffset: { width: 0, height: 2 },
     shadowRadius: 4,
-    overflow: 'hidden',
+    top: 0,
+    width: '100%',
+    zIndex: 1000,
   },
   content: {
-    flexDirection: 'row',
     alignItems: 'center',
+    flexDirection: 'row',
     paddingHorizontal: theme.spacing.md,
     paddingTop: Platform.OS === 'android' ? StatusBar.currentHeight : 0,
-  },
-  scrollableContent: {
-    flexGrow: 1,
   },
   scrollViewContent: {
     flexGrow: 1,
   },
-  titleContainer: {
-    flex: 1,
+  scrollableContent: {
+    flexGrow: 1,
+  },
+  side: {
+    alignItems: 'center',
+    flexDirection: 'row',
+    gap: theme.spacing.sm,
     justifyContent: 'center',
-    marginHorizontal: theme.spacing.sm,
+  },
+  subtitle: {
+    color: theme.colors.onPrimary,
+    fontSize: theme.fontSize.caption,
+    marginTop: 2,
+    opacity: 0.8,
   },
   title: {
     color: theme.colors.onPrimary,
     fontSize: theme.fontSize.h6,
     fontWeight: theme.fontWeight.medium,
   },
-  subtitle: {
-    color: theme.colors.onPrimary,
-    fontSize: theme.fontSize.caption,
-    opacity: 0.8,
-    marginTop: 2,
-  },
-  side: {
-    flexDirection: 'row',
-    alignItems: 'center',
+  titleContainer: {
+    flex: 1,
     justifyContent: 'center',
-    gap: theme.spacing.sm,
-  },
-  actionButton: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    justifyContent: 'center',
-    padding: theme.spacing.sm,
-    borderRadius: theme.borderRadius.sm,
-    gap: theme.spacing.xs,
-  },
-  actionLabel: {
-    color: theme.colors.onPrimary,
-    fontSize: theme.fontSize.caption,
-    marginLeft: theme.spacing.xs,
+    marginHorizontal: theme.spacing.sm,
   },
 });

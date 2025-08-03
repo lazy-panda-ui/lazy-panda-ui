@@ -204,37 +204,6 @@ export function Table<T>({
 }
 
 const getStyles = (theme: ReturnType<typeof useTheme>) => StyleSheet.create({
-  container: {
-    backgroundColor: theme.colors.surface,
-    borderRadius: theme.borderRadius.md,
-    overflow: 'hidden',
-  },
-  header: {
-    flexDirection: 'row',
-    backgroundColor: theme.colors.surfaceVariant,
-    borderBottomWidth: 1,
-    borderBottomColor: theme.colors.outline,
-  },
-  headerCell: {
-    justifyContent: 'center',
-  },
-  headerText: {
-    color: theme.colors.onSurfaceVariant,
-    fontWeight: theme.fontWeight.medium,
-    fontSize: theme.fontSize.body2,
-  },
-  row: {
-    flexDirection: 'row',
-    borderBottomWidth: 1,
-    borderBottomColor: theme.colors.outline,
-  },
-  outlinedRow: {
-    borderWidth: 1,
-    borderColor: theme.colors.outline,
-  },
-  striped: {
-    backgroundColor: theme.colors.surfaceVariant,
-  },
   cell: {
     justifyContent: 'center',
     minWidth: 80,
@@ -242,5 +211,36 @@ const getStyles = (theme: ReturnType<typeof useTheme>) => StyleSheet.create({
   cellText: {
     color: theme.colors.onSurface,
     fontSize: theme.fontSize.body2,
+  },
+  container: {
+    backgroundColor: theme.colors.surface,
+    borderRadius: theme.borderRadius.md,
+    overflow: 'hidden',
+  },
+  header: {
+    backgroundColor: theme.colors.surfaceVariant,
+    borderBottomColor: theme.colors.outline,
+    borderBottomWidth: 1,
+    flexDirection: 'row',
+  },
+  headerCell: {
+    justifyContent: 'center',
+  },
+  headerText: {
+    color: theme.colors.onSurfaceVariant,
+    fontSize: theme.fontSize.body2,
+    fontWeight: theme.fontWeight.medium,
+  },
+  outlinedRow: {
+    borderColor: theme.colors.outline,
+    borderWidth: 1,
+  },
+  row: {
+    borderBottomColor: theme.colors.outline,
+    borderBottomWidth: 1,
+    flexDirection: 'row',
+  },
+  striped: {
+    backgroundColor: theme.colors.surfaceVariant,
   },
 });

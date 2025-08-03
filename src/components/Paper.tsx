@@ -115,16 +115,16 @@ const styles = (theme: Theme) => StyleSheet.create({
     backgroundColor: theme.colors.surface,
     overflow: 'hidden',
   },
-  outlined: {
-    borderWidth: 1,
-    borderColor: theme.colors.outline,
-  },
-  filled: {
-    backgroundColor: theme.colors.surfaceVariant,
-  },
   centered: {
     alignItems: 'center',
     justifyContent: 'center',
     padding: theme.spacing.md,
+  },
+  filled: {
+    backgroundColor: theme.colors.surfaceVariant,
+  },
+  outlined: {
+    borderColor: theme.colors.outline,
+    borderWidth: 1,
   },
 });

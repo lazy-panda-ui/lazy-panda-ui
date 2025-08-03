@@ -140,17 +140,14 @@ export const Card: React.FC<CardProps> = ({
   const variantColors = getColorByVariant(theme, variant, disabled);
 
   const styles = StyleSheet.create({
-    container: {
-      opacity: disabled ? 0.6 : 1,
-    },
     card: {
       backgroundColor: variantColors.surface,
-      borderRadius: theme.borderRadius.md,
-      padding: getPadding(size),
-      borderWidth: variant === 'outlined' ? 1 : 0,
       borderColor: variantColors.border,
+      borderRadius: theme.borderRadius.md,
+      borderWidth: variant === 'outlined' ? 1 : 0,
       marginVertical: theme.spacing.sm,
       overflow: 'hidden',
+      padding: getPadding(size),
       ...(variant === 'elevated' && {
         shadowColor: theme.colors.text,
         shadowOffset: { width: 0, height: elevation },
@@ -159,12 +156,15 @@ export const Card: React.FC<CardProps> = ({
         elevation: getElevation(variant, elevation),
       }),
     },
+    container: {
+      opacity: disabled ? 0.6 : 1,
+    },
     loadingOverlay: {
       ...StyleSheet.absoluteFillObject,
-      backgroundColor: variantColors.surface,
-      opacity: 0.7,
-      justifyContent: 'center',
       alignItems: 'center',
+      backgroundColor: variantColors.surface,
+      justifyContent: 'center',
+      opacity: 0.7,
     },
   });
 

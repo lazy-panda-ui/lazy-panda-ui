@@ -155,44 +155,44 @@ export const Accordion: React.FC<AccordionProps> = ({
 
   const styles = StyleSheet.create({
     container: {
-      overflow: 'hidden',
       opacity: disabled ? 0.6 : 1,
+      overflow: 'hidden',
       ...getVariantStyles(),
     },
+    content: {
+      backgroundColor: theme.colors.surface,
+      overflow: 'hidden',
+      padding: expanded ? theme.spacing.md : 0,
+    },
     header: {
-      flexDirection: 'row',
       alignItems: 'center',
-      padding: theme.spacing.md,
+      flexDirection: 'row',
       minHeight: 48,
+      padding: theme.spacing.md,
     },
     headerContent: {
       flex: 1,
       justifyContent: 'center',
     },
-    titleContainer: {
-      flex: 1,
-    },
-    title: {
-      color: theme.colors.onSurface,
-      fontSize: theme.fontSize.body1,
-      fontWeight: theme.fontWeight.medium,
+    icon: {
+      alignItems: 'center',
+      height: 24,
+      justifyContent: 'center',
+      marginHorizontal: theme.spacing.sm,
+      width: 24,
     },
     subtitle: {
       color: theme.colors.onSurfaceVariant,
       fontSize: theme.fontSize.body2,
       marginTop: theme.spacing.xs,
     },
-    icon: {
-      marginHorizontal: theme.spacing.sm,
-      width: 24,
-      height: 24,
-      alignItems: 'center',
-      justifyContent: 'center',
+    title: {
+      color: theme.colors.onSurface,
+      fontSize: theme.fontSize.body1,
+      fontWeight: theme.fontWeight.medium,
     },
-    content: {
-      backgroundColor: theme.colors.surface,
-      padding: expanded ? theme.spacing.md : 0,
-      overflow: 'hidden',
+    titleContainer: {
+      flex: 1,
     },
   });
 

@@ -53,16 +53,16 @@ export interface CheckBoxProps {
 const createStyles = (theme: ReturnType<typeof useTheme>) =>
   StyleSheet.create({
     container: {
-      borderWidth: 2,
-      borderRadius: 4,
       alignItems: 'center',
+      borderRadius: 4,
+      borderWidth: 2,
       justifyContent: 'center',
-    },
-    indicator: {
-      borderRadius: 2,
     },
     disabled: {
       opacity: 0.5,
+    },
+    indicator: {
+      borderRadius: 2,
     },
   });
 
@@ -179,15 +179,15 @@ export const CheckBox: React.FC<CheckBoxProps> = ({
 };
   StyleSheet.create({
     container: {
-      borderWidth: 2,
-      borderRadius: 4,
       alignItems: 'center',
+      borderRadius: 4,
+      borderWidth: 2,
       justifyContent: 'center',
-    },
-    indicator: {
-      borderRadius: 2,
     },
     disabled: {
       opacity: 0.5,
+    },
+    indicator: {
+      borderRadius: 2,
     },
   });

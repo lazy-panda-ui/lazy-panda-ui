@@ -19,9 +19,9 @@ export const Backdrop: React.FC<BackdropProps> = ({ open, style, children }) => 
 const styles = StyleSheet.create({
   backdrop: {
     ...StyleSheet.absoluteFillObject,
+    alignItems: 'center',
     backgroundColor: 'rgba(0,0,0,0.5)',
     justifyContent: 'center',
-    alignItems: 'center',
     zIndex: 1000,
   },
 });
