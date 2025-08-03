@@ -1,0 +1,268 @@
+# Stack
+
+The Stack component is used to manage layout of immediate children along the vertical or horizontal axis with optional spacing and alignment controls.
+
+## Import
+
+```tsx
+import { Stack } from 'lazy-panda-ui';
+```
+
+## Usage
+
+### Basic Stack
+
+```tsx
+import { Stack } from 'lazy-panda-ui';
+
+function Example() {
+  return (
+    <Stack>
+      <View style={styles.box} />
+      <View style={styles.box} />
+      <View style={styles.box} />
+    </Stack>
+  );
+}
+```
+
+### Direction
+
+```tsx
+import { Stack } from 'lazy-panda-ui';
+
+function Example() {
+  return (
+    <>
+      {/* Vertical Stack (default) */}
+      <Stack direction="vertical">
+        <View style={styles.box} />
+        <View style={styles.box} />
+      </Stack>
+
+      {/* Horizontal Stack */}
+      <Stack direction="horizontal">
+        <View style={styles.box} />
+        <View style={styles.box} />
+      </Stack>
+    </>
+  );
+}
+```
+
+### Spacing
+
+```tsx
+import { Stack } from 'lazy-panda-ui';
+
+function Example() {
+  return (
+    <>
+      <Stack spacing="sm">
+        <View style={styles.box} />
+        <View style={styles.box} />
+      </Stack>
+
+      <Stack spacing="md">
+        <View style={styles.box} />
+        <View style={styles.box} />
+      </Stack>
+
+      <Stack spacing="lg">
+        <View style={styles.box} />
+        <View style={styles.box} />
+      </Stack>
+
+      {/* Custom spacing */}
+      <Stack spacing={20}>
+        <View style={styles.box} />
+        <View style={styles.box} />
+      </Stack>
+    </>
+  );
+}
+```
+
+### Alignment
+
+```tsx
+import { Stack } from 'lazy-panda-ui';
+
+function Example() {
+  return (
+    <>
+      {/* Horizontal alignment */}
+      <Stack align="start">
+        <View style={styles.box} />
+        <View style={styles.box} />
+      </Stack>
+
+      <Stack align="center">
+        <View style={styles.box} />
+        <View style={styles.box} />
+      </Stack>
+
+      <Stack align="end">
+        <View style={styles.box} />
+        <View style={styles.box} />
+      </Stack>
+
+      {/* Cross-axis alignment */}
+      <Stack justify="start">
+        <View style={styles.box} />
+        <View style={styles.box} />
+      </Stack>
+
+      <Stack justify="center">
+        <View style={styles.box} />
+        <View style={styles.box} />
+      </Stack>
+
+      <Stack justify="end">
+        <View style={styles.box} />
+        <View style={styles.box} />
+      </Stack>
+    </>
+  );
+}
+```
+
+### With Dividers
+
+```tsx
+import { Stack } from 'lazy-panda-ui';
+
+function Example() {
+  return (
+    <Stack divider={true}>
+      <View style={styles.box} />
+      <View style={styles.box} />
+      <View style={styles.box} />
+    </Stack>
+  );
+}
+```
+
+## Props
+
+### Main Props
+
+| Prop | Type | Default | Description |
+|------|------|---------|-------------|
+| `children` | React.ReactNode | Required | The items to stack |
+| `direction` | 'vertical' \| 'horizontal' | 'vertical' | The direction to stack items |
+| `spacing` | number \| 'sm' \| 'md' \| 'lg' | 'md' | Space between items |
+| `align` | 'start' \| 'center' \| 'end' \| 'stretch' | 'stretch' | Alignment on the cross axis |
+| `justify` | 'start' \| 'center' \| 'end' \| 'space-between' \| 'space-around' | 'start' | Alignment on the main axis |
+| `divider` | boolean \| React.ReactNode | false | Whether to show dividers between items |
+
+### Style Props
+
+| Prop | Type | Description |
+|------|------|-------------|
+| `style` | ViewStyle | Additional styles for container |
+| `dividerStyle` | ViewStyle | Additional styles for dividers |
+
+### Accessibility Props
+
+| Prop | Type | Description |
+|------|------|-------------|
+| `testID` | string | Test ID for testing |
+
+## Theme Customization
+
+You can customize the Stack component through the theme:
+
+```tsx
+const theme = {
+  components: {
+    stack: {
+      container: {
+        // container styles
+      },
+      divider: {
+        // divider styles
+      },
+      spacing: {
+        sm: 8,
+        md: 16,
+        lg: 24,
+      },
+    },
+  },
+};
+```
+
+## Examples with Styling
+
+### Card Layout
+
+```tsx
+import { Stack } from 'lazy-panda-ui';
+
+function CardExample() {
+  return (
+    <Stack
+      spacing="md"
+      style={styles.card}
+    >
+      <Image source={imageSource} style={styles.cardImage} />
+      <Stack spacing="sm">
+        <Text style={styles.title}>Card Title</Text>
+        <Text style={styles.description}>Card description</Text>
+      </Stack>
+      <Stack direction="horizontal" justify="end">
+        <Button title="Cancel" />
+        <Button title="OK" />
+      </Stack>
+    </Stack>
+  );
+}
+```
+
+### Form Layout
+
+```tsx
+import { Stack } from 'lazy-panda-ui';
+
+function FormExample() {
+  return (
+    <Stack spacing="lg">
+      <Stack spacing="sm">
+        <Text>Username</Text>
+        <TextInput />
+      </Stack>
+      <Stack spacing="sm">
+        <Text>Password</Text>
+        <TextInput secureTextEntry />
+      </Stack>
+      <Button title="Submit" />
+    </Stack>
+  );
+}
+```
+
+### Navigation Menu
+
+```tsx
+import { Stack } from 'lazy-panda-ui';
+
+function MenuExample() {
+  return (
+    <Stack divider>
+      <Stack direction="horizontal" spacing="md" align="center">
+        <Icon name="home" />
+        <Text>Home</Text>
+      </Stack>
+      <Stack direction="horizontal" spacing="md" align="center">
+        <Icon name="settings" />
+        <Text>Settings</Text>
+      </Stack>
+      <Stack direction="horizontal" spacing="md" align="center">
+        <Icon name="profile" />
+        <Text>Profile</Text>
+      </Stack>
+    </Stack>
+  );
+}
+```

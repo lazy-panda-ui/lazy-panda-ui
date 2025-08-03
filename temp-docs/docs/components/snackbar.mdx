@@ -1,0 +1,263 @@
+# Snackbar
+
+The Snackbar component provides brief messages about app processes at the bottom or top of the screen. It supports various customization options including actions, variants, and animations.
+
+## Import
+
+```tsx
+import { Snackbar } from 'lazy-panda-ui';
+```
+
+## Usage
+
+### Basic Snackbar
+
+```tsx
+import { Snackbar } from 'lazy-panda-ui';
+
+function Example() {
+  const [open, setOpen] = useState(false);
+
+  return (
+    <Snackbar
+      message="This is a basic snackbar"
+      open={open}
+      onDismiss={() => setOpen(false)}
+    />
+  );
+}
+```
+
+### Different Variants
+
+```tsx
+import { Snackbar } from 'lazy-panda-ui';
+
+function Example() {
+  return (
+    <>
+      <Snackbar
+        message="Success message"
+        variant="success"
+        open={true}
+      />
+
+      <Snackbar
+        message="Error message"
+        variant="error"
+        open={true}
+      />
+
+      <Snackbar
+        message="Warning message"
+        variant="warning"
+        open={true}
+      />
+
+      <Snackbar
+        message="Info message"
+        variant="info"
+        open={true}
+      />
+    </>
+  );
+}
+```
+
+### With Action
+
+```tsx
+import { Snackbar } from 'lazy-panda-ui';
+
+function Example() {
+  const [open, setOpen] = useState(true);
+
+  const action = {
+    label: 'Undo',
+    onPress: () => {
+      console.log('Undo pressed');
+      setOpen(false);
+    },
+    color: '#BB86FC',
+  };
+
+  return (
+    <Snackbar
+      message="Item deleted"
+      open={open}
+      onDismiss={() => setOpen(false)}
+      action={action}
+    />
+  );
+}
+```
+
+### Different Positions
+
+```tsx
+import { Snackbar } from 'lazy-panda-ui';
+
+function Example() {
+  return (
+    <>
+      <Snackbar
+        message="Top snackbar"
+        open={true}
+        position="top"
+      />
+
+      <Snackbar
+        message="Bottom snackbar"
+        open={true}
+        position="bottom"
+      />
+    </>
+  );
+}
+```
+
+### With Icon
+
+```tsx
+import { Snackbar } from 'lazy-panda-ui';
+import { Icon } from 'your-icon-library';
+
+function Example() {
+  return (
+    <Snackbar
+      message="Message with icon"
+      open={true}
+      icon={<Icon name="info" />}
+    />
+  );
+}
+```
+
+### Auto Dismissible
+
+```tsx
+import { Snackbar } from 'lazy-panda-ui';
+
+function Example() {
+  return (
+    <Snackbar
+      message="This will disappear in 4 seconds"
+      open={true}
+      duration={4000}
+      onDismiss={() => console.log('Dismissed')}
+    />
+  );
+}
+```
+
+## Props
+
+### Main Props
+
+| Prop | Type | Default | Description |
+|------|------|---------|-------------|
+| `message` | string | Required | Message to display |
+| `open` | boolean | Required | Whether the snackbar is visible |
+| `onDismiss` | () => void | - | Called when snackbar is dismissed |
+| `variant` | 'default' \| 'info' \| 'success' \| 'warning' \| 'error' | 'default' | Visual variant |
+| `position` | 'top' \| 'bottom' | 'bottom' | Position of the snackbar |
+| `duration` | number | 4000 | Duration in milliseconds to show |
+| `action` | SnackbarAction | - | Action button configuration |
+| `icon` | React.ReactNode | - | Icon to show before message |
+| `dismissible` | boolean | false | Whether to show close button |
+
+### Style Props
+
+| Prop | Type | Description |
+|------|------|-------------|
+| `containerStyle` | ViewStyle | Additional styles for container |
+| `contentStyle` | ViewStyle | Additional styles for content |
+| `messageStyle` | TextStyle | Additional styles for message |
+| `actionStyle` | TextStyle | Additional styles for action button |
+
+### SnackbarAction Type
+
+```tsx
+interface SnackbarAction {
+  label: string;
+  onPress: () => void;
+  color?: string;
+}
+```
+
+### Accessibility Props
+
+| Prop | Type | Description |
+|------|------|-------------|
+| `testID` | string | Test ID for testing |
+
+## Theme Customization
+
+You can customize the Snackbar component through the theme:
+
+```tsx
+const theme = {
+  components: {
+    snackbar: {
+      container: {
+        // container styles
+      },
+      content: {
+        // content wrapper styles
+      },
+      message: {
+        // message text styles
+      },
+      action: {
+        // action button styles
+      },
+      icon: {
+        // icon wrapper styles
+      },
+      variants: {
+        success: {
+          backgroundColor: '#4CAF50',
+          color: '#FFFFFF',
+        },
+        error: {
+          backgroundColor: '#F44336',
+          color: '#FFFFFF',
+        },
+        warning: {
+          backgroundColor: '#FF9800',
+          color: '#000000',
+        },
+        info: {
+          backgroundColor: '#2196F3',
+          color: '#FFFFFF',
+        },
+      },
+    },
+  },
+};
+```
+
+## Animation Configuration
+
+The Snackbar component uses React Native's Animated API for smooth enter/exit animations. The default configuration includes:
+
+- Sliding animation from bottom/top based on position
+- Fade in/out effect
+- Spring-based animation for natural feel
+- Proper handling of multiple snackbars
+
+You can customize the animation behavior through theme:
+
+```tsx
+const theme = {
+  components: {
+    snackbar: {
+      animation: {
+        duration: 300, // Duration in milliseconds
+        easing: Easing.bezier(0.4, 0, 0.2, 1), // Custom easing function
+        // Add other animation properties
+      },
+    },
+  },
+};
+```

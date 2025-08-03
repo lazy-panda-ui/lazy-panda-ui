@@ -1,0 +1,235 @@
+# List
+
+The List component is used to display a collection of items in a vertical arrangement. It supports various customization options including icons, subtitles, and selection states.
+
+## Import
+
+```tsx
+import { List } from 'lazy-panda-ui';
+```
+
+## Usage
+
+### Basic List
+
+```tsx
+import { List } from 'lazy-panda-ui';
+
+function Example() {
+  const items = [
+    { label: 'Item 1' },
+    { label: 'Item 2' },
+    { label: 'Item 3' },
+  ];
+
+  return <List items={items} />;
+}
+```
+
+### Interactive List
+
+```tsx
+import { List } from 'lazy-panda-ui';
+
+function Example() {
+  const items = [
+    {
+      label: 'Settings',
+      onPress: () => console.log('Settings pressed'),
+    },
+    {
+      label: 'Profile',
+      onPress: () => console.log('Profile pressed'),
+    },
+    {
+      label: 'Logout',
+      onPress: () => console.log('Logout pressed'),
+    },
+  ];
+
+  return <List items={items} />;
+}
+```
+
+### With Icons and Subtitles
+
+```tsx
+import { List } from 'lazy-panda-ui';
+
+function Example() {
+  const items = [
+    {
+      label: 'Photos',
+      subtitle: '235 items',
+      startIcon: <Icon name="photo" />,
+      endIcon: <Icon name="chevron-right" />,
+      onPress: () => console.log('Photos pressed'),
+    },
+    {
+      label: 'Music',
+      subtitle: '48 songs',
+      startIcon: <Icon name="music" />,
+      endIcon: <Icon name="chevron-right" />,
+      onPress: () => console.log('Music pressed'),
+    },
+  ];
+
+  return <List items={items} />;
+}
+```
+
+### Different Variants
+
+```tsx
+import { List } from 'lazy-panda-ui';
+
+function Example() {
+  const items = [
+    { label: 'Item 1' },
+    { label: 'Item 2' },
+    { label: 'Item 3' },
+  ];
+
+  return (
+    <>
+      <List
+        items={items}
+        variant="default"
+      />
+
+      <List
+        items={items}
+        variant="outlined"
+      />
+
+      <List
+        items={items}
+        variant="contained"
+      />
+    </>
+  );
+}
+```
+
+### With Selection State
+
+```tsx
+import { List } from 'lazy-panda-ui';
+
+function Example() {
+  const items = [
+    {
+      label: 'Option 1',
+      selected: true,
+      onPress: () => console.log('Option 1 selected'),
+    },
+    {
+      label: 'Option 2',
+      selected: false,
+      onPress: () => console.log('Option 2 selected'),
+    },
+  ];
+
+  return <List items={items} />;
+}
+```
+
+### With Custom Components
+
+```tsx
+import { List } from 'lazy-panda-ui';
+
+function Example() {
+  return (
+    <List
+      items={[/* ... */]}
+      ListHeaderComponent={<Text>Header</Text>}
+      ListEmptyComponent={<Text>No items</Text>}
+      ListFooterComponent={<Text>Footer</Text>}
+    />
+  );
+}
+```
+
+## Props
+
+### Main Props
+
+| Prop | Type | Default | Description |
+|------|------|---------|-------------|
+| `items` | ListItem[] | Required | Array of items to display |
+| `variant` | 'default' \| 'outlined' \| 'contained' | 'default' | Visual variant of the list |
+| `showDividers` | boolean | true | Whether to show dividers between items |
+
+### Style Props
+
+| Prop | Type | Description |
+|------|------|-------------|
+| `containerStyle` | ViewStyle | Additional styles for the container |
+| `itemStyle` | ViewStyle | Additional styles for list items |
+| `labelStyle` | TextStyle | Additional styles for item labels |
+| `subtitleStyle` | TextStyle | Additional styles for item subtitles |
+
+### Custom Components
+
+| Prop | Type | Description |
+|------|------|-------------|
+| `ListEmptyComponent` | React.ReactNode | Component to show when list is empty |
+| `ListHeaderComponent` | React.ReactNode | Header component |
+| `ListFooterComponent` | React.ReactNode | Footer component |
+
+### Accessibility Props
+
+| Prop | Type | Description |
+|------|------|-------------|
+| `accessibilityLabel` | string | Accessibility label |
+| `testID` | string | Test ID for testing |
+
+### ListItem Props
+
+| Prop | Type | Description |
+|------|------|-------------|
+| `label` | string | Text label for the item |
+| `subtitle` | string | Optional secondary text |
+| `onPress` | () => void | Called when item is pressed |
+| `startIcon` | React.ReactNode | Icon to show at start |
+| `endIcon` | React.ReactNode | Icon to show at end |
+| `disabled` | boolean | Whether item is disabled |
+| `selected` | boolean | Whether item is selected |
+
+## Theme Customization
+
+You can customize the List component through the theme:
+
+```tsx
+const theme = {
+  components: {
+    list: {
+      container: {
+        // container styles
+      },
+      item: {
+        // item styles
+      },
+      selectedItem: {
+        // selected item styles
+      },
+      disabledItem: {
+        // disabled item styles
+      },
+      iconContainer: {
+        // icon container styles
+      },
+      textContainer: {
+        // text container styles
+      },
+      label: {
+        // label text styles
+      },
+      subtitle: {
+        // subtitle text styles
+      },
+    },
+  },
+};
+```
