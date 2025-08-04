@@ -50,7 +50,7 @@ jobs:
       - name: Publish to GitHub Packages
         run: |
           echo "Publishing version ${{ steps.version.outputs.version }}"
-          npm publish || echo "Package may already exist or publishing failed"
+          npm publish --access public || echo "Package may already exist or publishing failed"
         env:
           NODE_AUTH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
