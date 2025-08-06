@@ -117,7 +117,7 @@ interface Theme {
 To use the theme in your application, wrap your app with the `ThemeProvider`:
 
 ```tsx
-import { ThemeProvider, lightTheme } from '@lazy-panda/ui';
+import { ThemeProvider, lightTheme } from '@lazy-panda-ui/lazy-panda-ui';
 
 function App() {
   return (
@@ -135,7 +135,7 @@ function App() {
 The light theme is the default theme and provides a clean, bright appearance suitable for most applications.
 
 ```tsx
-import { ThemeProvider, lightTheme } from '@lazy-panda/ui';
+import { ThemeProvider, lightTheme } from '@lazy-panda-ui/lazy-panda-ui';
 
 function App() {
   return (
@@ -151,7 +151,7 @@ function App() {
 The dark theme provides a darker color scheme that's easier on the eyes in low-light conditions.
 
 ```tsx
-import { ThemeProvider, darkTheme } from '@lazy-panda/ui';
+import { ThemeProvider, darkTheme } from '@lazy-panda-ui/lazy-panda-ui';
 
 function App() {
   return (
@@ -169,7 +169,7 @@ You can create custom themes by using the `createTheme` function. This function 
 ### Basic Theme Customization
 
 ```tsx
-import { createTheme, ThemeProvider } from '@lazy-panda/ui';
+import { createTheme, ThemeProvider } from '@lazy-panda-ui/lazy-panda-ui';
 
 const customTheme = createTheme({
   colors: {
@@ -195,7 +195,7 @@ function App() {
 You can customize any part of the theme:
 
 ```tsx
-import { createTheme, ThemeProvider } from '@lazy-panda/ui';
+import { createTheme, ThemeProvider } from '@lazy-panda-ui/lazy-panda-ui';
 
 const customTheme = createTheme({
   colors: {
@@ -233,7 +233,7 @@ const customTheme = createTheme({
 You can access theme values in your components using the `useTheme` hook:
 
 ```tsx
-import { useTheme } from '@lazy-panda/ui';
+import { useTheme } from '@lazy-panda-ui/lazy-panda-ui';
 import { View, Text, StyleSheet } from 'react-native';
 
 function MyComponent() {
@@ -329,7 +329,7 @@ If you're migrating from an older version or a different design system:
 ### Custom Button Theme
 
 ```tsx
-import { createTheme } from '@lazy-panda/ui';
+import { createTheme } from '@lazy-panda-ui/lazy-panda-ui';
 
 const theme = createTheme({
   colors: {
@@ -348,7 +348,7 @@ const theme = createTheme({
 ### Custom Card Theme
 
 ```tsx
-import { createTheme } from '@lazy-panda/ui';
+import { createTheme } from '@lazy-panda-ui/lazy-panda-ui';
 
 const theme = createTheme({
   colors: {
