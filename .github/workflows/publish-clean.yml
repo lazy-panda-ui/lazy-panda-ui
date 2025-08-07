@@ -38,6 +38,17 @@ jobs:
       - name: Build package
         run: npm run build
 
+      - name: Verify build output
+        run: |
+          echo "Checking build output..."
+          ls -la dist/
+          echo "Checking if types are generated..."
+          ls -la dist/types/ || echo "No types directory found"
+          echo "Checking package.json main field..."
+          node -p "require('./package.json').main"
+          echo "Checking if main file exists..."
+          ls -la $(node -p "require('./package.json').main") || echo "Main file not found"
+
       - name: Get package version
         id: version
         run: echo "version=$(node -p "require('./package.json').version")" >> $GITHUB_OUTPUT
@@ -46,11 +57,23 @@ jobs:
         run: |
           echo "@lazy-panda-ui:registry=https://npm.pkg.github.com" >> ~/.npmrc
           echo "//npm.pkg.github.com/:_authToken=${{ secrets.GITHUB_TOKEN }}" >> ~/.npmrc
+          echo "Verifying npm configuration..."
+          cat ~/.npmrc
+          echo "Verifying authentication..."
+          npm whoami --registry=https://npm.pkg.github.com || echo "Authentication check failed, but continuing..."
+
+      - name: Verify package before publishing
+        run: |
+          echo "Package contents:"
+          npm pack --dry-run
+          echo "Verifying package name and registry..."
+          echo "Package name: $(node -p "require('./package.json').name")"
+          echo "Registry: $(node -p "require('./package.json').publishConfig.registry")"
 
       - name: Publish to GitHub Packages
         run: |
           echo "Publishing version ${{ steps.version.outputs.version }}"
-          npm publish --access public || echo "Package may already exist or publishing failed"
+          npm publish --access public --verbose
         env:
           NODE_AUTH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
