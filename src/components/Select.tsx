@@ -349,6 +349,7 @@ export const Select: React.FC<SelectProps> = React.memo(({
     );
 
     return () => backHandler.remove();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [isOpen]);
 
   const openDropdown = useCallback(() => {
@@ -604,3 +605,5 @@ export const Select: React.FC<SelectProps> = React.memo(({
     </View>
   );
 });
+
+Select.displayName = 'Select';

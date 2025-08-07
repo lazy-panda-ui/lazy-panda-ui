@@ -1,7 +1,6 @@
 import React from 'react';
 import {
   TouchableOpacity,
-  View,
   StyleSheet,
   ViewStyle,
   Animated,
@@ -50,7 +49,7 @@ export interface CheckBoxProps {
   testID?: string;
 }
 
-const createStyles = (theme: ReturnType<typeof useTheme>) =>
+const createStyles = () =>
   StyleSheet.create({
     container: {
       alignItems: 'center',
@@ -101,7 +100,7 @@ export const CheckBox: React.FC<CheckBoxProps> = ({
 
   const boxSize = React.useMemo(() => getSize(), [getSize]);
   const indicatorSize = React.useMemo(() => boxSize * 0.5, [boxSize]);
-  const styles = React.useMemo(() => createStyles(theme), [theme]);
+  const styles = React.useMemo(() => createStyles(), []);
 
   const getBorderColor = React.useCallback(() => {
     if (disabled) return theme.colors.disabled;
@@ -130,10 +129,8 @@ export const CheckBox: React.FC<CheckBoxProps> = ({
     styles,
     boxSize,
     disabled,
-    checked,
-    activeColor,
-    theme.colors,
-    variant,
+    getBackgroundColor,
+    getBorderColor,
     style,
   ]);
 

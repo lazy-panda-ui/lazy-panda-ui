@@ -3,7 +3,6 @@ import {
   View,
   StyleSheet,
   ViewStyle,
-  LayoutChangeEvent,
   useWindowDimensions,
   StyleProp,
 } from 'react-native';
@@ -88,11 +87,6 @@ export interface GridProps {
    */
   container?: boolean;
   /**
-   * Number of columns for layout
-   * @default 12
-   */
-  columns?: number;
-  /**
    * Spacing between items. Uses theme spacing values
    * @default 'md'
    */
@@ -170,7 +164,6 @@ const getResponsiveColumns = (breakpoints: GridBreakpoints, screenWidth: number)
 export const Grid: React.FC<GridProps> = ({
   children,
   container = false,
-  columns = 12,
   spacing = 'md',
   rowSpacing,
   columnSpacing,
@@ -184,7 +177,6 @@ export const Grid: React.FC<GridProps> = ({
   testID,
 }) => {
   const theme = useTheme();
-  const { width } = useWindowDimensions();
 
   const containerStyles = StyleSheet.create({
     container: {

@@ -45,12 +45,6 @@ export interface TooltipProps {
   hideDelay?: number;
 
   /**
-   * Whether to show a small arrow pointing to the children
-   * @default true
-   */
-  showArrow?: boolean;
-
-  /**
    * Background color of the tooltip
    */
   backgroundColor?: string;
@@ -77,7 +71,6 @@ export const Tooltip: React.FC<TooltipProps> = ({
   position = 'top',
   showDelay = 0,
   hideDelay = 0,
-  showArrow = true,
   backgroundColor,
   textColor,
   style,
@@ -90,8 +83,8 @@ export const Tooltip: React.FC<TooltipProps> = ({
   const opacity = React.useRef(new Animated.Value(0)).current;
   const styles = React.useMemo(() => getStyles(theme), [theme]);
   
-  let showTimeout: NodeJS.Timeout;
-  let hideTimeout: NodeJS.Timeout;
+  const showTimeout = React.useRef<NodeJS.Timeout | null>(null);
+  const hideTimeout = React.useRef<NodeJS.Timeout | null>(null);
 
   const handleLayout = useCallback((event: LayoutChangeEvent) => {
     const { width, height, x, y } = event.nativeEvent.layout;
@@ -104,8 +97,8 @@ export const Tooltip: React.FC<TooltipProps> = ({
   }, []);
 
   const showTooltip = () => {
-    clearTimeout(hideTimeout);
-    showTimeout = setTimeout(() => {
+    if (hideTimeout.current) clearTimeout(hideTimeout.current);
+    showTimeout.current = setTimeout(() => {
       setVisible(true);
       Animated.timing(opacity, {
         toValue: 1,
@@ -116,8 +109,8 @@ export const Tooltip: React.FC<TooltipProps> = ({
   };
 
   const hideTooltip = () => {
-    clearTimeout(showTimeout);
-    hideTimeout = setTimeout(() => {
+    if (showTimeout.current) clearTimeout(showTimeout.current);
+    hideTimeout.current = setTimeout(() => {
       Animated.timing(opacity, {
         toValue: 0,
         duration: 200,
@@ -128,8 +121,8 @@ export const Tooltip: React.FC<TooltipProps> = ({
 
   useEffect(() => {
     return () => {
-      clearTimeout(showTimeout);
-      clearTimeout(hideTimeout);
+      if (showTimeout.current) clearTimeout(showTimeout.current);
+      if (hideTimeout.current) clearTimeout(hideTimeout.current);
     };
   }, []);
 
@@ -177,7 +170,7 @@ export const Tooltip: React.FC<TooltipProps> = ({
   } else if (React.isValidElement(children)) {
     // Only add testID if the child supports it, otherwise wrap in Text
     if (children.props && typeof children.props === 'object' && 'testID' in children.props) {
-      trigger = React.cloneElement(children as React.ReactElement<any>, { testID: 'tooltip-trigger' });
+      trigger = React.cloneElement(children as React.ReactElement<{ testID?: string }>, { testID: 'tooltip-trigger' });
     } else {
       trigger = <Text testID="tooltip-trigger">{children}</Text>;
     }

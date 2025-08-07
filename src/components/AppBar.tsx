@@ -11,7 +11,6 @@ import {
   TouchableOpacity,
   ActivityIndicator,
   ScrollView,
-  Animated,
 } from 'react-native';
 import { useTheme } from '../theme/ThemeProvider';
 
@@ -148,28 +147,11 @@ export const AppBar: React.FC<AppBarProps> = ({
   testID,
 }) => {
   const theme = useTheme();
-  const [scrollOffset, setScrollOffset] = React.useState(0);
   const [isVisible, setIsVisible] = React.useState(true);
-  const lastScrollOffset = React.useRef(0);
 
   React.useEffect(() => {
     if (!hideOnScroll) setIsVisible(true);
   }, [hideOnScroll]);
-
-  const handleScroll = React.useCallback((event: { nativeEvent: { contentOffset: { y: number; }; }; }) => {
-    if (hideOnScroll && position === 'fixed') {
-      const currentOffset = event.nativeEvent.contentOffset.y;
-      const diff = currentOffset - lastScrollOffset.current;
-      lastScrollOffset.current = currentOffset;
-
-      if (diff > 0 && currentOffset > 60) {
-        setIsVisible(false);
-      } else if (diff < 0) {
-        setIsVisible(true);
-      }
-      setScrollOffset(currentOffset);
-    }
-  }, [hideOnScroll, position]);
 
   const getBackgroundColor = () => {
     if (backgroundColor) return backgroundColor;
@@ -216,7 +198,7 @@ export const AppBar: React.FC<AppBarProps> = ({
     if (Array.isArray(actions)) {
       return actions.map((action, index) => (
         <TouchableOpacity
-          key={index}
+          key={action.label || `action-${index}`}
           onPress={action.onPress}
           disabled={action.disabled || action.loading}
           style={styles(theme).actionButton}
@@ -307,7 +289,7 @@ export const AppBar: React.FC<AppBarProps> = ({
   );
 };
 
-const styles = (theme: any) => StyleSheet.create({
+const styles = (theme: ReturnType<typeof useTheme>) => StyleSheet.create({
   actionButton: {
     alignItems: 'center',
     borderRadius: theme.borderRadius.sm,

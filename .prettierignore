@@ -1,0 +1,28 @@
+# Dependencies
+node_modules/
+
+# Build outputs
+dist/
+build/
+coverage/
+
+# Expo
+.expo/
+web-build/
+
+# React Native
+android/
+ios/
+
+# Generated files
+*.d.ts
+
+# Logs
+*.log
+
+# Package files
+package-lock.json
+yarn.lock
+
+# Cache
+.cache/

@@ -1,7 +1,7 @@
 import React from 'react';
 import { View, StyleSheet, ViewStyle } from 'react-native';
 import { Button } from './Button';
-import { useTheme, Theme } from '../theme';
+import { useTheme } from '../theme';
 
 export type ButtonGroupSize = 'small' | 'medium' | 'large';
 export type ButtonGroupVariant = 'outlined' | 'contained' | 'text';
@@ -100,7 +100,7 @@ export const ButtonGroup: React.FC<ButtonGroupProps> = ({
   return (
     <View
       style={[
-        styles(theme).container,
+        styles().container,
         { flexDirection: direction === 'horizontal' ? 'row' : 'column' },
         style,
       ]}
@@ -109,7 +109,7 @@ export const ButtonGroup: React.FC<ButtonGroupProps> = ({
       {buttons.map((btn, idx) => {
         const isSelected = selectedIndex === idx;
         const btnStyles = [
-          styles(theme).button,
+          styles().button,
           { height: getSpacingForSize(size) },
           getVariantStyles(isSelected),
           idx !== 0 ? getButtonSpacing() : undefined,
@@ -139,7 +139,7 @@ export const ButtonGroup: React.FC<ButtonGroupProps> = ({
   );
 };
 
-const styles = (theme: Theme) => StyleSheet.create({
+const styles = () => StyleSheet.create({
   button: {
     borderRadius: 0,
     flex: 1,

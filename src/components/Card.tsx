@@ -5,7 +5,6 @@ import {
   ViewStyle,
   Pressable,
   ActivityIndicator,
-  AccessibilityRole,
 } from 'react-native';
 import { useTheme } from '../theme/ThemeProvider';
 import { getColorByVariant } from '../utils/themeHelpers';
@@ -80,12 +79,6 @@ export interface CardProps {
   LoadingComponent?: React.ReactNode;
 
   /**
-   * The role tells the screen reader what kind of element the user is focused on
-   * @default 'button' when onPress is provided, otherwise undefined
-   */
-  accessibilityRole?: AccessibilityRole;
-
-  /**
    * The label used by screen readers to describe the card
    */
   accessibilityLabel?: string;
@@ -113,7 +106,6 @@ export const Card: React.FC<CardProps> = ({
   contentStyle,
   loadingOverlayStyle,
   LoadingComponent,
-  accessibilityRole = onPress ? 'button' : undefined,
   accessibilityLabel,
   accessibilityHint,
   testID,

@@ -17,11 +17,12 @@ export const useTheme = function() { return useContext(ThemeContext) };
  * @returns A complete theme object
  */
 export const createTheme = (overrides: DeepPartial<Theme>): Theme => {
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   const mergeDeep = <T extends Record<string, any>>(target: T, source: DeepPartial<T>): T => {
     const output = { ...target };
     
     for (const key in source) {
-      if (source.hasOwnProperty(key)) {
+      if (Object.prototype.hasOwnProperty.call(source, key)) {
         const sourceValue = source[key];
         const targetValue = target[key];
 

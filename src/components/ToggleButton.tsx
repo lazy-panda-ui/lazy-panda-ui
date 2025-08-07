@@ -1,6 +1,7 @@
 import React from 'react';
 import { TouchableOpacity, Text, StyleSheet, ViewStyle } from 'react-native';
 import { useTheme } from '../theme/ThemeProvider';
+import type { Theme } from '../theme/types';
 
 export interface ToggleButtonProps {
   selected: boolean;
@@ -27,12 +28,12 @@ export const ToggleButton: React.FC<ToggleButtonProps> = ({ selected, onPress, l
   );
 };
 
-const styles = (theme: any) => StyleSheet.create({
+const styles = (theme: Theme) => StyleSheet.create({
   button: {
     alignItems: 'center',
     backgroundColor: theme.colors.background,
     borderColor: theme.colors.primary,
-    borderRadius: theme.borderRadius,
+    borderRadius: theme.borderRadius.md,
     borderWidth: 1,
     justifyContent: 'center',
     padding: theme.spacing.sm,

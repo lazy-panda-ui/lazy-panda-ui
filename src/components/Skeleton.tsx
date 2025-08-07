@@ -106,7 +106,7 @@ export const Skeleton: React.FC<SkeletonProps> = ({
   );
 };
 
-const styles = (theme: any) => StyleSheet.create({
+const styles = (theme: ReturnType<typeof useTheme>) => StyleSheet.create({
   shimmer: {
     backgroundColor: theme.colors.surface,
     height: '100%',

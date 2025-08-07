@@ -163,7 +163,7 @@ export const Slider: React.FC<SliderProps> = ({
   );
 };
 
-const styles = (theme: any) => StyleSheet.create({
+const styles = (theme: ReturnType<typeof useTheme>) => StyleSheet.create({
   container: {
     width: '100%',
   },

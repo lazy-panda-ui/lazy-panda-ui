@@ -96,17 +96,26 @@ export const Paper: React.FC<PaperProps> = ({
     style,
   ];
 
-  const Container: React.ComponentType<any> = pressable ? TouchableOpacity : View;
+  if (pressable) {
+    return (
+      <TouchableOpacity
+        style={containerStyle}
+        onPress={onPress}
+        activeOpacity={0.7}
+        testID={testID}
+      >
+        {children}
+      </TouchableOpacity>
+    );
+  }
 
   return (
-    <Container
+    <View
       style={containerStyle}
-      onPress={pressable ? onPress : undefined}
-      activeOpacity={pressable ? 0.7 : 1}
       testID={testID}
     >
       {children}
-    </Container>
+    </View>
   );
 };
 

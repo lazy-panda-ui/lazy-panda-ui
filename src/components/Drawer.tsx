@@ -84,7 +84,7 @@ export interface DrawerHeaderProps {
   /** Whether to show the close button in the header */
   showCloseButton?: boolean;
   /** Props to pass to the close button component */
-  closeButtonProps?: any;
+  closeButtonProps?: object;
   /** Additional styles for the header container */
   style?: ViewStyle;
 }
@@ -158,12 +158,11 @@ const DrawerHeader: React.FC<DrawerHeaderProps> = ({
       </View>
       {showCloseButton && (
         <Button
-          variant="ghost"
-          size="sm"
+          title="✕"
+          variant="text"
+          size="small"
           {...closeButtonProps}
-        >
-          ✕
-        </Button>
+        />
       )}
     </View>
   );

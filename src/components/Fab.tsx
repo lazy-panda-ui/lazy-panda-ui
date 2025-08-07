@@ -77,11 +77,9 @@ export const Fab: React.FC<FabProps> = ({
   testID,
 }) => {
   const theme = useTheme();
-  const [isPressed, setIsPressed] = React.useState(false);
   const scaleAnim = React.useRef(new Animated.Value(1)).current;
 
   const handlePressIn = () => {
-    setIsPressed(true);
     Animated.spring(scaleAnim, {
       toValue: 0.95,
       useNativeDriver: true,
@@ -89,7 +87,6 @@ export const Fab: React.FC<FabProps> = ({
   };
 
   const handlePressOut = () => {
-    setIsPressed(false);
     Animated.spring(scaleAnim, {
       toValue: 1,
       useNativeDriver: true,

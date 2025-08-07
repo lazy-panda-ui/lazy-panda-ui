@@ -106,7 +106,6 @@ export function Table<T>({
   size = 'medium',
   scrollable = true,
   striped = false,
-  hoverable = true,
   onRowPress,
   style,
   headerStyle,
@@ -170,7 +169,7 @@ export function Table<T>({
               column.render(item)
             ) : (
               <Text style={styles.cellText}>
-                {String((item as any)[column.key])}
+                {String((item as Record<string, unknown>)[column.key])}
               </Text>
             )}
           </View>

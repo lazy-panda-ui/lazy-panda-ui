@@ -154,12 +154,6 @@ export interface ListProps {
   isLoading?: boolean;
 
   /**
-   * Number of loading placeholder items to show
-   * @default 3 
-   */
-  loadingItems?: number;
-
-  /**
    * Show dividers between items
    * @default false
    */
@@ -216,7 +210,6 @@ export const List: React.FC<ListProps> = ({
   size = 'medium',
   density = 'default',
   isLoading,
-  loadingItems = 3,
   ListEmptyComponent,
   ListHeaderComponent,
   ListFooterComponent,
