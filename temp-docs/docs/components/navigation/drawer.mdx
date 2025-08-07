@@ -4,7 +4,7 @@ sidebar_position: 17
 
 # Drawer
 
-The Drawer component is a panel that slides in from the edge of the screen. It's commonly used for navigation menus, filters, or additional content that complements the main view.
+The Drawer component is a sliding panel that appears from the edge of the screen. It's commonly used for navigation menus, filters, or additional content that complements the main view. The component is fully theme-aware and supports light/dark modes through the ThemeProvider.
 
 ## Import
 
@@ -15,25 +15,25 @@ import { Drawer } from '@lazy-panda-ui/lazy-panda-ui';
 ## Usage
 
 ```tsx
-import React from 'react';
-import { Drawer, Button } from '@lazy-panda-ui/lazy-panda-ui';
+import React, { useState } from 'react';
+import { Drawer, Button, Typography } from '@lazy-panda-ui/lazy-panda-ui';
 
 function MyComponent() {
   const [open, setOpen] = useState(false);
 
   return (
     <>
-      <Button onClick={() => setOpen(true)}>
+      <Button onPress={() => setOpen(true)}>
         Open Drawer
       </Button>
 
       <Drawer open={open} onClose={() => setOpen(false)}>
         <Drawer.Header>Drawer Title</Drawer.Header>
         <Drawer.Content>
-          This is the drawer content.
+          <Typography>This is the drawer content.</Typography>
         </Drawer.Content>
         <Drawer.Footer>
-          <Button onClick={() => setOpen(false)}>
+          <Button onPress={() => setOpen(false)}>
             Close
           </Button>
         </Drawer.Footer>
@@ -48,21 +48,37 @@ function MyComponent() {
 ### Drawer Props
 | Name | Type | Default | Description |
 |------|------|---------|-------------|
-| `open` | `boolean` | - | Whether drawer is visible |
-| `onClose` | `() => void` | - | Called when drawer closes |
-| `placement` | `'left' \| 'right' \| 'top' \| 'bottom'` | `'right'` | Drawer placement |
-| `size` | `'sm' \| 'md' \| 'lg' \| 'xl' \| 'full'` | `'md'` | Drawer size |
-| `closeOnOverlayClick` | `boolean` | `true` | Close on overlay click |
-| `closeOnEscape` | `boolean` | `true` | Close on Escape key |
-| `trapFocus` | `boolean` | `true` | Trap keyboard focus |
-| `returnFocus` | `boolean` | `true` | Return focus on close |
-| `overlayColor` | `string` | `'rgba(0, 0, 0, 0.5)'` | Overlay background color |
+| `open` | `boolean` | - | Whether the drawer is open/visible |
+| `onClose` | `() => void` | - | Callback function called when the drawer should be closed |
+| `placement` | `'left' \| 'right' \| 'top' \| 'bottom'` | `'right'` | The side of the screen from which the drawer slides in |
+| `size` | `'sm' \| 'md' \| 'lg' \| 'xl' \| 'full'` | `'md'` | The size of the drawer as a percentage of screen dimension |
+| `closeOnOverlayClick` | `boolean` | `true` | Whether clicking the overlay should close the drawer |
+| `closeOnEscape` | `boolean` | `true` | Whether pressing the back button (Android) should close the drawer |
+| `trapFocus` | `boolean` | - | Whether focus should be trapped within the drawer (for accessibility) |
+| `returnFocus` | `boolean` | - | Whether focus should return to the previous element when drawer closes |
+| `overlayColor` | `string` | theme value | Overlay background color (defaults to theme.drawer.backdrop) |
+| `children` | `React.ReactNode` | - | The content to be rendered inside the drawer |
+| `style` | `ViewStyle` | - | Additional styles for the drawer container |
 
 ### Drawer.Header Props
 | Name | Type | Default | Description |
 |------|------|---------|-------------|
-| `showCloseButton` | `boolean` | `true` | Show close button |
-| `closeButtonProps` | `ButtonProps` | - | Close button props |
+| `children` | `React.ReactNode` | - | The content to be rendered in the header. Can be a string or JSX |
+| `showCloseButton` | `boolean` | `true` | Whether to show the close button in the header |
+| `closeButtonProps` | `any` | - | Props to pass to the close button component |
+| `style` | `ViewStyle` | - | Additional styles for the header container |
+
+### Drawer.Content Props
+| Name | Type | Default | Description |
+|------|------|---------|-------------|
+| `children` | `React.ReactNode` | - | The main content to be rendered in the drawer body |
+| `style` | `ViewStyle` | - | Additional styles for the content container |
+
+### Drawer.Footer Props
+| Name | Type | Default | Description |
+|------|------|---------|-------------|
+| `children` | `React.ReactNode` | - | The content to be rendered in the footer (typically buttons) |
+| `style` | `ViewStyle` | - | Additional styles for the footer container |
 
 ## Examples
 
@@ -72,9 +88,9 @@ function MyComponent() {
   <Drawer.Header>Navigation</Drawer.Header>
   <Drawer.Content>
     <Stack spacing="md">
-      <Button variant="ghost">Home</Button>
-      <Button variant="ghost">Profile</Button>
-      <Button variant="ghost">Settings</Button>
+      <Button variant="ghost" onPress={() => navigate('/')}>Home</Button>
+      <Button variant="ghost" onPress={() => navigate('/profile')}>Profile</Button>
+      <Button variant="ghost" onPress={() => navigate('/settings')}>Settings</Button>
     </Stack>
   </Drawer.Content>
 </Drawer>
@@ -85,7 +101,7 @@ function MyComponent() {
 {['left', 'right', 'top', 'bottom'].map((placement) => (
   <Button
     key={placement}
-    onClick={() => openDrawer(placement)}
+    onPress={() => openDrawer(placement)}
   >
     Open {placement} drawer
   </Button>
@@ -100,7 +116,7 @@ function MyComponent() {
     {placement} Drawer
   </Drawer.Header>
   <Drawer.Content>
-    Content for {placement} drawer
+    <Typography>Content for {placement} drawer</Typography>
   </Drawer.Content>
 </Drawer>
 ```
@@ -116,7 +132,7 @@ function MyComponent() {
     {size} Drawer
   </Drawer.Header>
   <Drawer.Content>
-    Content for {size} drawer
+    <Typography>Content for {size} drawer</Typography>
   </Drawer.Content>
 </Drawer>
 ```
@@ -126,33 +142,33 @@ function MyComponent() {
 <Drawer open={open} onClose={onClose} placement="left">
   <Drawer.Header>Menu</Drawer.Header>
   <Drawer.Content>
-    <List>
-      <List.Item
-        icon={<Icon name="home" />}
-        onClick={() => navigate('/')}
+    <Stack spacing="md">
+      <Button 
+        variant="ghost" 
+        onPress={() => navigate('/')}
       >
-        Home
-      </List.Item>
-      <List.Item
-        icon={<Icon name="user" />}
-        onClick={() => navigate('/profile')}
+        🏠 Home
+      </Button>
+      <Button 
+        variant="ghost" 
+        onPress={() => navigate('/profile')}
       >
-        Profile
-      </List.Item>
-      <List.Item
-        icon={<Icon name="settings" />}
-        onClick={() => navigate('/settings')}
+        👤 Profile
+      </Button>
+      <Button 
+        variant="ghost" 
+        onPress={() => navigate('/settings')}
       >
-        Settings
-      </List.Item>
-      <List.Divider />
-      <List.Item
-        icon={<Icon name="logout" />}
-        onClick={handleLogout}
+        ⚙️ Settings
+      </Button>
+      <Divider />
+      <Button 
+        variant="ghost" 
+        onPress={handleLogout}
       >
-        Logout
-      </List.Item>
-    </List>
+        🚪 Logout
+      </Button>
+    </Stack>
   </Drawer.Content>
 </Drawer>
 ```
@@ -166,143 +182,225 @@ function MyComponent() {
       <Select
         label="Category"
         value={category}
-        onChange={setCategory}
+        onValueChange={setCategory}
         items={categories}
       />
-      <RangeSlider
+      <Slider
         label="Price Range"
         value={priceRange}
-        onChange={setPriceRange}
-        min={0}
-        max={1000}
+        onValueChange={setPriceRange}
+        minimumValue={0}
+        maximumValue={1000}
       />
-      <CheckboxGroup
-        label="Brands"
-        value={brands}
-        onChange={setBrands}
-        options={availableBrands}
-      />
+      <Stack spacing="sm">
+        <Typography variant="h6">Brands</Typography>
+        {availableBrands.map(brand => (
+          <CheckBox
+            key={brand}
+            label={brand}
+            value={brands.includes(brand)}
+            onValueChange={(checked) => toggleBrand(brand, checked)}
+          />
+        ))}
+      </Stack>
     </Stack>
   </Drawer.Content>
   <Drawer.Footer>
-    <Button variant="outlined" onClick={resetFilters}>
-      Reset
-    </Button>
-    <Button onClick={applyFilters}>
-      Apply Filters
-    </Button>
+    <Stack direction="row" spacing="sm">
+      <Button variant="outlined" onPress={resetFilters}>
+        Reset
+      </Button>
+      <Button onPress={applyFilters}>
+        Apply Filters
+      </Button>
+    </Stack>
   </Drawer.Footer>
 </Drawer>
 ```
 
-## Customization
+## Theme Customization
 
-### Custom Styles
+The Drawer component is fully configurable through the ThemeProvider. All visual aspects can be customized through the theme configuration.
+
+### Theme Configuration
 ```tsx
-<Drawer
-  open={open}
-  onClose={onClose}
-  containerStyle={{
-    background: '#f8f9fa',
-    boxShadow: '0 0 20px rgba(0,0,0,0.1)',
-  }}
-  overlayStyle={{
-    backgroundColor: 'rgba(0,0,0,0.7)',
-  }}
->
-  <Drawer.Header style={{ borderBottom: '2px solid #e9ecef' }}>
-    Styled Drawer
-  </Drawer.Header>
-  <Drawer.Content>
-    Custom styled content
-  </Drawer.Content>
-</Drawer>
+const customTheme = {
+  ...defaultTheme,
+  drawer: {
+    backdrop: {
+      color: '#000000',    // Overlay color
+      opacity: 0.6,        // Overlay opacity
+    },
+    container: {
+      backgroundColor: '#ffffff',  // Drawer background
+      borderRadius: 8,             // Border radius for corners
+      shadow: {
+        color: '#000000',
+        offset: { width: 0, height: 4 },
+        opacity: 0.3,
+        radius: 6,
+        elevation: 8,
+      },
+    },
+    header: {
+      backgroundColor: '#f8f9fa',  // Header background
+      borderColor: '#e9ecef',       // Header border
+      borderWidth: 1,
+      padding: 20,
+      minHeight: 64,
+    },
+    content: {
+      backgroundColor: '#ffffff',  // Content background
+      padding: 24,
+    },
+    footer: {
+      backgroundColor: '#f8f9fa',  // Footer background
+      borderColor: '#e9ecef',       // Footer border
+      borderWidth: 1,
+      padding: 20,
+      minHeight: 64,
+    },
+    animation: {
+      duration: 400,               // Animation duration in ms
+      easing: 'easeInOut',         // Animation easing
+    },
+    sizes: {
+      sm: 0.3,    // 30% of screen dimension
+      md: 0.5,    // 50% of screen dimension
+      lg: 0.7,    // 70% of screen dimension
+      xl: 0.9,    // 90% of screen dimension
+    },
+  },
+};
+
+// Use with ThemeProvider
+<ThemeProvider theme={customTheme}>
+  <Drawer open={open} onClose={onClose}>
+    {/* Drawer content */}
+  </Drawer>
+</ThemeProvider>
 ```
 
-### Custom Transitions
+### Custom Styles
+You can also override styles directly using the style props:
+
 ```tsx
 <Drawer
   open={open}
   onClose={onClose}
-  motionProps={{
-    initial: { x: '100%' },
-    animate: { x: 0 },
-    exit: { x: '100%' },
-    transition: { type: 'spring', damping: 20 }
+  style={{
+    backgroundColor: '#f8f9fa',
+    borderRadius: 16,
   }}
+  overlayColor="rgba(0, 0, 0, 0.8)"
 >
-  {/* Drawer content */}
+  <Drawer.Header 
+    style={{ 
+      backgroundColor: '#007AFF',
+      borderBottomWidth: 0,
+    }}
+  >
+    <Typography variant="h6" style={{ color: 'white' }}>
+      Custom Header
+    </Typography>
+  </Drawer.Header>
+  <Drawer.Content style={{ padding: 32 }}>
+    <Typography>Custom styled content</Typography>
+  </Drawer.Content>
+  <Drawer.Footer style={{ backgroundColor: '#f0f0f0' }}>
+    <Button>Custom Footer</Button>
+  </Drawer.Footer>
 </Drawer>
 ```
 
 ## Best Practices
 
-1. Use appropriate placement
-2. Consider content hierarchy
-3. Implement proper navigation
-4. Handle mobile views
-5. Maintain focus management
-6. Provide clear closing options
-7. Use consistent patterns
+1. **Choose appropriate placement**: Use `left` for navigation menus, `right` for filters/settings, `bottom` for mobile sheets
+2. **Consider content hierarchy**: Structure content with Header, Content, and Footer for consistency
+3. **Implement proper navigation**: Ensure drawer actions don't conflict with main app navigation
+4. **Handle mobile views**: Use appropriate sizes and consider touch targets
+5. **Maintain focus management**: Let the component handle focus automatically with `trapFocus`
+6. **Provide clear closing options**: Always include a way to close the drawer (close button, overlay click, back button)
+7. **Use consistent patterns**: Follow the same drawer structure across your app
+8. **Theme integration**: Use ThemeProvider for consistent styling across light/dark modes
 
-## API Reference
+## Size Reference
 
-### Size Values
+The drawer sizes are calculated as percentages of the screen dimension:
+
 ```tsx
 const drawerSizes = {
-  sm: '256px',
-  md: '320px',
-  lg: '400px',
-  xl: '480px',
-  full: '100%',
+  sm: '25%',   // Small drawer
+  md: '40%',   // Medium drawer (default)
+  lg: '60%',   // Large drawer
+  xl: '80%',   // Extra large drawer
+  full: '100%' // Full screen
 };
 ```
 
-### Theme Customization
-```tsx
-const theme = {
-  drawer: {
-    overlay: {
-      background: 'rgba(0, 0, 0, 0.5)',
-      zIndex: 1000,
-    },
-    container: {
-      background: 'white',
-      boxShadow: '0 0 10px rgba(0, 0, 0, 0.1)',
-    },
-    header: {
-      padding: '16px 24px',
-      borderBottom: '1px solid #eee',
-    },
-    content: {
-      padding: '24px',
-    },
-    footer: {
-      padding: '16px 24px',
-      borderTop: '1px solid #eee',
-    },
-  },
-};
-```
+For horizontal drawers (left/right), percentages apply to screen width.
+For vertical drawers (top/bottom), percentages apply to screen height.
 
 ## Accessibility
 
-### Keyboard Navigation
+The Drawer component includes built-in accessibility features:
+
+### React Native Accessibility
 ```tsx
 <Drawer
   open={open}
   onClose={onClose}
-  trapFocus
-  returnFocus
-  aria-label="Navigation menu"
+  trapFocus={true}          // Traps focus within drawer
+  returnFocus={true}        // Returns focus when closed
 >
-  {/* Drawer content */}
+  <Drawer.Header>
+    <Typography variant="h6" accessibilityRole="heading">
+      Navigation Menu
+    </Typography>
+  </Drawer.Header>
+  <Drawer.Content>
+    <Button 
+      accessibilityLabel="Go to home page"
+      accessibilityHint="Navigates to the main home screen"
+    >
+      Home
+    </Button>
+  </Drawer.Content>
 </Drawer>
 ```
 
+### Features
+- **Modal behavior**: Uses React Native Modal for proper overlay handling
+- **Back button support**: Android back button automatically closes drawer
+- **Touch overlay**: Tapping outside the drawer closes it (configurable)
+- **Focus management**: Optional focus trapping and return
+- **Screen reader support**: Works with accessibility services
+
+## Animation Details
+
+The Drawer uses React Native's Animated API for smooth transitions:
+
+- **Slide animation**: Drawer slides in from the specified edge
+- **Fade animation**: Overlay fades in/out simultaneously
+- **Duration**: Configurable through theme (default: 300ms)
+- **Easing**: Theme-configurable easing curves
+- **Performance**: Uses native driver where possible for smooth animations
+
+## Platform Differences
+
+### Android
+- Back button automatically closes drawer (configurable with `closeOnEscape`)
+- Hardware back button handling
+- Material Design elevation shadows
+
+### iOS
+- iOS-style shadows and styling when using iOS theme
+- Respects safe area insets
+- Gesture-based navigation compatibility
+
 ## Related Components
 
-- [Dialog](dialog) - For modal dialogs
-- [Menu](menu) - For dropdown menus
-- [Sidebar](sidebar) - For permanent side content
-- [Sheet](sheet) - For bottom sheets on mobile
+- [Modal](../feedback/modal) - For modal dialogs and overlays
+- [Dialog](../feedback/dialog) - For confirmation dialogs  
+- [Alert](../feedback/alert) - For alert messages
+- [Backdrop](../feedback/backdrop) - For overlay backgrounds

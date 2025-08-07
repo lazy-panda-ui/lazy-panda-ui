@@ -79,4 +79,52 @@ export interface Theme {
     semibold: "600";
     bold: "700";
   };
+  drawer: {
+    backdrop: {
+      color: string;
+      opacity: number;
+    };
+    container: {
+      backgroundColor: string;
+      borderRadius: number;
+      shadow: {
+        color: string;
+        offset: {
+          width: number;
+          height: number;
+        };
+        opacity: number;
+        radius: number;
+        elevation: number;
+      };
+    };
+    header: {
+      backgroundColor?: string;
+      borderColor: string;
+      borderWidth: number;
+      padding: number;
+      minHeight: number;
+    };
+    content: {
+      backgroundColor?: string;
+      padding: number;
+    };
+    footer: {
+      backgroundColor?: string;
+      borderColor: string;
+      borderWidth: number;
+      padding: number;
+      minHeight: number;
+    };
+    animation: {
+      duration: number;
+      easing: 'linear' | 'easeIn' | 'easeOut' | 'easeInOut';
+    };
+    sizes: {
+      sm: number;
+      md: number;
+      lg: number;
+      xl: number;
+    };
+  };
 }

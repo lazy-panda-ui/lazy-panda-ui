@@ -52,6 +52,51 @@ export const baseTheme = {
     semibold: "600" as const,
     bold: "700" as const,
   },
+  drawer: {
+    backdrop: {
+      color: '#000000',
+      opacity: 0.5,
+    },
+    container: {
+      backgroundColor: 'transparent', // Will use surface color from theme
+      borderRadius: 0,
+      shadow: {
+        color: '#000000',
+        offset: {
+          width: 0,
+          height: 2,
+        },
+        opacity: 0.25,
+        radius: 3.84,
+        elevation: 5,
+      },
+    },
+    header: {
+      borderColor: 'transparent', // Will use border color from theme
+      borderWidth: 1,
+      padding: 16,
+      minHeight: 56,
+    },
+    content: {
+      padding: 16,
+    },
+    footer: {
+      borderColor: 'transparent', // Will use border color from theme
+      borderWidth: 1,
+      padding: 16,
+      minHeight: 56,
+    },
+    animation: {
+      duration: 300,
+      easing: 'easeInOut' as const,
+    },
+    sizes: {
+      sm: 0.25,
+      md: 0.4,
+      lg: 0.6,
+      xl: 0.8,
+    },
+  },
 } as const;
 
 // Light theme
@@ -87,6 +132,31 @@ export const lightTheme: Theme = {
     disabled: '#E5E5EA',
     onDisabled: '#8E8E93',
   },
+  drawer: {
+    ...baseTheme.drawer,
+    backdrop: {
+      color: '#000000',
+      opacity: 0.5,
+    },
+    container: {
+      ...baseTheme.drawer.container,
+      backgroundColor: '#FFFFFF', // Light surface
+    },
+    header: {
+      ...baseTheme.drawer.header,
+      borderColor: '#C7C7CC', // Light border
+      backgroundColor: '#FFFFFF',
+    },
+    content: {
+      ...baseTheme.drawer.content,
+      backgroundColor: '#FFFFFF',
+    },
+    footer: {
+      ...baseTheme.drawer.footer,
+      borderColor: '#C7C7CC', // Light border
+      backgroundColor: '#FFFFFF',
+    },
+  },
 };
 
 // Dark theme
@@ -121,6 +191,31 @@ export const darkTheme: Theme = {
     onInfo: '#FFFFFF',
     disabled: '#4B5563',
     onDisabled: '#9CA3AF',
+  },
+  drawer: {
+    ...baseTheme.drawer,
+    backdrop: {
+      color: '#000000',
+      opacity: 0.6, // Slightly more opaque for dark theme
+    },
+    container: {
+      ...baseTheme.drawer.container,
+      backgroundColor: '#2D2D2D', // Dark surface
+    },
+    header: {
+      ...baseTheme.drawer.header,
+      borderColor: '#4B5563', // Dark border
+      backgroundColor: '#2D2D2D',
+    },
+    content: {
+      ...baseTheme.drawer.content,
+      backgroundColor: '#2D2D2D',
+    },
+    footer: {
+      ...baseTheme.drawer.footer,
+      borderColor: '#4B5563', // Dark border
+      backgroundColor: '#2D2D2D',
+    },
   },
 };
 

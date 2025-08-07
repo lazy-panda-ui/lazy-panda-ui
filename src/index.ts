@@ -21,6 +21,7 @@ export * from './components/Typography';
 export * from './components/Alert';
 export * from './components/Backdrop';
 export * from './components/Dialog';
+export * from './components/Drawer';
 export * from './components/Progress';
 export * from './components/Skeleton';
 export * from './components/Snackbar';
