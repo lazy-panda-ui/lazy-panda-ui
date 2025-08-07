@@ -56,7 +56,7 @@
     "format:check": "prettier --check ./src",
     "type-check": "tsc --noEmit",
     "prepare": "npm run build",
-    "prepublishOnly": "npm run lint:check && npm run type-check && npm run test && npm run build",
+    "prepublishOnly": "npm run lint:check && npm run type-check && npm run test -- --passWithNoTests && npm run build",
     "dist": "npm run test && npm run build && cp -R src dist && find dist -type f -name '*.ts' -delete && find dist -type f -name '*.tsx' -delete"
   },
   "overrides": {

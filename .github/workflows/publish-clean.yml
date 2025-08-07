@@ -29,11 +29,16 @@ jobs:
       - name: Install dependencies
         run: npm ci
 
+      # Note: These steps will also run during npm publish via prepublishOnly script
+      # but we run them here for better CI visibility and early failure detection
       - name: Run tests
         run: npm test -- --passWithNoTests
 
       - name: Lint code
-        run: npm run lint
+        run: npm run lint:check
+
+      - name: Type check
+        run: npm run type-check
 
       - name: Build package
         run: npm run build
