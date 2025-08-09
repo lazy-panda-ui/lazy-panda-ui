@@ -24,11 +24,11 @@ export const baseTheme = {
     overline: 12,
   },
   borderRadius: {
-    xs: 4,
-    sm: 8,
-    md: 12,
-    lg: 16,
-    xl: 24,
+    xs: 2,
+    sm: 4,
+    md: 6,
+    lg: 8,
+    xl: 12,
     full: 9999,
   },
   sizing: {
@@ -98,126 +98,136 @@ export const baseTheme = {
     },
   },
 } as const;
-
-// Light theme
-export const lightTheme: Theme = {
-  ...baseTheme,
-  colors: {
-    primary: '#007AFF',
-    onPrimary: '#FFFFFF',
-    primaryContainer: '#EAF3FF',
-    onPrimaryContainer: '#004C99',
-    secondary: '#5856D6',
-    onSecondary: '#FFFFFF',
-    secondaryContainer: '#EAEAFF',
-    onSecondaryContainer: '#353480',
-    background: '#FFFFFF',
-    onBackground: '#000000',
-    surface: '#FFFFFF',
-    onSurface: '#000000',
-    surfaceVariant: '#F2F2F7',
-    onSurfaceVariant: '#1C1C1E',
-    outline: '#C7C7CC',
-    card: '#F2F2F7',
-    text: '#000000',
-    border: '#C7C7CC',
-    error: '#FF3B30',
-    onError: '#FFFFFF',
-    success: '#34C759',
-    onSuccess: '#FFFFFF',
-    warning: '#FF9500',
-    onWarning: '#FFFFFF',
-    info: '#5856D6',
-    onInfo: '#FFFFFF',
-    disabled: '#E5E5EA',
-    onDisabled: '#8E8E93',
-  },
-  drawer: {
-    ...baseTheme.drawer,
-    backdrop: {
-      color: '#000000',
-      opacity: 0.5,
-    },
-    container: {
-      ...baseTheme.drawer.container,
-      backgroundColor: '#FFFFFF', // Light surface
-    },
-    header: {
-      ...baseTheme.drawer.header,
-      borderColor: '#C7C7CC', // Light border
-      backgroundColor: '#FFFFFF',
-    },
-    content: {
-      ...baseTheme.drawer.content,
-      backgroundColor: '#FFFFFF',
-    },
-    footer: {
-      ...baseTheme.drawer.footer,
-      borderColor: '#C7C7CC', // Light border
-      backgroundColor: '#FFFFFF',
-    },
-  },
+// Color palettes
+const lightPalette: Theme['colors'] = {
+  primary: '#007AFF',
+  onPrimary: '#FFFFFF',
+  primaryContainer: '#EAF3FF',
+  onPrimaryContainer: '#004C99',
+  secondary: '#5856D6',
+  onSecondary: '#FFFFFF',
+  secondaryContainer: '#EAEAFF',
+  onSecondaryContainer: '#353480',
+  background: '#FFFFFF',
+  onBackground: '#000000',
+  surface: '#FFFFFF',
+  onSurface: '#000000',
+  surfaceVariant: '#F2F2F7',
+  onSurfaceVariant: '#1C1C1E',
+  outline: '#C7C7CC',
+  card: '#F2F2F7',
+  text: '#000000',
+  border: '#C7C7CC',
+  error: '#FF3B30',
+  onError: '#FFFFFF',
+  success: '#34C759',
+  onSuccess: '#FFFFFF',
+  warning: '#FF9500',
+  onWarning: '#FFFFFF',
+  info: '#5856D6',
+  onInfo: '#FFFFFF',
+  disabled: '#E5E5EA',
+  onDisabled: '#8E8E93',
 };
 
-// Dark theme
-export const darkTheme: Theme = {
-  ...baseTheme,
-  colors: {
-    primary: '#60A5FA',
-    onPrimary: '#FFFFFF',
-    primaryContainer: '#1E3A8A',
-    onPrimaryContainer: '#BFDBFE',
-    secondary: '#818CF8',
-    onSecondary: '#FFFFFF',
-    secondaryContainer: '#312E81',
-    onSecondaryContainer: '#E0E7FF',
-    background: '#1E1E1E',
-    onBackground: '#FFFFFF',
-    surface: '#2D2D2D',
-    onSurface: '#FFFFFF',
-    surfaceVariant: '#3D3D3D',
-    onSurfaceVariant: '#E5E5E5',
-    outline: '#6B7280',
-    card: '#2D2D2D',
-    text: '#FFFFFF',
-    border: '#4B5563',
-    error: '#EF4444',
-    onError: '#FFFFFF',
-    success: '#10B981',
-    onSuccess: '#FFFFFF',
-    warning: '#F59E0B',
-    onWarning: '#FFFFFF',
-    info: '#3B82F6',
-    onInfo: '#FFFFFF',
-    disabled: '#4B5563',
-    onDisabled: '#9CA3AF',
-  },
-  drawer: {
-    ...baseTheme.drawer,
-    backdrop: {
-      color: '#000000',
-      opacity: 0.6, // Slightly more opaque for dark theme
-    },
-    container: {
-      ...baseTheme.drawer.container,
-      backgroundColor: '#2D2D2D', // Dark surface
-    },
-    header: {
-      ...baseTheme.drawer.header,
-      borderColor: '#4B5563', // Dark border
-      backgroundColor: '#2D2D2D',
-    },
-    content: {
-      ...baseTheme.drawer.content,
-      backgroundColor: '#2D2D2D',
-    },
-    footer: {
-      ...baseTheme.drawer.footer,
-      borderColor: '#4B5563', // Dark border
-      backgroundColor: '#2D2D2D',
-    },
-  },
+const darkPalette: Theme['colors'] = {
+  primary: '#60A5FA',
+  onPrimary: '#FFFFFF',
+  primaryContainer: '#1E3A8A',
+  onPrimaryContainer: '#BFDBFE',
+  secondary: '#818CF8',
+  onSecondary: '#FFFFFF',
+  secondaryContainer: '#312E81',
+  onSecondaryContainer: '#E0E7FF',
+  background: '#1E1E1E',
+  onBackground: '#FFFFFF',
+  surface: '#2D2D2D',
+  onSurface: '#FFFFFF',
+  surfaceVariant: '#3D3D3D',
+  onSurfaceVariant: '#E5E5E5',
+  outline: '#6B7280',
+  card: '#2D2D2D',
+  text: '#FFFFFF',
+  border: '#4B5563',
+  error: '#EF4444',
+  onError: '#FFFFFF',
+  success: '#10B981',
+  onSuccess: '#FFFFFF',
+  warning: '#F59E0B',
+  onWarning: '#FFFFFF',
+  info: '#3B82F6',
+  onInfo: '#FFFFFF',
+  disabled: '#4B5563',
+  onDisabled: '#9CA3AF',
 };
+
+// Builder to derive a full Theme from a palette + shared metrics
+const buildTheme = (colors: Theme['colors'], opts?: { isDark?: boolean }): Theme => {
+  const isDark = !!opts?.isDark;
+
+  return {
+    ...baseTheme,
+    colors,
+    accordion: {
+      container: {
+        backgroundColor: colors.surface,
+        borderRadius: baseTheme.borderRadius.md,
+        borderColor: colors.outline,
+        borderWidth: 1,
+      },
+      header: {
+        backgroundColor: colors.surface,
+        borderColor: colors.outline,
+        borderWidth: 0,
+        padding: baseTheme.spacing.md,
+        minHeight: baseTheme.sizing.lg,
+        titleColor: colors.onSurface,
+        subtitleColor: colors.onSurfaceVariant,
+      },
+      content: {
+        backgroundColor: colors.surface,
+        padding: baseTheme.spacing.md,
+      },
+      icon: {
+        size: baseTheme.iconSize.md,
+        color: colors.onSurfaceVariant,
+      },
+      animation: {
+        duration: 200,
+        easing: 'easeInOut',
+      },
+    },
+    drawer: {
+      ...baseTheme.drawer,
+      backdrop: {
+        color: baseTheme.drawer.backdrop.color,
+        opacity: isDark ? 0.6 : baseTheme.drawer.backdrop.opacity,
+      },
+      container: {
+        ...baseTheme.drawer.container,
+        backgroundColor: colors.surface,
+      },
+      header: {
+        ...baseTheme.drawer.header,
+        borderColor: colors.outline,
+        backgroundColor: colors.surface,
+      },
+      content: {
+        ...baseTheme.drawer.content,
+        backgroundColor: colors.surface,
+      },
+      footer: {
+        ...baseTheme.drawer.footer,
+        borderColor: colors.outline,
+        backgroundColor: colors.surface,
+      },
+    },
+  };
+};
+
+// Light/Dark themes derived from palettes
+export const lightTheme: Theme = buildTheme(lightPalette, { isDark: false });
+export const darkTheme: Theme = buildTheme(darkPalette, { isDark: true });
 
 // Default theme is light theme
 export const defaultTheme = lightTheme;

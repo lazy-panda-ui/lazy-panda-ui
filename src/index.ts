@@ -27,7 +27,6 @@ export * from './components/Skeleton';
 export * from './components/Snackbar';
 export * from './components/Accordion';
 export * from './components/AppBar';
-export * from './components/Card';
 export * from './components/Paper';
 export * from './components/Box';
 export * from './components/Container';

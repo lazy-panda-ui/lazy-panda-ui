@@ -1,16 +1,6 @@
-import React, { useEffect, useRef, useState } from 'react';
-import {
-  View,
-  TouchableOpacity,
-  Text,
-  StyleSheet,
-  ViewStyle,
-  Animated,
-  LayoutAnimation,
-  Platform,
-  UIManager,
-  TextStyle,
-} from 'react-native';
+import React, { useEffect, useRef, useState, useMemo, useCallback, useImperativeHandle } from 'react';
+import { View, TouchableOpacity, Text, StyleSheet, ViewStyle, Animated, LayoutAnimation, Platform, UIManager, TextStyle } from 'react-native';
+import type { StyleProp } from 'react-native';
 import { useTheme } from '../theme/ThemeProvider';
 
 if (Platform.OS === 'android') {
@@ -21,98 +11,54 @@ export type AccordionVariant = 'default' | 'outlined' | 'contained';
 export type AccordionIconPosition = 'start' | 'end';
 
 export interface AccordionProps {
-  /**
-   * Title of the accordion
-   */
   title: string;
-  /**
-   * Subtitle text (optional)
-   */
   subtitle?: string;
-  /**
-   * Content of the accordion
-   */
   children: React.ReactNode;
-  /**
-   * Whether the accordion is expanded
-   */
   expanded?: boolean;
-  /**
-   * Called when the accordion is toggled
-   */
   onChange?: (expanded: boolean) => void;
-  /**
-   * Visual variant of the accordion
-   * @default 'default'
-   */
   variant?: AccordionVariant;
-  /**
-   * Position of the expand/collapse icon
-   * @default 'end'
-   */
   iconPosition?: AccordionIconPosition;
-  /**
-   * Whether to disable the accordion
-   * @default false
-   */
   disabled?: boolean;
-  /**
-   * Custom icon when expanded
-   */
   expandIcon?: React.ReactNode;
-  /**
-   * Custom icon when collapsed
-   */
   collapseIcon?: React.ReactNode;
-  /**
-   * Additional content in the header
-   */
   headerRight?: React.ReactNode;
-  /**
-   * Additional styles for the container
-   */
-  containerStyle?: ViewStyle;
-  /**
-   * Additional styles for the header
-   */
-  headerStyle?: ViewStyle;
-  /**
-   * Additional styles for the title
-   */
-  titleStyle?: TextStyle;
-  /**
-   * Additional styles for the subtitle
-   */
-  subtitleStyle?: TextStyle;
-  /**
-   * Additional styles for the content
-   */
-  contentStyle?: ViewStyle;
-  /**
-   * Test ID for testing
-   */
+  containerStyle?: StyleProp<ViewStyle>;
+  headerStyle?: StyleProp<ViewStyle>;
+  titleStyle?: StyleProp<TextStyle>;
+  subtitleStyle?: StyleProp<TextStyle>;
+  contentStyle?: StyleProp<ViewStyle>;
   testID?: string;
 }
 
-export const Accordion: React.FC<AccordionProps> = ({
-  title,
-  subtitle,
-  children,
-  expanded: controlledExpanded,
-  onChange,
-  variant = 'default',
-  iconPosition = 'end',
-  disabled = false,
-  expandIcon,
-  collapseIcon,
-  headerRight,
-  containerStyle,
-  headerStyle,
-  titleStyle,
-  subtitleStyle,
-  contentStyle,
-  testID,
-}) => {
+export interface AccordionRef {
+  expand: () => void;
+  collapse: () => void;
+  toggle: () => void;
+  isExpanded: () => boolean;
+}
+
+const AccordionBase = (
+  {
+    title,
+    subtitle,
+    children,
+    expanded: controlledExpanded,
+    onChange,
+    variant = 'default',
+    iconPosition = 'end',
+    disabled = false,
+    expandIcon,
+    collapseIcon,
+    headerRight,
+    containerStyle,
+    headerStyle,
+    titleStyle,
+    subtitleStyle,
+    contentStyle,
+    testID,
+  }: AccordionProps,
+  ref: React.Ref<AccordionRef>
+) => {
   const theme = useTheme();
   const [internalExpanded, setInternalExpanded] = useState(false);
   const expanded = controlledExpanded ?? internalExpanded;
@@ -121,83 +67,99 @@ export const Accordion: React.FC<AccordionProps> = ({
   useEffect(() => {
     Animated.timing(rotationValue, {
       toValue: expanded ? 1 : 0,
-      duration: 200,
+      duration: theme.accordion?.animation.duration ?? 200,
       useNativeDriver: true,
     }).start();
 
     if (Platform.OS === 'android') {
       LayoutAnimation.configureNext(LayoutAnimation.Presets.easeInEaseOut);
     }
-  }, [expanded, rotationValue]);
+  }, [expanded, rotationValue, theme.accordion?.animation.duration]);
 
-  const getVariantStyles = (): ViewStyle => {
+  useImperativeHandle(
+    ref,
+    () => ({
+      expand: () => setInternalExpanded(true),
+      collapse: () => setInternalExpanded(false),
+      toggle: () => setInternalExpanded(prev => !prev),
+      isExpanded: () => !!expanded,
+    }),
+    [expanded]
+  );
+
+  const getVariantStyles = useMemo((): ViewStyle => {
     switch (variant) {
       case 'outlined':
         return {
-          borderWidth: 1,
-          borderColor: theme.colors.outline,
-          borderRadius: theme.borderRadius.md,
-          backgroundColor: theme.colors.surface,
+          borderWidth: theme.accordion?.container.borderWidth ?? 1,
+          borderColor: theme.accordion?.container.borderColor ?? theme.colors.outline,
+          borderRadius: theme.accordion?.container.borderRadius ?? theme.borderRadius.md,
+          backgroundColor: theme.accordion?.container.backgroundColor ?? theme.colors.surface,
         };
       case 'contained':
         return {
           backgroundColor: theme.colors.surfaceVariant,
-          borderRadius: theme.borderRadius.md,
+          borderRadius: theme.accordion?.container.borderRadius ?? theme.borderRadius.md,
         };
       default:
         return {
-          borderBottomWidth: 1,
-          borderBottomColor: theme.colors.outline,
-          backgroundColor: theme.colors.surface,
+          borderBottomWidth: theme.accordion?.container.borderWidth ?? 1,
+          borderBottomColor: theme.accordion?.container.borderColor ?? theme.colors.outline,
+          backgroundColor: theme.accordion?.container.backgroundColor ?? theme.colors.surface,
         };
     }
-  };
+  }, [variant, theme]);
 
-  const styles = StyleSheet.create({
-    container: {
-      opacity: disabled ? 0.6 : 1,
-      overflow: 'hidden',
-      ...getVariantStyles(),
-    },
-    content: {
-      backgroundColor: theme.colors.surface,
-      overflow: 'hidden',
-      padding: expanded ? theme.spacing.md : 0,
-    },
-    header: {
-      alignItems: 'center',
-      flexDirection: 'row',
-      minHeight: 48,
-      padding: theme.spacing.md,
-    },
-    headerContent: {
-      flex: 1,
-      justifyContent: 'center',
-    },
-    icon: {
-      alignItems: 'center',
-      height: 24,
-      justifyContent: 'center',
-      marginHorizontal: theme.spacing.sm,
-      width: 24,
-    },
-    subtitle: {
-      color: theme.colors.onSurfaceVariant,
-      fontSize: theme.fontSize.body2,
-      marginTop: theme.spacing.xs,
-    },
-    title: {
-      color: theme.colors.onSurface,
-      fontSize: theme.fontSize.body1,
-      fontWeight: theme.fontWeight.medium,
-    },
-    titleContainer: {
-      flex: 1,
-    },
-  });
+  const styles = useMemo(
+    () =>
+      StyleSheet.create({
+        container: {
+          opacity: disabled ? 0.6 : 1,
+          overflow: 'hidden',
+          ...getVariantStyles,
+        },
+        content: {
+          backgroundColor: theme.accordion?.content.backgroundColor ?? theme.colors.surface,
+          overflow: 'hidden',
+          padding: expanded ? (theme.accordion?.content.padding ?? theme.spacing.md) : 0,
+        },
+        header: {
+          alignItems: 'center',
+          flexDirection: 'row',
+          minHeight: theme.accordion?.header.minHeight ?? 48,
+          padding: theme.accordion?.header.padding ?? theme.spacing.md,
+          backgroundColor: theme.accordion?.header.backgroundColor ?? undefined,
+        },
+        headerContent: {
+          flex: 1,
+          justifyContent: 'center',
+        },
+        icon: {
+          alignItems: 'center',
+          height: 24,
+          justifyContent: 'center',
+          marginHorizontal: theme.spacing.sm,
+          width: theme.accordion?.icon.size ?? 24,
+        },
+        subtitle: {
+          color: theme.accordion?.header.subtitleColor ?? theme.colors.onSurfaceVariant,
+          fontSize: theme.fontSize.body2,
+          marginTop: theme.spacing.xs,
+        },
+        title: {
+          color: theme.accordion?.header.titleColor ?? theme.colors.onSurface,
+          fontSize: theme.fontSize.body1,
+          fontWeight: theme.fontWeight.medium,
+        },
+        titleContainer: {
+          flex: 1,
+        },
+      }),
+    [disabled, expanded, theme, getVariantStyles]
+  );
 
-  const renderIcon = () => {
-    const rotation = rotationValue.interpolate({
+  const renderIcon = useCallback(() => {
+    const rotate = rotationValue.interpolate({
       inputRange: [0, 1],
       outputRange: ['0deg', '180deg'],
     });
@@ -209,25 +171,21 @@ export const Accordion: React.FC<AccordionProps> = ({
     return (
       <Animated.Text
         style={[
-          { transform: [{ rotate: rotation }] },
-          { color: theme.colors.onSurfaceVariant },
+          { transform: [{ rotate }] },
+          { color: theme.accordion?.icon.color ?? theme.colors.onSurfaceVariant },
         ]}
       >
         ▼
       </Animated.Text>
     );
-  };
+  }, [rotationValue, expandIcon, collapseIcon, expanded, theme]);
 
-  const handlePress = () => {
-    if (!disabled) {
-      const newValue = !expanded;
-      if (onChange) {
-        onChange(newValue);
-      } else {
-        setInternalExpanded(newValue);
-      }
-    }
-  };
+  const handlePress = useCallback(() => {
+    if (disabled) return;
+    const newValue = !expanded;
+    if (onChange) onChange(newValue);
+    else setInternalExpanded(newValue);
+  }, [disabled, expanded, onChange]);
 
   return (
     <View style={[styles.container, containerStyle]} testID={testID}>
@@ -239,31 +197,31 @@ export const Accordion: React.FC<AccordionProps> = ({
         accessibilityRole="button"
         accessibilityState={{ expanded, disabled }}
       >
-        {iconPosition === 'start' && (
-          <View style={styles.icon}>{renderIcon()}</View>
-        )}
+        {iconPosition === 'start' && <View style={styles.icon}>{renderIcon()}</View>}
         <View style={styles.headerContent}>
           <View style={styles.titleContainer}>
             <Text style={[styles.title, titleStyle]} numberOfLines={1}>
               {title}
             </Text>
-            {subtitle && (
+            {subtitle ? (
               <Text style={[styles.subtitle, subtitleStyle]} numberOfLines={1}>
                 {subtitle}
               </Text>
-            )}
+            ) : null}
           </View>
         </View>
         {headerRight}
-        {iconPosition === 'end' && (
-          <View style={styles.icon}>{renderIcon()}</View>
-        )}
+        {iconPosition === 'end' && <View style={styles.icon}>{renderIcon()}</View>}
       </TouchableOpacity>
-      {expanded && (
+      {expanded ? (
         <View style={[styles.content, contentStyle]} testID="accordion-content">
           {children}
         </View>
-      )}
+      ) : null}
     </View>
   );
 };
+
+const Forwarded = React.forwardRef<AccordionRef, AccordionProps>(AccordionBase);
+Forwarded.displayName = 'Accordion';
+export const Accordion = React.memo(Forwarded);

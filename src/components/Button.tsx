@@ -11,6 +11,7 @@ import {
   Pressable,
   TouchableOpacityProps,
 } from 'react-native';
+import type { StyleProp } from 'react-native';
 import { useTheme } from '../theme/ThemeProvider';
 
 export type ButtonVariant = 'contained' | 'outlined' | 'text' | 'tonal' | 'elevated';
@@ -76,11 +77,11 @@ export interface ButtonProps extends Omit<TouchableOpacityProps, 'onPress'> {
   /**
    * Custom styles for the button container
    */
-  style?: ViewStyle | ViewStyle[];
+  style?: StyleProp<ViewStyle>;
   /**
    * Custom styles for the button text
    */
-  textStyle?: TextStyle;
+  textStyle?: StyleProp<TextStyle>;
   /**
    * Test ID for testing
    */
@@ -88,7 +89,10 @@ export interface ButtonProps extends Omit<TouchableOpacityProps, 'onPress'> {
 }
 
 
-export const Button: React.FC<ButtonProps> = ({
+const ButtonComponent = React.forwardRef<
+  TouchableOpacity | View,
+  ButtonProps
+>(({ 
   title,
   leftIcon,
   rightIcon,
@@ -105,7 +109,7 @@ export const Button: React.FC<ButtonProps> = ({
   textStyle,
   testID,
   ...touchableProps
-}) => {
+}, ref) => {
   const theme = useTheme();
   const [isPressed, setIsPressed] = React.useState(false);
 
@@ -163,19 +167,16 @@ export const Button: React.FC<ButtonProps> = ({
         return {
           minHeight: 32,
           paddingHorizontal: theme.spacing.md,
-          gap: theme.spacing.xs,
         };
       case 'large':
         return {
           minHeight: 48,
           paddingHorizontal: theme.spacing.xl,
-          gap: theme.spacing.md,
         };
       default:
         return {
           minHeight: 40,
           paddingHorizontal: theme.spacing.lg,
-          gap: theme.spacing.sm,
         };
     }
   }, [size, theme.spacing]);
@@ -257,13 +258,16 @@ export const Button: React.FC<ButtonProps> = ({
         />
       ) : (
         <View style={styles.iconContainer}>
-          {leftIcon}
+          {leftIcon ? <View style={{ marginRight: theme.spacing.xs }}>{leftIcon}</View> : null}
           <Text style={[styles.text, textStyle]}>{title}</Text>
-          {rightIcon}
+          {rightIcon ? <View style={{ marginLeft: theme.spacing.xs }}>{rightIcon}</View> : null}
         </View>
       )}
     </>
   );
+
+  const onPressIn = React.useCallback(() => setIsPressed(true), []);
+  const onPressOut = React.useCallback(() => setIsPressed(false), []);
 
   if (Platform.OS === 'android' && ripple) {
     return (
@@ -274,8 +278,8 @@ export const Button: React.FC<ButtonProps> = ({
         }}
         onPress={handlePress}
         onLongPress={onLongPress}
-        onPressIn={() => setIsPressed(true)}
-        onPressOut={() => setIsPressed(false)}
+        onPressIn={onPressIn}
+        onPressOut={onPressOut}
         disabled={disabled || loading}
         testID={testID}
         style={[styles.button, style]}
@@ -288,11 +292,12 @@ export const Button: React.FC<ButtonProps> = ({
 
   return (
     <TouchableOpacity
+      ref={ref as React.Ref<TouchableOpacity>}
       style={[styles.button, style]}
       onPress={handlePress}
       onLongPress={onLongPress}
-      onPressIn={() => setIsPressed(true)}
-      onPressOut={() => setIsPressed(false)}
+      onPressIn={onPressIn}
+      onPressOut={onPressOut}
       disabled={disabled || loading}
       activeOpacity={0.7}
       testID={testID}
@@ -301,4 +306,8 @@ export const Button: React.FC<ButtonProps> = ({
       {ButtonContent}
     </TouchableOpacity>
   );
-};
+});
+
+ButtonComponent.displayName = 'Button';
+export const Button = React.memo(ButtonComponent);
+Button.displayName = 'Button';

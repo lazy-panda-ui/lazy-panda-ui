@@ -127,4 +127,33 @@ export interface Theme {
       xl: number;
     };
   };
+  accordion: {
+    container: {
+      backgroundColor?: string;
+      borderRadius: number;
+      borderColor: string;
+      borderWidth: number;
+    };
+    header: {
+      backgroundColor?: string;
+      borderColor: string;
+      borderWidth: number;
+      padding: number;
+      minHeight: number;
+      titleColor?: string;
+      subtitleColor?: string;
+    };
+    content: {
+      backgroundColor?: string;
+      padding: number;
+    };
+    icon: {
+      size: number;
+      color: string;
+    };
+    animation: {
+      duration: number;
+      easing: 'linear' | 'easeIn' | 'easeOut' | 'easeInOut';
+    };
+  };
 }

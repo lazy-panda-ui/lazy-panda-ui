@@ -294,7 +294,6 @@ const styles = (theme: ReturnType<typeof useTheme>) => StyleSheet.create({
     alignItems: 'center',
     borderRadius: theme.borderRadius.sm,
     flexDirection: 'row',
-    gap: theme.spacing.xs,
     justifyContent: 'center',
     padding: theme.spacing.sm,
   },
@@ -329,7 +328,6 @@ const styles = (theme: ReturnType<typeof useTheme>) => StyleSheet.create({
   side: {
     alignItems: 'center',
     flexDirection: 'row',
-    gap: theme.spacing.sm,
     justifyContent: 'center',
   },
   subtitle: {

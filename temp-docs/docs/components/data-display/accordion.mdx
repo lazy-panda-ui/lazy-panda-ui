@@ -1,6 +1,6 @@
 # Accordion
 
-The Accordion component helps create collapsible content sections, ideal for FAQs, settings menus, or any content that needs to be organized in expandable sections.
+A flexible, theme-aware collapsible container for FAQs, settings, or any expandable content.
 
 ## Import
 
@@ -10,34 +10,64 @@ import { Accordion } from '@lazy-panda-ui/lazy-panda-ui';
 
 ## Usage
 
-### Basic Accordion
+### Basic
 
 ```tsx
-import { Accordion } from '@lazy-panda-ui/lazy-panda-ui';
-
-function Example() {
+function Basic() {
   return (
-    <Accordion
-      title="What is Lazy Panda UI?"
-      subtitle="Click to learn more"
-    >
+    <Accordion title="What is Lazy Panda UI?" subtitle="Tap to learn more">
       <Text>
-        Lazy Panda UI is a modern React Native component library designed
-        for building beautiful cross-platform applications.
+        Lazy Panda UI is a modern React Native component library for building beautiful cross-platform apps.
       </Text>
     </Accordion>
   );
 }
 ```
 
-### Controlled Accordion
+### Variants
 
 ```tsx
-import { Accordion } from '@lazy-panda-ui/lazy-panda-ui';
+function Variants() {
+  return (
+    <>
+      <Accordion title="Default" variant="default">
+        <Text>Default variant with bottom border.</Text>
+      </Accordion>
 
-function Example() {
+      <Accordion title="Outlined" variant="outlined">
+        <Text>Outlined container with border and radius.</Text>
+      </Accordion>
+
+      <Accordion title="Contained" variant="contained">
+        <Text>Contained with themed surface variant background.</Text>
+      </Accordion>
+    </>
+  );
+}
+```
+
+### Custom icons and position
+
+```tsx
+function Icons() {
+  return (
+    <Accordion
+      title="Custom Icons"
+      expandIcon={<Text>▼</Text>}
+      collapseIcon={<Text>▲</Text>}
+      iconPosition="start"
+    >
+      <Text>Icon can be at start or end and fully custom.</Text>
+    </Accordion>
+  );
+}
+```
+
+### Controlled
+
+```tsx
+function Controlled() {
   const [expanded, setExpanded] = useState(false);
-
   return (
     <Accordion
       title="Controlled Accordion"
@@ -50,53 +80,39 @@ function Example() {
 }
 ```
 
-### Different Variants
+### Imperative control (ref)
 
 ```tsx
-import { Accordion } from '@lazy-panda-ui/lazy-panda-ui';
+import type { AccordionRef } from '@lazy-panda-ui/lazy-panda-ui';
 
-function Example() {
+function Imperative() {
+  const ref = useRef<AccordionRef>(null);
   return (
     <>
-      <Accordion
-        title="Default Variant"
-        variant="default"
-      >
-        <Text>Content for default variant</Text>
+      <Accordion ref={ref} title="Imperative Accordion">
+        <Text>Use the buttons below to control me.</Text>
       </Accordion>
-
-      <Accordion
-        title="Outlined Variant"
-        variant="outlined"
-      >
-        <Text>Content for outlined variant</Text>
-      </Accordion>
-
-      <Accordion
-        title="Contained Variant"
-        variant="contained"
-      >
-        <Text>Content for contained variant</Text>
-      </Accordion>
+      <Button title="Expand" onPress={() => ref.current?.expand()} />
+      <Button title="Collapse" onPress={() => ref.current?.collapse()} />
+      <Button title="Toggle" onPress={() => ref.current?.toggle()} />
     </>
   );
 }
 ```
 
-### With Custom Icons
+### Header actions and styles
 
 ```tsx
-import { Accordion } from '@lazy-panda-ui/lazy-panda-ui';
-
-function Example() {
+function HeaderRightActions() {
   return (
     <Accordion
-      title="Custom Icons"
-      expandIcon={<Icon name="chevron-down" />}
-      collapseIcon={<Icon name="chevron-up" />}
-      iconPosition="start"
+      title="With Actions"
+      subtitle="You can place controls on the right"
+      headerRight={<Button title="Action" onPress={() => {}} />}
+      headerStyle={{ padding: 20 }}
+      containerStyle={{ borderRadius: 12 }}
     >
-      <Text>Accordion with custom expand/collapse icons</Text>
+      <Text>Customize container, header, title, subtitle and content styles.</Text>
     </Accordion>
   );
 }
@@ -104,69 +120,91 @@ function Example() {
 
 ## Props
 
-### Main Props
+### Main
 
 | Prop | Type | Default | Description |
 |------|------|---------|-------------|
-| `title` | string | Required | Title of the accordion |
-| `subtitle` | string | - | Optional subtitle text |
-| `children` | React.ReactNode | Required | Content to be displayed when expanded |
-| `expanded` | boolean | - | Controls the expanded state (controlled mode) |
-| `onChange` | (expanded: boolean) => void | - | Called when accordion is toggled |
-| `variant` | 'default' \| 'outlined' \| 'contained' | 'default' | Visual variant of the accordion |
-| `iconPosition` | 'start' \| 'end' | 'end' | Position of the expand/collapse icon |
-| `disabled` | boolean | false | Whether the accordion is disabled |
+| `title` | string | required | Header title |
+| `subtitle` | string | - | Optional subtitle |
+| `children` | React.ReactNode | required | Content shown when expanded |
+| `expanded` | boolean | - | Controlled expanded state |
+| `onChange` | (expanded: boolean) => void | - | Called on toggle (for controlled use) |
+| `variant` | 'default' \\| 'outlined' \\| 'contained' | 'default' | Visual style |
+| `iconPosition` | 'start' \\| 'end' | 'end' | Position of the expand/collapse icon |
+| `disabled` | boolean | false | Disables interaction |
+| `expandIcon` | React.ReactNode | - | Custom icon when expanded |
+| `collapseIcon` | React.ReactNode | - | Custom icon when collapsed |
+| `headerRight` | React.ReactNode | - | Extra content aligned to the right in header |
 
-### Style Props
+### Style props
 
-| Prop | Type | Description |
-|------|------|-------------|
-| `containerStyle` | ViewStyle | Additional styles for the container |
-| `headerStyle` | ViewStyle | Additional styles for the header |
-| `titleStyle` | TextStyle | Additional styles for the title |
-| `subtitleStyle` | TextStyle | Additional styles for the subtitle |
-| `contentStyle` | ViewStyle | Additional styles for the content |
-
-### Accessibility Props
+All style props accept React Native `StyleProp` wrappers for better compatibility.
 
 | Prop | Type | Description |
 |------|------|-------------|
-| `testID` | string | Test ID for testing |
-| `accessibilityLabel` | string | Accessibility label for screen readers |
-| `accessibilityHint` | string | Additional description for screen readers |
+| `containerStyle` | StyleProp<ViewStyle> | Container styles |
+| `headerStyle` | StyleProp<ViewStyle> | Header row styles |
+| `titleStyle` | StyleProp<TextStyle> | Title text styles |
+| `subtitleStyle` | StyleProp<TextStyle> | Subtitle text styles |
+| `contentStyle` | StyleProp<ViewStyle> | Content container styles |
 
-## Theme Customization
+### Accessibility
 
-You can customize the Accordion component through the theme:
+| Prop | Type | Description |
+|------|------|-------------|
+| `testID` | string | Test identifier |
+
+## Theming
+
+Accordion is fully themeable via `ThemeProvider` tokens. Override only what you need.
 
 ```tsx
-const theme = {
-  components: {
-    accordion: {
-      container: {
-        // container styles
-      },
-      header: {
-        // header styles
-      },
-      title: {
-        // title text styles
-      },
-      subtitle: {
-        // subtitle text styles
-      },
-      content: {
-        // content wrapper styles
-      },
-      variants: {
-        outlined: {
-          // outlined variant styles
-        },
-        contained: {
-          // contained variant styles
-        },
-      },
+import { ThemeProvider, createTheme } from '@lazy-panda-ui/lazy-panda-ui';
+
+const customTheme = createTheme({
+  accordion: {
+    container: {
+      borderRadius: 16,
+      borderColor: '#E5E7EB',
+      borderWidth: 1,
+      backgroundColor: '#FFFFFF',
+    },
+    header: {
+      padding: 20,
+      minHeight: 56,
+      titleColor: '#111827',
+      subtitleColor: '#6B7280',
+      backgroundColor: '#FFFFFF',
+      borderColor: '#E5E7EB',
+      borderWidth: 0,
+    },
+    content: {
+      padding: 16,
+      backgroundColor: '#FFFFFF',
+    },
+    icon: {
+      size: 24,
+      color: '#6B7280',
+    },
+    animation: {
+      duration: 200,
+      easing: 'easeInOut',
     },
   },
-};
+});
+
+export function App() {
+  return (
+    <ThemeProvider theme={customTheme}>
+      <Accordion title="Themed Accordion" subtitle="Using theme overrides">
+        <Text>All styles are driven by theme tokens.</Text>
+      </Accordion>
+    </ThemeProvider>
+  );
+}
 ```
+
+Notes:
+- Rotation uses the native driver and LayoutAnimation on Android.
+- The component supports both controlled and uncontrolled modes.
+- No `useInsertionEffect` usage; safe with React 18/19.
