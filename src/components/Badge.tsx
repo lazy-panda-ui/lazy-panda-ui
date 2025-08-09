@@ -1,5 +1,6 @@
-import React from 'react';
+import React, { useMemo } from 'react';
 import { View, Text, StyleSheet, ViewStyle, TextStyle, Animated, Pressable } from 'react-native';
+import type { StyleProp } from 'react-native';
 import { useTheme } from '../theme/ThemeProvider';
 
 export type BadgeVariant = 'filled' | 'outlined' | 'dot' | 'tonal';
@@ -41,11 +42,11 @@ export interface BadgeProps {
   /**
    * Custom styles for the badge container
    */
-  style?: ViewStyle;
+  style?: StyleProp<ViewStyle>;
   /**
    * Custom styles for the badge text
    */
-  textStyle?: TextStyle;
+  textStyle?: StyleProp<TextStyle>;
   /**
    * Content to be wrapped by the badge
    */
@@ -126,39 +127,14 @@ export const Badge: React.FC<BadgeProps> = ({
     return theme.colors[color];
   };
 
-  const getSize = () => {
-    switch (size) {
-      case 'small':
-        return {
-          height: 16,
-          minWidth: variant === 'dot' ? 8 : 16,
-          paddingHorizontal: variant === 'dot' ? 0 : 4,
-        };
-      case 'large':
-        return {
-          height: 24,
-          minWidth: variant === 'dot' ? 12 : 24,
-          paddingHorizontal: variant === 'dot' ? 0 : 8,
-        };
-      default:
-        return {
-          height: 20,
-          minWidth: variant === 'dot' ? 10 : 20,
-          paddingHorizontal: variant === 'dot' ? 0 : 6,
-        };
-    }
-  };
-
-  const getFontSize = () => {
-    switch (size) {
-      case 'small':
-        return 10;
-      case 'large':
-        return 14;
-      default:
-        return 12;
-    }
-  };
+  const tokens = theme.badge;
+  const sizeMetrics = tokens.sizes[size];
+  const sizeStyle = useMemo(() => ({
+    height: sizeMetrics.height,
+    minWidth: variant === 'dot' ? sizeMetrics.dot : sizeMetrics.minWidth,
+    paddingHorizontal: variant === 'dot' ? 0 : sizeMetrics.paddingX,
+  }), [sizeMetrics, variant]);
+  const fontSize = tokens.fontSizes[size];
 
   const getBackgroundColor = () => {
     if (variant === 'outlined') return theme.colors.background;
@@ -227,25 +203,26 @@ export const Badge: React.FC<BadgeProps> = ({
     return value;
   };
 
-  const sizeStyle = getSize();
-  const fontSize = getFontSize();
   const backgroundColor = getBackgroundColor();
+  const textColor = getTextColor();
+  const borderColorValue = getColor(color);
+  const hasChildren = !!children;
+  const positionStyle = hasChildren ? getPositionStyle() : undefined;
 
-
-  const styles = StyleSheet.create({
+  const styles = useMemo(() => StyleSheet.create({
     container: {
       ...sizeStyle,
       alignItems: 'center',
       backgroundColor,
-      borderColor: getColor(color),
+      borderColor: borderColorValue,
       borderRadius: theme.borderRadius.full,
-      borderWidth: variant === 'outlined' ? 1 : 0,
+      borderWidth: variant === 'outlined' ? tokens.borderWidth : 0,
       justifyContent: 'center',
-      position: children ? 'absolute' : 'relative',
-      ...(children && getPositionStyle()),
+      position: hasChildren ? 'absolute' : 'relative',
+      ...(hasChildren && positionStyle ? positionStyle : {}),
     },
     text: {
-      color: getTextColor(),
+      color: textColor,
       display: variant === 'dot' ? 'none' : 'flex',
       fontSize,
       fontWeight: theme.fontWeight.semibold,
@@ -253,7 +230,7 @@ export const Badge: React.FC<BadgeProps> = ({
     wrapper: {
       position: 'relative',
     },
-  });
+  }), [backgroundColor, borderColorValue, fontSize, hasChildren, positionStyle, sizeStyle, textColor, theme.borderRadius.full, theme.fontWeight.semibold, tokens.borderWidth, variant]);
 
   if (!visible || (value === 0 && !showZero && variant !== 'dot')) return null;
 

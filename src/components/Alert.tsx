@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useCallback, useMemo } from 'react';
 import {
   View,
   Text,
@@ -8,9 +8,11 @@ import {
   Pressable,
   AccessibilityRole,
 } from 'react-native';
+import type { StyleProp } from 'react-native';
 import { useTheme } from '../theme/ThemeProvider';
 
 export type AlertType = 'success' | 'info' | 'warning' | 'error';
+export type AlertVariant = 'solid' | 'outlined' | 'soft';
 
 export interface AlertProps {
   /**
@@ -43,22 +45,33 @@ export interface AlertProps {
   /**
    * Additional styles for the container
    */
-  containerStyle?: ViewStyle;
+  containerStyle?: StyleProp<ViewStyle>;
   
   /**
    * Additional styles for the content wrapper
    */
-  contentStyle?: ViewStyle;
+  contentStyle?: StyleProp<ViewStyle>;
   
   /**
    * Additional styles for the message text
    */
-  messageStyle?: TextStyle;
+  messageStyle?: StyleProp<TextStyle>;
   
   /**
    * Additional styles for the icon wrapper
    */
-  iconStyle?: ViewStyle;
+  iconStyle?: StyleProp<ViewStyle>;
+
+  /**
+   * Variant for visual style
+   * @default 'solid'
+   */
+  variant?: AlertVariant;
+
+  /**
+   * Custom close icon when dismissible
+   */
+  closeIcon?: React.ReactNode;
   
   /**
    * The role tells the screen reader what kind of element the user is focused on
@@ -77,18 +90,9 @@ export interface AlertProps {
   testID?: string;
 }
 
-const getTypeColor = (theme: ReturnType<typeof useTheme>, type: AlertType): string => {
-  switch (type) {
-    case 'success':
-      return theme.colors.success;
-    case 'warning':
-      return theme.colors.warning;
-    case 'error':
-      return theme.colors.error;
-    case 'info':
-    default:
-      return theme.colors.info;
-  }
+const getTypeTokens = (theme: ReturnType<typeof useTheme>, type: AlertType) => {
+  const t = theme.alert.type;
+  return t[type];
 };
 
 export const Alert: React.FC<AlertProps> = ({
@@ -101,18 +105,20 @@ export const Alert: React.FC<AlertProps> = ({
   contentStyle,
   messageStyle,
   iconStyle,
+  variant = 'solid',
+  closeIcon,
   accessibilityRole = 'alert',
   accessibilityLabel,
   testID,
 }) => {
   const theme = useTheme();
 
-  const handleDismiss = () => {
+  const handleDismiss = useCallback(() => {
     onDismiss?.();
-  };
+  }, [onDismiss]);
 
   const Container = dismissible ? Pressable : View;
-  const styles = React.useMemo(() => createStyles(theme, type), [theme, type]);
+  const styles = useMemo(() => createStyles(theme, type, variant), [theme, type, variant]);
 
   return (
     <Container
@@ -137,46 +143,70 @@ export const Alert: React.FC<AlertProps> = ({
           accessibilityRole="button"
           accessibilityLabel="Dismiss alert"
         >
-          <Text style={styles.dismissIcon}>×</Text>
+          {closeIcon ?? <Text style={styles.dismissIcon}>×</Text>}
         </Pressable>
       )}
     </Container>
   );
 };
 
-const createStyles = (theme: ReturnType<typeof useTheme>, type: AlertType) => StyleSheet.create({
-  container: {
+const createStyles = (
+  theme: ReturnType<typeof useTheme>,
+  type: AlertType,
+  variant: AlertVariant
+) => {
+  const { bg, fg, border } = getTypeTokens(theme, type);
+  const base: ViewStyle = {
     alignItems: 'center',
-    backgroundColor: getTypeColor(theme, type),
-    borderRadius: theme.borderRadius.md,
     flexDirection: 'row',
     marginVertical: theme.spacing.sm,
     overflow: 'hidden',
-  },
-  content: {
-    alignItems: 'center',
-    flex: 1,
-    flexDirection: 'row',
-    padding: theme.spacing.md,
-  },
-  dismissButton: {
-    alignItems: 'center',
-    alignSelf: 'stretch',
-    justifyContent: 'center',
-    padding: theme.spacing.sm,
-  },
-  dismissIcon: {
-    color: theme.colors.onPrimary,
-    fontSize: theme.fontSize.h6,
-    lineHeight: theme.fontSize.h6,
-  },
-  iconContainer: {
-    marginRight: theme.spacing.sm,
-  },
-  text: {
-    color: theme.colors.onPrimary,
-    flex: 1,
-    fontSize: theme.fontSize.body1,
-    fontWeight: theme.fontWeight.medium,
-  },
-});
+    borderRadius: theme.alert.borderRadius,
+  };
+
+  let containerByVariant: ViewStyle;
+  if (variant === 'outlined') {
+    containerByVariant = {
+      backgroundColor: 'transparent',
+      borderWidth: theme.alert.borderWidth,
+      borderColor: border,
+    };
+  } else if (variant === 'soft') {
+    containerByVariant = { backgroundColor: theme.colors.surfaceVariant, borderWidth: 0 };
+  } else {
+    containerByVariant = { backgroundColor: bg, borderWidth: 0 };
+  }
+
+  return StyleSheet.create({
+    container: {
+      ...base,
+      ...containerByVariant,
+    },
+    content: {
+      alignItems: 'center',
+      flex: 1,
+      flexDirection: 'row',
+      padding: theme.alert.padding,
+    },
+    dismissButton: {
+      alignItems: 'center',
+      alignSelf: 'stretch',
+      justifyContent: 'center',
+      padding: theme.spacing.sm,
+    },
+    dismissIcon: {
+      color: variant === 'outlined' ? border : fg,
+      fontSize: theme.fontSize.h6,
+      lineHeight: theme.fontSize.h6,
+    },
+    iconContainer: {
+      marginRight: theme.spacing.sm,
+    },
+    text: {
+      color: variant === 'outlined' || variant === 'soft' ? theme.colors.onSurface : fg,
+      flex: 1,
+      fontSize: theme.fontSize.body1,
+      fontWeight: theme.fontWeight.medium,
+    },
+  });
+};

@@ -1,5 +1,6 @@
-import React from 'react';
-import { Image, View, StyleSheet, ViewStyle, Text, ImageSourcePropType, Pressable, ImageStyle } from 'react-native';
+import React, { useMemo } from 'react';
+import { Image, View, StyleSheet, ViewStyle, Text, ImageSourcePropType, Pressable, ImageStyle, TextStyle } from 'react-native';
+import type { StyleProp } from 'react-native';
 import { useTheme } from '../theme/ThemeProvider';
 
 export type AvatarSize = 'xs' | 'sm' | 'md' | 'lg' | 'xl';
@@ -27,11 +28,12 @@ export interface AvatarProps {
   /**
    * Custom styles for the container
    */
-  style?: ViewStyle;
+  style?: StyleProp<ViewStyle>;
   /**
    * Custom styles for the image
    */
-  imageStyle?: ImageStyle;
+  imageStyle?: StyleProp<ImageStyle>;
+  labelStyle?: StyleProp<TextStyle>;
   /**
    * Background color for the avatar when showing text
    */
@@ -66,6 +68,7 @@ export const Avatar: React.FC<AvatarProps> = ({
   variant = 'circular',
   style,
   imageStyle,
+  labelStyle,
   backgroundColor,
   textColor,
   onPress,
@@ -74,65 +77,32 @@ export const Avatar: React.FC<AvatarProps> = ({
   borderColor,
 }) => {
   const theme = useTheme();
-
-  const getFontSize = () => {
-    switch (size) {
-      case 'xs':
-        return theme.fontSize.caption;
-      case 'sm':
-        return theme.fontSize.body2;
-      case 'lg':
-        return theme.fontSize.h5;
-      case 'xl':
-        return theme.fontSize.h4;
-      default:
-        return theme.fontSize.body1;
-    }
-  };
-
-  const getDimension = () => {
-    switch (size) {
-      case 'xs':
-        return 24;
-      case 'sm':
-        return 32;
-      case 'md':
-        return 40;
-      case 'lg':
-        return 48;
-      case 'xl':
-        return 56;
-    }
-  };
-
-  const getBorderRadius = () => {
-    const dimension = getDimension();
+  const tokens = theme.avatar;
+  const dimension = tokens.sizes[size];
+  const fontSize = tokens.fontSizes[size];
+  const borderRadius = useMemo(() => {
     switch (variant) {
       case 'rounded':
-        return dimension / 4;
+        return dimension / tokens.roundedFactor;
       case 'square':
         return 0;
       default:
         return dimension / 2;
     }
-  };
+  }, [dimension, tokens.roundedFactor, variant]);
 
-  const dimension = getDimension();
-  const fontSize = getFontSize();
-  const borderRadius = getBorderRadius();
-
-  const styles = StyleSheet.create({
+  const styles = useMemo(() => StyleSheet.create({
     container: {
       alignItems: 'center',
-      backgroundColor: backgroundColor || theme.colors.card,
+      backgroundColor: backgroundColor || tokens.background,
       borderRadius: borderRadius,
       height: dimension,
       justifyContent: 'center',
       overflow: 'hidden',
       width: dimension,
       ...(showBorder && {
-        borderWidth: 1,
-        borderColor: borderColor || theme.colors.border,
+        borderWidth: tokens.borderWidth,
+        borderColor: borderColor || tokens.borderColor,
       }),
     },
     image: {
@@ -141,11 +111,11 @@ export const Avatar: React.FC<AvatarProps> = ({
       width: dimension,
     },
     label: {
-      color: textColor || theme.colors.text,
+      color: textColor || tokens.foreground,
       fontSize: fontSize,
       fontWeight: theme.fontWeight.semibold,
     },
-  });
+  }), [backgroundColor, borderColor, borderRadius, dimension, fontSize, showBorder, textColor, theme.fontWeight.semibold, tokens]);
 
   const Component = onPress ? Pressable : View;
 
@@ -156,9 +126,9 @@ export const Avatar: React.FC<AvatarProps> = ({
       testID={testID}
     >
       {source ? (
-        <Image source={source} style={[styles.image, imageStyle]} />
+  <Image source={source} style={[styles.image, imageStyle]} />
       ) : (
-        <Text style={styles.label}>{label && label.length > 0 ? label[0] : '?'}</Text>
+  <Text style={[styles.label, labelStyle]}>{label && label.length > 0 ? label[0] : '?'}</Text>
       )}
     </Component>
   );

@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useCallback, useEffect, useMemo, useState } from 'react';
 import {
   View,
   Text,
@@ -12,6 +12,7 @@ import {
   ActivityIndicator,
   ScrollView,
 } from 'react-native';
+import type { StyleProp } from 'react-native';
 import { useTheme } from '../theme/ThemeProvider';
 
 export type AppBarVariant = 'primary' | 'secondary' | 'transparent' | 'surface' | 'elevated';
@@ -111,15 +112,15 @@ export interface AppBarProps {
   /**
    * Additional styles for the container
    */
-  style?: ViewStyle;
+  style?: StyleProp<ViewStyle>;
   /**
    * Additional styles for the title text
    */
-  titleStyle?: TextStyle;
+  titleStyle?: StyleProp<TextStyle>;
   /**
    * Additional styles for the subtitle text
    */
-  subtitleStyle?: TextStyle;
+  subtitleStyle?: StyleProp<TextStyle>;
   /**
    * Test ID for testing
    */
@@ -147,91 +148,62 @@ export const AppBar: React.FC<AppBarProps> = ({
   testID,
 }) => {
   const theme = useTheme();
-  const [isVisible, setIsVisible] = React.useState(true);
+  const [isVisible, setIsVisible] = useState(true);
 
-  React.useEffect(() => {
+  useEffect(() => {
     if (!hideOnScroll) setIsVisible(true);
   }, [hideOnScroll]);
 
-  const getBackgroundColor = () => {
-    if (backgroundColor) return backgroundColor;
-    
-    switch (variant) {
-      case 'secondary':
-        return theme.colors.secondary;
-      case 'surface':
-        return theme.colors.surface;
-      case 'elevated':
-        return theme.colors.surfaceVariant;
-      case 'transparent':
-        return 'transparent';
-      default:
-        return theme.colors.primary;
-    }
-  };
+  const tokens = theme.appBar;
+  const s = useMemo(() => styles(theme), [theme]);
+  const variantTokens = tokens.variants[variant];
+  const bgColor = backgroundColor ?? variantTokens.background;
 
-  const getStatusBarStyle = () => {
+  const barStyle = useMemo(() => {
     if (statusBarStyle !== 'auto') return statusBarStyle === 'light' ? 'light-content' : 'dark-content';
-    
-    switch (variant) {
-      case 'surface':
-      case 'elevated':
-      case 'transparent':
-        return 'dark-content';
-      default:
-        return 'light-content';
-    }
-  };
+    return variant === 'surface' || variant === 'elevated' || variant === 'transparent'
+      ? 'dark-content'
+      : 'light-content';
+  }, [statusBarStyle, variant]);
 
-  const getHeight = () => {
-    switch (size) {
-      case 'small':
-        return 48;
-      case 'large':
-        return 64;
-      default:
-        return 56;
-    }
-  };
+  const height = tokens.heights[size];
 
-  const renderActions = (actions: AppBarAction[] | React.ReactNode) => {
+  const renderActions = useCallback((actions: AppBarAction[] | React.ReactNode) => {
     if (Array.isArray(actions)) {
       return actions.map((action, index) => (
         <TouchableOpacity
           key={action.label || `action-${index}`}
           onPress={action.onPress}
           disabled={action.disabled || action.loading}
-          style={styles(theme).actionButton}
+          style={s.actionButton}
         >
           {action.loading ? (
-            <ActivityIndicator size="small" color={theme.colors.onPrimary} />
+            <ActivityIndicator size="small" color={variantTokens.foreground} />
           ) : (
             <>
               {action.icon}
-              <Text style={styles(theme).actionLabel}>{action.label}</Text>
+              <Text style={[s.actionLabel, { color: variantTokens.foreground }]}>{action.label}</Text>
             </>
           )}
         </TouchableOpacity>
       ));
     }
     return actions;
-  };
+  }, [s.actionButton, s.actionLabel, variantTokens.foreground]);
 
   const containerStyle = [
-    styles(theme).container,
+    s.container,
     {
-      backgroundColor: getBackgroundColor(),
+      backgroundColor: bgColor,
       position: position === 'fixed' ? 'absolute' : position,
-      height: getHeight(),
+      height,
       borderBottomWidth: showBorder ? StyleSheet.hairlineWidth : 0,
-      borderBottomColor: theme.colors.outline,
+      borderBottomColor: tokens.variants.surface.borderColor,
       transform: [
-        {
-          translateY: hideOnScroll && !isVisible ? -getHeight() : 0,
-        },
+        { translateY: hideOnScroll && !isVisible ? -height : 0 },
       ],
       ...(elevation && {
-        elevation: 4,
+        elevation: variantTokens.elevation,
         shadowOpacity: 0.2,
         shadowOffset: { width: 0, height: 2 },
         shadowRadius: 4,
@@ -242,24 +214,24 @@ export const AppBar: React.FC<AppBarProps> = ({
   ];
 
   const Content = (
-    <View style={[styles(theme).content, scrollable && styles(theme).scrollableContent]}>
-      <View style={styles(theme).side}>
+    <View style={[s.content, scrollable && s.scrollableContent]}>
+      <View style={s.side}>
         {left && renderActions(left)}
       </View>
       <View style={[
-        styles(theme).titleContainer,
+        s.titleContainer,
         { alignItems: titleAlignment === 'center' ? 'center' : 'flex-start' }
       ]}>
-        <Text style={[styles(theme).title, titleStyle]} numberOfLines={1}>
+        <Text style={[s.title, { color: variantTokens.foreground, fontSize: tokens.title.fontSize, fontWeight: tokens.title.fontWeight }, titleStyle]} numberOfLines={1}>
           {title}
         </Text>
         {subtitle && (
-          <Text style={[styles(theme).subtitle, subtitleStyle]} numberOfLines={1}>
+          <Text style={[s.subtitle, { color: variantTokens.foreground, opacity: tokens.subtitle.opacity, fontSize: tokens.subtitle.fontSize }, subtitleStyle]} numberOfLines={1}>
             {subtitle}
           </Text>
         )}
       </View>
-      <View style={styles(theme).side}>
+      <View style={s.side}>
         {right && renderActions(right)}
       </View>
     </View>
@@ -268,8 +240,8 @@ export const AppBar: React.FC<AppBarProps> = ({
   return (
     <>
       <StatusBar
-        backgroundColor={variant === 'transparent' ? 'transparent' : getBackgroundColor()}
-        barStyle={getStatusBarStyle()}
+        backgroundColor={variant === 'transparent' ? 'transparent' : bgColor}
+        barStyle={barStyle}
         translucent={variant === 'transparent'}
       />
       <SafeAreaView style={containerStyle} testID={testID}>
@@ -277,7 +249,7 @@ export const AppBar: React.FC<AppBarProps> = ({
           <ScrollView
             horizontal
             showsHorizontalScrollIndicator={false}
-            contentContainerStyle={styles(theme).scrollViewContent}
+            contentContainerStyle={s.scrollViewContent}
           >
             {Content}
           </ScrollView>
@@ -292,15 +264,14 @@ export const AppBar: React.FC<AppBarProps> = ({
 const styles = (theme: ReturnType<typeof useTheme>) => StyleSheet.create({
   actionButton: {
     alignItems: 'center',
-    borderRadius: theme.borderRadius.sm,
+  borderRadius: theme.appBar.action.borderRadius,
     flexDirection: 'row',
     justifyContent: 'center',
-    padding: theme.spacing.sm,
+  padding: theme.spacing.sm,
   },
   actionLabel: {
-    color: theme.colors.onPrimary,
-    fontSize: theme.fontSize.caption,
-    marginLeft: theme.spacing.xs,
+  fontSize: theme.appBar.subtitle.fontSize,
+  marginLeft: theme.appBar.action.spacing,
   },
   container: {
     left: 0,
@@ -316,7 +287,7 @@ const styles = (theme: ReturnType<typeof useTheme>) => StyleSheet.create({
   content: {
     alignItems: 'center',
     flexDirection: 'row',
-    paddingHorizontal: theme.spacing.md,
+  paddingHorizontal: theme.appBar.paddingX,
     paddingTop: Platform.OS === 'android' ? StatusBar.currentHeight : 0,
   },
   scrollViewContent: {
@@ -331,19 +302,14 @@ const styles = (theme: ReturnType<typeof useTheme>) => StyleSheet.create({
     justifyContent: 'center',
   },
   subtitle: {
-    color: theme.colors.onPrimary,
-    fontSize: theme.fontSize.caption,
-    marginTop: 2,
-    opacity: 0.8,
+  marginTop: 2,
   },
   title: {
-    color: theme.colors.onPrimary,
-    fontSize: theme.fontSize.h6,
-    fontWeight: theme.fontWeight.medium,
+  // color, fontSize, weight are applied inline using tokens
   },
   titleContainer: {
     flex: 1,
     justifyContent: 'center',
-    marginHorizontal: theme.spacing.sm,
+  marginHorizontal: theme.spacing.sm,
   },
 });

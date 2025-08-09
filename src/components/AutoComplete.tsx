@@ -1,52 +1,59 @@
-import React, { useState } from 'react';
-import { View, TextInput, FlatList, TouchableOpacity, Text, StyleSheet, ViewStyle } from 'react-native';
+import React, { useMemo, useState, useCallback } from 'react';
+import { View, TextInput, FlatList, TouchableOpacity, Text, StyleSheet, ViewStyle, TextStyle } from 'react-native';
+import type { StyleProp } from 'react-native';
 import { useTheme, Theme } from '../theme';
 
 export interface AutoCompleteProps {
   data: string[];
   onSelect: (value: string) => void;
   placeholder?: string;
-  style?: ViewStyle;
+  style?: StyleProp<ViewStyle>;
+  inputStyle?: StyleProp<TextStyle>;
+  listStyle?: StyleProp<ViewStyle>;
+  itemStyle?: StyleProp<ViewStyle>;
+  textStyle?: StyleProp<TextStyle>;
 }
 
-export const AutoComplete: React.FC<AutoCompleteProps> = ({ data, onSelect, placeholder, style }) => {
+export const AutoComplete: React.FC<AutoCompleteProps> = ({ data, onSelect, placeholder, style, inputStyle, listStyle, itemStyle, textStyle }) => {
   const theme = useTheme();
   const [query, setQuery] = useState('');
   const [showList, setShowList] = useState(false);
 
-  const filtered = (data ?? []).filter(item => item.toLowerCase().includes(query.toLowerCase()));
+  const filtered = useMemo(() => (data ?? []).filter(item => item.toLowerCase().includes(query.toLowerCase())), [data, query]);
+  const tokens = theme.autocomplete;
+  const s = useMemo(() => styles(theme), [theme]);
+  const onChangeText = useCallback((text: string) => { setQuery(text); setShowList(true); }, []);
+  const onBlur = useCallback(() => { setTimeout(() => { setShowList(false); }, 100); }, []);
+  const onFocus = useCallback(() => setShowList(true), []);
 
   return (
     <View style={style}>
       <TextInput
         testID="autocomplete-input"
-        style={styles(theme).input}
+        style={[s.input, inputStyle]}
         value={query}
-        onChangeText={text => {
-          setQuery(text);
-          setShowList(true);
-        }}
+        onChangeText={onChangeText}
         placeholder={placeholder}
-        placeholderTextColor={theme.colors.border}
-        onBlur={() => setTimeout(() => { setShowList(false); }, 100)}
-        onFocus={function() { return setShowList(true) }}
+        placeholderTextColor={tokens.input.placeholderColor}
+        onBlur={onBlur}
+        onFocus={onFocus}
       />
       {showList && filtered.length > 0 && (
         <FlatList
           data={filtered}
           keyExtractor={item => item}
-          style={styles(theme).list}
+          style={[s.list, listStyle]}
           renderItem={({ item }) => (
             <TouchableOpacity
               testID={`autocomplete-option-${item}`}
-              style={styles(theme).item}
+              style={[s.item, itemStyle]}
               onPress={() => {
                 setQuery(item);
                 setShowList(false);
                 onSelect(item);
               }}
             >
-              <Text style={styles(theme).text}>{item}</Text>
+              <Text style={[s.text, textStyle]}>{item}</Text>
             </TouchableOpacity>
           )}
         />
@@ -57,28 +64,30 @@ export const AutoComplete: React.FC<AutoCompleteProps> = ({ data, onSelect, plac
 
 const styles = (theme: Theme) => StyleSheet.create({
   input: {
-    backgroundColor: theme.colors.background,
-    borderColor: theme.colors.border,
-    borderRadius: theme.borderRadius.md,
-    borderWidth: 1,
-    color: theme.colors.text,
-    fontSize: theme.fontSize.body1,
-    padding: theme.spacing.sm,
+    backgroundColor: theme.autocomplete.input.backgroundColor ?? theme.colors.surface,
+    borderColor: theme.autocomplete.input.borderColor,
+    borderRadius: theme.autocomplete.input.borderRadius,
+    borderWidth: theme.autocomplete.input.borderWidth,
+    color: theme.autocomplete.input.textColor,
+    fontSize: theme.autocomplete.input.fontSize,
+    padding: theme.autocomplete.input.padding,
   },
   item: {
-    borderBottomColor: theme.colors.border,
-    borderBottomWidth: 1,
-    padding: theme.spacing.sm,
+    borderBottomColor: theme.autocomplete.item.dividerColor,
+    borderBottomWidth: theme.autocomplete.item.dividerWidth,
+    padding: theme.autocomplete.item.padding,
   },
   list: {
-    backgroundColor: theme.colors.card,
-    borderRadius: theme.borderRadius.md,
+    backgroundColor: theme.autocomplete.list.backgroundColor ?? theme.colors.card,
+    borderRadius: theme.autocomplete.list.borderRadius,
     marginTop: theme.spacing.xs,
-    maxHeight: theme.sizing.xl * 2,
+    maxHeight: theme.autocomplete.list.maxHeight,
+    borderWidth: theme.autocomplete.list.borderWidth,
+    borderColor: theme.autocomplete.list.borderColor,
   },
   text: {
-    color: theme.colors.text,
-    fontSize: theme.fontSize.body1,
+    color: theme.autocomplete.item.textColor,
+    fontSize: theme.autocomplete.item.fontSize,
     fontWeight: theme.fontWeight.regular,
   },
 });

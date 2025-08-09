@@ -168,6 +168,91 @@ const buildTheme = (colors: Theme['colors'], opts?: { isDark?: boolean }): Theme
   return {
     ...baseTheme,
     colors,
+    badge: {
+      sizes: {
+        small: { height: 16, minWidth: 16, dot: 8, paddingX: 4 },
+        medium: { height: 20, minWidth: 20, dot: 10, paddingX: 6 },
+        large: { height: 24, minWidth: 24, dot: 12, paddingX: 8 },
+      },
+      fontSizes: { small: 10, medium: 12, large: 14 },
+      borderWidth: 1,
+    },
+    avatar: {
+      sizes: { xs: 24, sm: 32, md: 40, lg: 48, xl: 56 },
+      fontSizes: {
+        xs: baseTheme.fontSize.caption,
+        sm: baseTheme.fontSize.body2,
+        md: baseTheme.fontSize.body1,
+        lg: baseTheme.fontSize.h5,
+        xl: baseTheme.fontSize.h4,
+      },
+      background: colors.card,
+      foreground: colors.text,
+      borderWidth: 1,
+      borderColor: colors.border,
+      roundedFactor: 4,
+    },
+    autocomplete: {
+      input: {
+        backgroundColor: colors.surface,
+        borderColor: colors.outline,
+        borderWidth: 1,
+        borderRadius: baseTheme.borderRadius.md,
+        padding: baseTheme.spacing.sm,
+        placeholderColor: colors.outline,
+        textColor: colors.onSurface,
+        fontSize: baseTheme.fontSize.body1,
+      },
+      list: {
+        backgroundColor: colors.card,
+        borderRadius: baseTheme.borderRadius.md,
+        maxHeight: baseTheme.sizing.xl * 2,
+        borderColor: colors.outline,
+        borderWidth: 0,
+      },
+      item: {
+        padding: baseTheme.spacing.sm,
+        dividerColor: colors.outline,
+  dividerWidth: 1,
+        textColor: colors.onSurface,
+        fontSize: baseTheme.fontSize.body1,
+      },
+    },
+    appBar: {
+      heights: { small: 48, medium: 56, large: 64 },
+      paddingX: baseTheme.spacing.md,
+      action: {
+        borderRadius: baseTheme.borderRadius.sm,
+        spacing: baseTheme.spacing.xs,
+      },
+      title: {
+        fontSize: baseTheme.fontSize.h6,
+        fontWeight: baseTheme.fontWeight.medium,
+      },
+      subtitle: {
+        fontSize: baseTheme.fontSize.caption,
+        opacity: 0.8,
+      },
+      variants: {
+        primary: { background: colors.primary, foreground: colors.onPrimary, borderColor: colors.outline, elevation: 4 },
+        secondary: { background: colors.secondary, foreground: colors.onSecondary, borderColor: colors.outline, elevation: 4 },
+        surface: { background: colors.surface, foreground: colors.onSurface, borderColor: colors.outline, elevation: 0 },
+        elevated: { background: colors.surfaceVariant, foreground: colors.onSurface, borderColor: colors.outline, elevation: 2 },
+        transparent: { background: 'transparent', foreground: colors.onSurface, borderColor: colors.outline, elevation: 0 },
+      },
+    },
+    alert: {
+      padding: baseTheme.spacing.md,
+      borderRadius: baseTheme.borderRadius.md,
+      borderWidth: 1,
+      iconSize: baseTheme.iconSize.md,
+      type: {
+        info: { bg: colors.info, fg: colors.onInfo, border: colors.info },
+        success: { bg: colors.success, fg: colors.onSuccess, border: colors.success },
+        warning: { bg: colors.warning, fg: colors.onWarning, border: colors.warning },
+        error: { bg: colors.error, fg: colors.onError, border: colors.error },
+      },
+    },
     accordion: {
       container: {
         backgroundColor: colors.surface,
