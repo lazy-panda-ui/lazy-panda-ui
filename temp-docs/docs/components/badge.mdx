@@ -4,7 +4,7 @@ sidebar_position: 11
 
 # Badge
 
-The Badge component is used to highlight and display status information, notifications, or counts. It can be used standalone or to decorate other components.
+The Badge component highlights counts or status, standalone or decorating another component.
 
 ## Import
 
@@ -20,7 +20,7 @@ import { Badge } from '@lazy-panda-ui/lazy-panda-ui';
 
 function MyComponent() {
   return (
-    <Badge content={3}>
+    <Badge value={3}>
       <Icon name="notification" />
     </Badge>
   );
@@ -31,26 +31,29 @@ function MyComponent() {
 
 | Name | Type | Default | Description |
 |------|------|---------|-------------|
-| `content` | `string \| number \| ReactNode` | - | Content to display in badge |
-| `variant` | `'dot' \| 'standard'` | `'standard'` | Visual variant of badge |
-| `color` | `'primary' \| 'secondary' \| 'success' \| 'warning' \| 'error'` | `'primary'` | Color scheme |
-| `max` | `number` | `99` | Maximum value to display |
-| `showZero` | `boolean` | `false` | Whether to show when content is 0 |
-| `overlap` | `'circular' \| 'rectangular'` | `'rectangular'` | Shape of overlap |
-| `horizontal` | `'left' \| 'right'` | `'right'` | Horizontal positioning |
-| `vertical` | `'top' \| 'bottom'` | `'top'` | Vertical positioning |
-| `invisible` | `boolean` | `false` | Whether badge is hidden |
+| `value` | `string \| number` | `0` | Value to display in badge (hidden when 0 unless `showZero`) |
+| `variant` | `'filled' \| 'outlined' \| 'dot' \| 'tonal'` | `'filled'` | Visual style |
+| `color` | `'primary' \| 'secondary' \| 'error' \| 'warning' \| 'success' \| 'info'` | `'primary'` | Color scheme |
+| `size` | `'small' \| 'medium' \| 'large'` | `'medium'` | Size token |
+| `max` | `number` | `99` | If value exceeds, displays `max+` |
+| `showZero` | `boolean` | `false` | Whether to show when value is 0 |
+| `style` | `StyleProp<ViewStyle>` | - | Container style override |
+| `textStyle` | `StyleProp<TextStyle>` | - | Text style override |
+| `children` | `React.ReactNode` | - | Optional content to decorate |
+| `position` | `'top-right' \| 'top-left' \| 'bottom-right' \| 'bottom-left'` | `'top-right'` | Position relative to children |
+| `alignment` | `'inside' \| 'outside'` | `'outside'` | Place badge within or outside child bounds |
+| `showPulse` | `boolean` | `false` | Pulse animation |
+| `visible` | `boolean` | `true` | Toggles visibility |
+| `onPress` | `() => void` | - | Press handler |
+| `testID` | `string` | - | Test identifier |
 
 ## Examples
 
-### Basic Badges
+### Basic
 ```tsx
 <Stack direction="row" spacing="lg">
-  <Badge content={4}>
+  <Badge value={4}>
     <Icon name="mail" />
-  </Badge>
-  <Badge content="new">
-    <Icon name="message" />
   </Badge>
   <Badge variant="dot">
     <Icon name="notification" />
@@ -61,19 +64,19 @@ function MyComponent() {
 ### Badge Colors
 ```tsx
 <Stack direction="row" spacing="lg">
-  <Badge content={1} color="primary">
+  <Badge value={1} color="primary">
     <Box>Primary</Box>
   </Badge>
-  <Badge content={2} color="secondary">
+  <Badge value={2} color="secondary">
     <Box>Secondary</Box>
   </Badge>
-  <Badge content={3} color="success">
+  <Badge value={3} color="success">
     <Box>Success</Box>
   </Badge>
-  <Badge content={4} color="warning">
+  <Badge value={4} color="warning">
     <Box>Warning</Box>
   </Badge>
-  <Badge content={5} color="error">
+  <Badge value={5} color="error">
     <Box>Error</Box>
   </Badge>
 </Stack>
@@ -82,10 +85,16 @@ function MyComponent() {
 ### Badge Variants
 ```tsx
 <Stack direction="row" spacing="lg">
-  <Badge variant="standard" content={99}>
+  <Badge variant="filled" value={99}>
     <Avatar />
   </Badge>
   <Badge variant="dot" color="success">
+    <Avatar />
+  </Badge>
+  <Badge variant="outlined" value={12}>
+    <Avatar />
+  </Badge>
+  <Badge variant="tonal" value={8} color="secondary">
     <Avatar />
   </Badge>
 </Stack>
@@ -94,10 +103,10 @@ function MyComponent() {
 ### Maximum Value
 ```tsx
 <Stack direction="row" spacing="lg">
-  <Badge content={100} max={99}>
+  <Badge value={100} max={99}>
     <Icon name="inbox" />
   </Badge>
-  <Badge content={1000} max={999}>
+  <Badge value={1000} max={999}>
     <Icon name="message" />
   </Badge>
 </Stack>
@@ -108,25 +117,13 @@ function MyComponent() {
 ### Horizontal and Vertical
 ```tsx
 <Stack direction="row" spacing="lg">
-  <Badge
-    content={4}
-    horizontal="right"
-    vertical="top"
-  >
+  <Badge value={4} position="top-right">
     <Box>Top Right</Box>
   </Badge>
-  <Badge
-    content={4}
-    horizontal="left"
-    vertical="top"
-  >
+  <Badge value={4} position="top-left">
     <Box>Top Left</Box>
   </Badge>
-  <Badge
-    content={4}
-    horizontal="right"
-    vertical="bottom"
-  >
+  <Badge value={4} position="bottom-right">
     <Box>Bottom Right</Box>
   </Badge>
 </Stack>
@@ -135,16 +132,10 @@ function MyComponent() {
 ### Overlap Styles
 ```tsx
 <Stack direction="row" spacing="lg">
-  <Badge
-    content={4}
-    overlap="circular"
-  >
+  <Badge value={4} alignment="inside">
     <Avatar />
   </Badge>
-  <Badge
-    content={4}
-    overlap="rectangular"
-  >
+  <Badge value={4} alignment="outside">
     <Box>Rectangle</Box>
   </Badge>
 </Stack>
@@ -154,15 +145,7 @@ function MyComponent() {
 
 ### Custom Content
 ```tsx
-<Badge
-  content={
-    <Icon
-      name="check"
-      size="xs"
-      color="white"
-    />
-  }
->
+<Badge value={5}>
   <Avatar />
 </Badge>
 ```
@@ -170,11 +153,13 @@ function MyComponent() {
 ### Custom Styles
 ```tsx
 <Badge
-  content={5}
+  value={5}
   style={{
     backgroundColor: '#FF6B6B',
-    padding: '0 8px',
-    borderRadius: '16px'
+    paddingHorizontal: 8,
+    height: 24,
+    minWidth: 24,
+    borderRadius: 16,
   }}
 >
   <Box>Custom Badge</Box>
@@ -184,8 +169,8 @@ function MyComponent() {
 ### Dynamic Visibility
 ```tsx
 <Badge
-  content={messageCount}
-  invisible={messageCount === 0}
+  value={messageCount}
+  visible={messageCount !== 0}
 >
   <Icon name="mail" />
 </Badge>
@@ -193,15 +178,7 @@ function MyComponent() {
 
 ## Accessibility
 
-### ARIA Support
-```tsx
-<Badge
-  content={4}
-  aria-label="4 unread messages"
->
-  <Icon name="mail" />
-</Badge>
-```
+Note: ARIA attributes are web-only; for React Native, use testID and accessible props on parents.
 
 ## Best Practices
 
@@ -227,23 +204,19 @@ interface BadgePlacement {
 }
 ```
 
-### Theme Customization
-```tsx
-const theme = {
-  badge: {
-    colors: {
-      primary: '#007AFF',
-      secondary: '#5856D6',
-      success: '#34C759',
-      warning: '#FF9500',
-      error: '#FF3B30'
-    },
-    sizes: {
-      dot: 8,
-      standard: 20
-    }
-  }
-};
+### Theming
+Badge size/typography/border are driven by `theme.badge` tokens.
+
+```ts
+badge: {
+  sizes: {
+    small: { height: 16, minWidth: 16, dot: 8, paddingX: 4 },
+    medium: { height: 20, minWidth: 20, dot: 10, paddingX: 6 },
+    large: { height: 24, minWidth: 24, dot: 12, paddingX: 8 },
+  },
+  fontSizes: { small: 10, medium: 12, large: 14 },
+  borderWidth: 1,
+}
 ```
 
 ## Related Components

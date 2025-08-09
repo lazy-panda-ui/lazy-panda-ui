@@ -101,11 +101,11 @@ function MyComponent() {
 ```tsx
 <Stack direction="row" spacing="sm">
   <Chip
-    avatar={<Avatar src="/user1.jpg" size="sm" />}
+    avatar={<Avatar source={{ uri: '/user1.jpg' }} size="sm" />}
     label="John Doe"
   />
   <Chip
-    avatar={<Avatar name="JD" size="sm" />}
+    avatar={<Avatar label="JD" size="sm" />}
     label="Jane Doe"
     color="primary"
   />

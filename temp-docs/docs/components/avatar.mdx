@@ -4,7 +4,7 @@ sidebar_position: 12
 
 # Avatar
 
-The Avatar component is used to represent users, entities, or organizations through images, initials, or icons.
+The Avatar component displays a user's image or fallback initials. It supports sizes and shapes driven by the theme.
 
 ## Import
 
@@ -21,9 +21,9 @@ import { Avatar } from '@lazy-panda-ui/lazy-panda-ui';
 function MyComponent() {
   return (
     <Avatar
-      src="/path/to/image.jpg"
-      alt="User avatar"
+      source={{ uri: 'https://example.com/user.png' }}
       size="md"
+      variant="circular"
     />
   );
 }
@@ -33,58 +33,70 @@ function MyComponent() {
 
 | Name | Type | Default | Description |
 |------|------|---------|-------------|
-| `src` | `string` | - | Image source URL |
-| `alt` | `string` | - | Alternative text for image |
-| `size` | `'xs' \| 'sm' \| 'md' \| 'lg' \| 'xl' \| number` | `'md'` | Size of the avatar |
-| `name` | `string` | - | Name to generate initials from |
-| `icon` | `ReactNode` | - | Icon to display when no image |
-| `variant` | `'circle' \| 'rounded' \| 'square'` | `'circle'` | Shape of the avatar |
-| `status` | `'online' \| 'offline' \| 'busy' \| 'away'` | - | Online status indicator |
-| `bordered` | `boolean` | `false` | Whether to show border |
-| `loading` | `boolean` | `false` | Show loading state |
+| `source` | `ImageSourcePropType` | - | React Native image source (e.g. `{ uri: string }` or `require(...)`) |
+| `label` | `string` | - | Text fallback used to render the first character when no image source is provided |
+| `size` | `'xs'` \| `'sm'` \| `'md'` \| `'lg'` \| `'xl'` | `'md'` | Tokenized size controlled by the theme |
+| `variant` | `'circular'` \| `'rounded'` \| `'square'` | `'circular'` | Shape of the avatar |
+| `style` | `StyleProp<ViewStyle>` | - | Container style override |
+| `imageStyle` | `StyleProp<ImageStyle>` | - | Image style override |
+| `labelStyle` | `StyleProp<TextStyle>` | - | Label text style override |
+| `backgroundColor` | `string` | - | Background color (overrides theme token) |
+| `textColor` | `string` | - | Label color (overrides theme token) |
+| `showBorder` | `boolean` | `false` | Show a border around the avatar |
+| `borderColor` | `string` | - | Border color (overrides theme token) |
+| `onPress` | `() => void` | - | Press handler; when provided, Avatar becomes pressable |
+| `testID` | `string` | - | Test identifier |
 
 ## Examples
 
 ### Basic Avatars
 ```tsx
-<Stack direction="row" spacing="md">
-  <Avatar src="/user1.jpg" alt="User 1" />
-  <Avatar name="John Doe" />
-  <Avatar icon={<Icon name="user" />} />
-</Stack>
+// Image source
+<Avatar source={{ uri: 'https://example.com/u1.png' }} />
+
+// Text fallback
+<Avatar label="JD" />
+```
+### Basic
+```tsx
+// Image source
+<Avatar source={{ uri: 'https://example.com/u1.png' }} />
+
+// Text fallback
+<Avatar label="JD" />
+```
 ```
 
 ### Avatar Sizes
 ```tsx
-<Stack direction="row" spacing="md" align="center">
-  <Avatar size="xs" name="XS" />
-  <Avatar size="sm" name="SM" />
-  <Avatar size="md" name="MD" />
-  <Avatar size="lg" name="LG" />
-  <Avatar size="xl" name="XL" />
-  <Avatar size={64} name="64" />
-</Stack>
+<Avatar size="xs" label="XS" />
+<Avatar size="sm" label="SM" />
+<Avatar size="md" label="MD" />
+<Avatar size="lg" label="LG" />
+<Avatar size="xl" label="XL" />
+```
+### Sizes
+```tsx
+<Avatar size="xs" label="XS" />
+<Avatar size="sm" label="SM" />
+<Avatar size="md" label="MD" />
+<Avatar size="lg" label="LG" />
+<Avatar size="xl" label="XL" />
+```
 ```
 
 ### Avatar Variants
 ```tsx
-<Stack direction="row" spacing="md">
-  <Avatar
-    variant="circle"
-    src="/user1.jpg"
-    alt="Circle"
-  />
-  <Avatar
-    variant="rounded"
-    src="/user2.jpg"
-    alt="Rounded"
-  />
-  <Avatar
-    variant="square"
-    src="/user3.jpg"
-    alt="Square"
-  />
-</Stack>
+<Avatar variant="circular" label="C" />
+<Avatar variant="rounded" label="R" />
+<Avatar variant="square" label="S" />
+```
+### Variants
+```tsx
+<Avatar variant="circular" label="C" />
+<Avatar variant="rounded" label="R" />
+<Avatar variant="square" label="S" />
+```
 ```
 
 ### With Status
@@ -113,33 +125,24 @@ function MyComponent() {
 </Stack>
 ```
 
-## Group Avatars
-
-### Avatar Group
+## Border
 ```tsx
-<AvatarGroup max={3} spacing="sm">
-  <Avatar src="/user1.jpg" alt="User 1" />
-  <Avatar src="/user2.jpg" alt="User 2" />
-  <Avatar src="/user3.jpg" alt="User 3" />
-  <Avatar src="/user4.jpg" alt="User 4" />
-</AvatarGroup>
-```
-
-### Stack Direction
-```tsx
-<AvatarGroup
-  direction="vertical"
-  max={4}
-  spacing="sm"
->
-  <Avatar src="/user1.jpg" alt="User 1" />
-  <Avatar src="/user2.jpg" alt="User 2" />
-  <Avatar src="/user3.jpg" alt="User 3" />
-  <Avatar src="/user4.jpg" alt="User 4" />
-</AvatarGroup>
+<Avatar label="B" showBorder />
+<Avatar label="B" showBorder borderColor="#00C853" />
 ```
 
 ## Customization
+
+### Per-instance styles
+```tsx
+<Avatar
+  label="LP"
+  backgroundColor="#222"
+  textColor="#fff"
+  style={{ elevation: 2 }}
+  labelStyle={{ letterSpacing: 1 }}
+/>
+```
 
 ### Custom Background
 ```tsx
@@ -179,28 +182,46 @@ function MyComponent() {
 />
 ```
 
-## Fallback Behavior
+## Theming
 
-### Image Loading
-```tsx
-<Avatar
-  src="/user1.jpg"
-  alt="Loading"
-  loading
-  fallback={<Icon name="user" />}
-/>
+Avatar styling is driven by the theme at `theme.avatar`.
+
+```ts
+// theme.avatar tokens
+{
+  sizes: { xs: 24, sm: 32, md: 40, lg: 48, xl: 56 },
+  fontSizes: { xs: 12, sm: 14, md: 16, lg: 18, xl: 20 },
+  background: colors.card,
+  foreground: colors.text,
+  borderWidth: 1,
+  borderColor: colors.border,
+  roundedFactor: 4,
+}
 ```
 
-### Broken Image
+Override via ThemeProvider:
+
 ```tsx
-<Avatar
-  src="/invalid-image.jpg"
-  alt="Broken"
-  name="Fallback Name"
-  onError={(e) => {
-    console.log('Image failed to load');
-  }}
-/>
+import { ThemeProvider, createTheme } from '@lazy-panda-ui/lazy-panda-ui';
+
+const customTheme = createTheme({
+  avatar: {
+    sizes: { md: 44 },
+    fontSizes: { md: 18 },
+    background: '#223',
+    foreground: '#fff',
+    borderColor: '#556',
+    roundedFactor: 3,
+  },
+});
+
+export default function App() {
+  return (
+    <ThemeProvider theme={customTheme}>
+      <Avatar label="LP" />
+    </ThemeProvider>
+  );
+}
 ```
 
 ## Best Practices
@@ -252,7 +273,8 @@ interface AvatarGroupProps {
 
 ## Related Components
 
+## Related Components
+
 - [Badge](badge) - For status indicators
 - [Card](card) - For user cards
 - [List](list) - For user lists
-- [UserInfo](user-info) - For detailed user information

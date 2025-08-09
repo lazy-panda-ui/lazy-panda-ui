@@ -170,7 +170,7 @@ function ControlledExample() {
   content={
     <Stack spacing="md" p="md" style={{ width: '320px' }}>
       <Stack direction="row" spacing="md" align="center">
-        <Avatar size="md" src="/user.jpg" />
+  <Avatar size="md" source={{ uri: '/user.jpg' }} />
         <Stack spacing="xs">
           <Text weight="bold">John Doe</Text>
           <Text size="sm" color="gray">Software Engineer</Text>
@@ -193,7 +193,7 @@ function ControlledExample() {
 >
   <Avatar
     size="md"
-    src="/user.jpg"
+    source={{ uri: '/user.jpg' }}
     style={{ cursor: 'pointer' }}
   />
 </Popover>

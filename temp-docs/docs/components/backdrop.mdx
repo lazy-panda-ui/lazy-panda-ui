@@ -1,0 +1,78 @@
+---
+sidebar_position: 13
+---
+
+# Backdrop
+
+The Backdrop component renders a full-screen overlay behind content. It’s commonly used with modals, drawers, and menus.
+
+## Import
+
+```tsx
+import { Backdrop } from '@lazy-panda-ui/lazy-panda-ui';
+```
+
+## Props
+
+| Name | Type | Default | Description |
+|------|------|---------|-------------|
+| `open` | `boolean` | - | Controls visibility |
+| `style` | `StyleProp<ViewStyle>` | - | Container style override |
+| `children` | `React.ReactNode` | - | Render content inside the backdrop |
+| `color` | `string` | `theme.drawer.backdrop.color` | Base color for the overlay |
+| `opacity` | `number` | `theme.drawer.backdrop.opacity` | Alpha (0–1) for the overlay |
+| `onPress` | `() => void` | - | If provided, backdrop is pressable and triggers this callback |
+| `pointerEvents` | `'auto' \| 'none' \| 'box-none' \| 'box-only'` | - | RN pointerEvents passthrough |
+| `testID` | `string` | - | Test identifier |
+
+## Usage
+
+### Basic
+```tsx
+<Backdrop open>
+  {/* centered content by default */}
+  <Text style={{ color: '#fff' }}>Loading…</Text>
+  <ActivityIndicator color="#fff" />
+  {/* ... */}
+  {/* The layout is centered; override with style if needed. */}
+</Backdrop>
+```
+
+### Press to close
+```tsx
+const [open, setOpen] = React.useState(false);
+
+<>
+  <Button onPress={() => setOpen(true)}>Open</Button>
+  <Backdrop open={open} onPress={() => setOpen(false)} />
+</>
+```
+
+### Custom color and opacity
+```tsx
+<Backdrop open color="#000000" opacity={0.7} />
+```
+
+### With content
+```tsx
+<Backdrop open>
+  <Card>
+    <Text>Processing your request</Text>
+    <Progress variant="indeterminate" />
+  </Card>
+  {/* You can also pass pointerEvents to control interaction routing */}
+</Backdrop>
+```
+
+## Theming
+
+Backdrop uses the theme’s drawer backdrop tokens:
+
+```ts
+theme.drawer.backdrop = {
+  color: '#000000',
+  opacity: 0.5,
+};
+```
+
+Override via ThemeProvider if you want a different default overlay across the app.

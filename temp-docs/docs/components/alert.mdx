@@ -1,6 +1,6 @@
 # Alert
 
-The Alert component is used to display important messages or feedback to users. It supports different types of alerts for various scenarios like success, error, warning, and info messages.
+The Alert component displays important messages to users. It supports types (info, success, warning, error), variants, custom icons, and dismiss behavior.
 
 ## Import
 
@@ -10,156 +10,131 @@ import { Alert } from '@lazy-panda-ui/lazy-panda-ui';
 
 ## Usage
 
-### Basic Alert
+### Basic
 
 ```tsx
-import { Alert } from '@lazy-panda-ui/lazy-panda-ui';
-
-function Example() {
-  return (
-    <Alert message="This is a basic info alert" />
-  );
+function Basic() {
+  return <Alert message="This is a basic info alert" />;
 }
 ```
 
-### Different Types
+### Types
 
 ```tsx
-import { Alert } from '@lazy-panda-ui/lazy-panda-ui';
-
-function Example() {
+function Types() {
   return (
     <>
-      <Alert 
-        type="success"
-        message="Operation completed successfully"
-      />
-      
-      <Alert 
-        type="error"
-        message="An error occurred"
-      />
-      
-      <Alert 
-        type="warning"
-        message="Please proceed with caution"
-      />
-      
-      <Alert 
-        type="info"
-        message="Here's some useful information"
-      />
+      <Alert type="success" message="Operation completed successfully" />
+      <Alert type="error" message="An error occurred" />
+      <Alert type="warning" message="Please proceed with caution" />
+      <Alert type="info" message="Here's some useful information" />
     </>
   );
 }
 ```
 
-### Dismissible Alert
+### Variants
 
 ```tsx
-import { Alert } from '@lazy-panda-ui/lazy-panda-ui';
+function Variants() {
+  return (
+    <>
+      <Alert message="Solid (default)" type="info" variant="solid" />
+      <Alert message="Outlined" type="warning" variant="outlined" />
+      <Alert message="Soft" type="success" variant="soft" />
+    </>
+  );
+}
+```
 
-function Example() {
-  const handleDismiss = () => {
-    console.log('Alert dismissed');
-  };
+### Dismissible + custom close icon
 
+```tsx
+function Dismissible() {
   return (
     <Alert
       message="This alert can be dismissed"
       type="info"
       dismissible
-      onDismiss={handleDismiss}
+      closeIcon={<Text>✕</Text>}
+      onDismiss={() => console.log('Alert dismissed')}
     />
   );
 }
 ```
 
-### With Custom Icon
+### With custom leading icon
 
 ```tsx
-import { Alert } from '@lazy-panda-ui/lazy-panda-ui';
 import { Icon } from 'your-icon-library';
 
-function Example() {
-  return (
-    <Alert
-      message="Alert with custom icon"
-      icon={<Icon name="bell" />}
-      type="info"
-    />
-  );
+function WithIcon() {
+  return <Alert message="Alert with custom icon" icon={<Icon name="bell" />} type="info" />;
 }
 ```
 
 ## Props
 
-### Main Props
+### Main
 
 | Prop | Type | Default | Description |
 |------|------|---------|-------------|
-| `message` | string | Required | The message to display |
-| `type` | 'success' \| 'info' \| 'warning' \| 'error' | 'info' | The type of alert |
-| `icon` | React.ReactNode | - | Custom icon to display |
+| `message` | string | required | The message to display |
+| `type` | 'success' \\| 'info' \\| 'warning' \\| 'error' | 'info' | The alert type |
+| `variant` | 'solid' \\| 'outlined' \\| 'soft' | 'solid' | Visual style variant |
+| `icon` | React.ReactNode | - | Custom leading icon |
 | `dismissible` | boolean | false | Whether the alert can be dismissed |
-| `onDismiss` | () => void | - | Called when alert is dismissed |
+| `closeIcon` | React.ReactNode | - | Custom close icon when dismissible |
+| `onDismiss` | () => void | - | Called when the alert is dismissed |
 
-### Style Props
-
-| Prop | Type | Description |
-|------|------|-------------|
-| `containerStyle` | ViewStyle | Additional styles for the container |
-| `contentStyle` | ViewStyle | Additional styles for the content wrapper |
-| `messageStyle` | TextStyle | Additional styles for the message text |
-| `iconStyle` | ViewStyle | Additional styles for the icon wrapper |
-
-### Accessibility Props
+### Style props
 
 | Prop | Type | Description |
 |------|------|-------------|
-| `accessibilityRole` | AccessibilityRole | Role for screen readers |
+| `containerStyle` | `StyleProp<ViewStyle>` | Styles for the container |
+| `contentStyle` | `StyleProp<ViewStyle>` | Styles for the content wrapper |
+| `messageStyle` | `StyleProp<TextStyle>` | Styles for the message text |
+| `iconStyle` | `StyleProp<ViewStyle>` | Styles for the icon wrapper |
+
+### Accessibility
+
+| Prop | Type | Description |
+|------|------|-------------|
+| `accessibilityRole` | `AccessibilityRole` | Role for screen readers |
 | `accessibilityLabel` | string | Accessibility label |
-| `testID` | string | Test ID for testing |
+| `testID` | string | Test identifier |
 
-## Theme Customization
+## Theming
 
-You can customize the Alert component through the theme:
+Alert is fully themeable via `ThemeProvider` tokens. Override only what you need.
 
 ```tsx
-const theme = {
-  components: {
-    alert: {
-      container: {
-        // base container styles
-      },
-      content: {
-        // content wrapper styles
-      },
-      iconContainer: {
-        // icon wrapper styles
-      },
-      text: {
-        // message text styles
-      },
-      dismissButton: {
-        // dismiss button styles
-      },
-      dismissIcon: {
-        // dismiss icon styles
-      },
-      variants: {
-        success: {
-          container: {
-            backgroundColor: 'rgba(52, 199, 89, 0.1)',
-            borderColor: 'rgba(52, 199, 89, 0.3)',
-          },
-          text: {
-            color: '#2A7D47',
-          },
-        },
-        // Similar customizations for info, warning, and error variants
-      },
+import { ThemeProvider, createTheme } from '@lazy-panda-ui/lazy-panda-ui';
+
+const customTheme = createTheme({
+  alert: {
+    padding: 16,
+    borderRadius: 12,
+    borderWidth: 1,
+    iconSize: 20,
+    type: {
+      info: { bg: '#E0F2FE', fg: '#075985', border: '#7DD3FC' },
+      success: { bg: '#DCFCE7', fg: '#166534', border: '#86EFAC' },
+      warning: { bg: '#FEF9C3', fg: '#854D0E', border: '#FDE68A' },
+      error: { bg: '#FEE2E2', fg: '#991B1B', border: '#FCA5A5' },
     },
   },
-};
+});
+
+export function App() {
+  return (
+    <ThemeProvider theme={customTheme}>
+      <Alert message="Themed alert" type="info" />
+    </ThemeProvider>
+  );
+}
 ```
+
+Notes:
+- Variants: solid uses background, outlined uses border + transparent bg, soft uses surfaceVariant background.
+- Handlers and styles are memoized for performance.

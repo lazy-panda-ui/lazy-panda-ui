@@ -1,0 +1,153 @@
+# AppBar
+
+Top-level application bar with configurable variants, sizes, actions, and full theme token support.
+
+## Import
+
+```tsx
+import { AppBar } from '@lazy-panda-ui/lazy-panda-ui';
+```
+
+## Usage
+
+### Basic
+
+```tsx
+function Basic() {
+	return <AppBar title="Home" />;
+}
+```
+
+### Variants
+
+```tsx
+function Variants() {
+	return (
+		<>
+			<AppBar title="Primary" variant="primary" />
+			<AppBar title="Secondary" variant="secondary" />
+			<AppBar title="Surface" variant="surface" />
+			<AppBar title="Elevated" variant="elevated" />
+			<AppBar title="Transparent" variant="transparent" />
+		</>
+	);
+}
+```
+
+### Sizes and alignment
+
+```tsx
+function Sizes() {
+	return (
+		<>
+			<AppBar title="Small" size="small" />
+			<AppBar title="Medium" size="medium" />
+			<AppBar title="Large" size="large" titleAlignment="center" />
+		</>
+	);
+}
+```
+
+### Actions (left/right) and loading/disabled
+
+```tsx
+function Actions() {
+	const left = [
+		{ icon: <Text>≡</Text>, label: 'Menu', onPress: () => {} },
+	];
+	const right = [
+		{ icon: <Text>⟳</Text>, label: 'Sync', onPress: () => {}, loading: true },
+		{ icon: <Text>★</Text>, label: 'Fav', onPress: () => {}, disabled: true },
+	];
+
+	return (
+		<AppBar title="Dashboard" subtitle="Overview" left={left} right={right} />
+	);
+}
+```
+
+### Position and scrollable actions
+
+```tsx
+function Positioning() {
+	const many = new Array(10).fill(0).map((_, i) => ({ icon: <Text>•</Text>, label: `A${i+1}`, onPress: () => {} }));
+	return (
+		<>
+			<AppBar title="Fixed" position="fixed" />
+			<AppBar title="Absolute" position="absolute" />
+			<AppBar title="Relative" position="relative" />
+			<AppBar title="Scrollable actions" right={many} scrollable />
+		</>
+	);
+}
+```
+
+## Props
+
+| Prop | Type | Default | Description |
+|------|------|---------|-------------|
+| `title` | string | required | Title text |
+| `subtitle` | string | - | Optional subtitle |
+| `left` | `React.ReactNode` \| `AppBarAction[]` | - | Left content or actions |
+| `right` | `React.ReactNode` \| `AppBarAction[]` | - | Right content or actions |
+| `variant` | 'primary' \\| 'secondary' \\| 'transparent' \\| 'surface' \\| 'elevated' | 'primary' | Visual variant |
+| `position` | 'fixed' \\| 'absolute' \\| 'relative' | 'fixed' | Positioning strategy |
+| `elevation` | boolean | true | Show shadow/elevation |
+| `size` | 'small' \\| 'medium' \\| 'large' | 'medium' | Height preset |
+| `titleAlignment` | 'start' \\| 'center' | 'start' | Title alignment |
+| `hideOnScroll` | boolean | false | Slide away on scroll (fixed only) |
+| `showBorder` | boolean | false | Bottom hairline border |
+| `scrollable` | boolean | false | Makes actions area horizontally scrollable |
+| `backgroundColor` | string | - | Overrides variant background |
+| `statusBarStyle` | 'light' \\| 'dark' \\| 'auto' | 'auto' | StatusBar content style |
+| `style` | `StyleProp<ViewStyle>` | - | Container styles |
+| `titleStyle` | `StyleProp<TextStyle>` | - | Title text styles |
+| `subtitleStyle` | `StyleProp<TextStyle>` | - | Subtitle text styles |
+| `testID` | string | - | Test identifier |
+
+`AppBarAction`:
+
+| Key | Type | Description |
+|-----|------|-------------|
+| `icon` | React.ReactNode | Icon to render |
+| `label` | string | Accessibility label and optional text |
+| `onPress` | () => void | Press handler |
+| `disabled` | boolean | Disable interaction |
+| `loading` | boolean | Show ActivityIndicator |
+
+## Theming
+
+AppBar is theme-driven. Override `theme.appBar` tokens via `ThemeProvider` to customize globally.
+
+```tsx
+import { ThemeProvider, createTheme } from '@lazy-panda-ui/lazy-panda-ui';
+
+const customTheme = createTheme({
+	appBar: {
+		heights: { small: 44, medium: 56, large: 72 },
+		paddingX: 20,
+		action: { borderRadius: 8, spacing: 6 },
+		title: { fontSize: 18, fontWeight: '600' },
+		subtitle: { fontSize: 12, opacity: 0.9 },
+		variants: {
+			primary: { background: '#111827', foreground: '#F9FAFB', borderColor: '#1F2937', elevation: 4 },
+			secondary: { background: '#4B5563', foreground: '#F9FAFB', borderColor: '#374151', elevation: 4 },
+			surface: { background: '#FFFFFF', foreground: '#111827', borderColor: '#E5E7EB', elevation: 0 },
+			elevated: { background: '#F3F4F6', foreground: '#111827', borderColor: '#E5E7EB', elevation: 2 },
+			transparent: { background: 'transparent', foreground: '#111827', borderColor: '#E5E7EB', elevation: 0 },
+		},
+	},
+});
+
+export function App() {
+	return (
+		<ThemeProvider theme={customTheme}>
+			<AppBar title="Themed AppBar" variant="primary" />
+		</ThemeProvider>
+	);
+}
+```
+
+Notes:
+- Colors, heights, spacing, fonts, and elevation are token-driven; set once to affect all AppBars.
+- Styles and handlers are memoized to reduce re-renders.

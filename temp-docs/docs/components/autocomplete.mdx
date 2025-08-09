@@ -1,0 +1,116 @@
+# AutoComplete
+
+Text input with inline suggestions. Fully themeable and optimized for performance.
+
+## Import
+
+```tsx
+import { AutoComplete } from '@lazy-panda-ui/lazy-panda-ui';
+```
+
+## Usage
+
+### Basic
+
+```tsx
+function Basic() {
+	const cities = ['London', 'Los Angeles', 'Lahore', 'Lisbon'];
+	return <AutoComplete data={cities} onSelect={(v) => console.log('Selected', v)} placeholder="Search city" />;
+}
+```
+
+### Controlled selection
+
+```tsx
+function Controlled() {
+	const fruits = ['Apple', 'Apricot', 'Avocado', 'Banana', 'Blueberry'];
+	const [value, setValue] = React.useState('');
+	return (
+		<>
+			<AutoComplete data={fruits} onSelect={(v) => setValue(v)} placeholder="Pick a fruit" />
+			<Text>Selected: {value}</Text>
+		</>
+	);
+}
+```
+
+### Custom styles per instance
+
+```tsx
+function CustomStyles() {
+	const data = ['One', 'Two', 'Three'];
+	return (
+		<AutoComplete
+			data={data}
+			onSelect={() => {}}
+			placeholder="Type..."
+			inputStyle={{ borderRadius: 12, padding: 12 }}
+			listStyle={{ borderWidth: 1 }}
+			itemStyle={{ padding: 14 }}
+			textStyle={{ fontSize: 18 }}
+		/>
+	);
+}
+```
+
+## Props
+
+| Prop | Type | Default | Description |
+|------|------|---------|-------------|
+| `data` | string[] | required | Suggestion list |
+| `onSelect` | (value: string) => void | required | Called when a value is selected |
+| `placeholder` | string | - | Placeholder text |
+| `style` | `StyleProp<ViewStyle>` | - | Wrapper styles |
+| `inputStyle` | `StyleProp<TextStyle>` | - | TextInput styles |
+| `listStyle` | `StyleProp<ViewStyle>` | - | Suggestion list styles |
+| `itemStyle` | `StyleProp<ViewStyle>` | - | Suggestion row styles |
+| `textStyle` | `StyleProp<TextStyle>` | - | Suggestion text styles |
+
+## Theming
+
+AutoComplete is fully themeable via `ThemeProvider` tokens under `theme.autocomplete`.
+
+```tsx
+import { ThemeProvider, createTheme } from '@lazy-panda-ui/lazy-panda-ui';
+
+const customTheme = createTheme({
+	autocomplete: {
+		input: {
+			backgroundColor: '#FFFFFF',
+			borderColor: '#E5E7EB',
+			borderWidth: 1,
+			borderRadius: 10,
+			padding: 12,
+			placeholderColor: '#9CA3AF',
+			textColor: '#111827',
+			fontSize: 16,
+		},
+		list: {
+			backgroundColor: '#F9FAFB',
+			borderRadius: 10,
+			maxHeight: 120,
+			borderColor: '#E5E7EB',
+			borderWidth: 1,
+		},
+		item: {
+			padding: 12,
+			dividerColor: '#E5E7EB',
+			dividerWidth: 1,
+			textColor: '#111827',
+			fontSize: 16,
+		},
+	},
+});
+
+export function App() {
+	return (
+		<ThemeProvider theme={customTheme}>
+			<AutoComplete data={["Alpha", "Beta", "Gamma"]} onSelect={() => {}} />
+		</ThemeProvider>
+	);
+}
+```
+
+Notes:
+- Filtering is memoized; handlers are stable to reduce re-renders.
+- Use instance style props for quick tweaks; use theme tokens for app-wide consistency.
