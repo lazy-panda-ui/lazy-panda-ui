@@ -141,66 +141,56 @@ export const Box: React.FC<BoxProps> = ({
 }) => {
   const theme = useTheme();
 
-  const boxStyle = React.useMemo(() => {
-    const baseStyle: ViewStyle = {
-      flexDirection: direction,
-      alignItems: align,
-      justifyContent: justify,
-      flexWrap: wrap ? 'wrap' : 'nowrap',
-      ...(Platform.OS === 'web' ? { gap } : {}),
-      flexGrow: grow ? 1 : undefined,
-      flexShrink: shrink ? 1 : undefined,
-      padding: padding === 'none' ? 0 : theme.spacing[padding as SpacingValue],
-      margin: margin === 'none' ? 0 : theme.spacing[margin as SpacingValue],
-      borderRadius: radius ?? theme.borderRadius.md,
-    };
+  const sizePadding = React.useMemo(() => (padding === 'none' ? 0 : theme.spacing[padding]), [padding, theme.spacing]);
+  const sizeMargin = React.useMemo(() => (margin === 'none' ? 0 : theme.spacing[margin]), [margin, theme.spacing]);
+  const borderRadiusValue = React.useMemo(() => (radius ?? theme.box.defaults.radius), [radius, theme.box.defaults.radius]);
+  const gapValue = React.useMemo(() => (Platform.OS === 'web' ? gap ?? theme.box.defaults.gap : 0), [gap, theme.box.defaults.gap]);
 
-    if (backgroundColor) {
-      baseStyle.backgroundColor = backgroundColor;
-    } else {
-      switch (variant) {
-        case 'elevated':
-          baseStyle.backgroundColor = theme.colors.surface;
-          baseStyle.elevation = elevation;
-          if (Platform.OS === 'ios') {
-            baseStyle.shadowColor = '#000';
-            baseStyle.shadowOffset = { width: 0, height: elevation };
-            baseStyle.shadowOpacity = 0.25;
-            baseStyle.shadowRadius = elevation;
-          }
-          break;
-        case 'outlined':
-          baseStyle.backgroundColor = theme.colors.surface;
-          baseStyle.borderWidth = 1;
-          baseStyle.borderColor = theme.colors.outline;
-          break;
-        case 'filled':
-          baseStyle.backgroundColor = theme.colors.surfaceVariant;
-          break;
-        case 'tonal':
-          baseStyle.backgroundColor = theme.colors.secondaryContainer;
-          break;
-      }
+  const variantStyle = React.useMemo((): ViewStyle => {
+    if (backgroundColor) return { backgroundColor };
+    switch (variant) {
+      case 'outlined':
+        return {
+          backgroundColor: theme.box.variants.outlined.backgroundColor,
+          borderColor: theme.box.variants.outlined.borderColor,
+          borderWidth: theme.box.variants.outlined.borderWidth,
+        };
+      case 'tonal':
+        return { backgroundColor: theme.box.variants.tonal.backgroundColor };
+      case 'elevated':
+        return {
+          backgroundColor: theme.box.variants.elevated.backgroundColor,
+          ...Platform.select({
+            ios: {
+              shadowColor: theme.box.variants.elevated.shadow.color,
+              shadowOpacity: theme.box.variants.elevated.shadow.opacity,
+              shadowRadius: theme.box.variants.elevated.shadow.radius,
+              shadowOffset: { width: 0, height: elevation || theme.box.variants.elevated.shadow.offsetY },
+            },
+            android: { elevation: elevation || theme.box.variants.elevated.shadow.elevation },
+            default: {},
+          }),
+        } as ViewStyle;
+      case 'filled':
+      default:
+        return { backgroundColor: theme.box.variants.filled.backgroundColor };
     }
+  }, [backgroundColor, elevation, theme.box.variants, variant]);
 
-    return [baseStyle, style];
-  }, [
-    theme,
-    variant,
-    backgroundColor,
-    direction,
-    align,
-    justify,
-    grow,
-    shrink,
-    padding,
-    margin,
-    wrap,
-    gap,
-    elevation,
-    radius,
-    style,
-  ]);
+  const baseStyle = React.useMemo<ViewStyle>(() => ({
+    flexDirection: direction,
+    alignItems: align,
+    justifyContent: justify,
+    flexWrap: wrap ? 'wrap' : 'nowrap',
+    ...(Platform.OS === 'web' ? { gap: gapValue } : {}),
+    flexGrow: grow ? 1 : undefined,
+    flexShrink: shrink ? 1 : undefined,
+    padding: sizePadding,
+    margin: sizeMargin,
+    borderRadius: borderRadiusValue,
+  }), [align, borderRadiusValue, direction, gapValue, grow, justify, sizeMargin, sizePadding, shrink, wrap]);
+
+  const boxStyle = React.useMemo(() => [baseStyle, variantStyle, style], [baseStyle, variantStyle, style]);
 
   const content = (
     <View 
@@ -217,7 +207,7 @@ export const Box: React.FC<BoxProps> = ({
     return (
       <Pressable
         onPress={onPress}
-        android_ripple={ripple ? { color: theme.colors.onSurface, foreground: true } : null}
+        android_ripple={ripple ? { color: theme.box.ripple.color, foreground: true } : null}
         style={({ pressed }) => [
           boxStyle,
           pressed && { opacity: Platform.OS === 'ios' ? 0.7 : 1 },

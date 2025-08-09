@@ -1,7 +1,7 @@
 import React from 'react';
 import { View, StyleSheet, ViewStyle } from 'react-native';
 import { Button } from './Button';
-import { useTheme } from '../theme';
+import { Theme, useTheme } from '../theme';
 
 export type ButtonGroupSize = 'small' | 'medium' | 'large';
 export type ButtonGroupVariant = 'outlined' | 'contained' | 'text';
@@ -57,60 +57,61 @@ export const ButtonGroup: React.FC<ButtonGroupProps> = ({
 }) => {
   const theme = useTheme();
 
-  const getVariantStyles = (isSelected: boolean): ViewStyle => {
-    switch (variant) {
-      case 'contained':
-        return {
-          backgroundColor: isSelected ? theme.colors.primaryContainer : theme.colors.surfaceVariant,
-          borderWidth: 0,
-        };
-      case 'text':
-        return {
-          backgroundColor: isSelected ? theme.colors.primaryContainer : 'transparent',
-          borderWidth: 0,
-        };
-      case 'outlined':
-      default:
-        return {
-          backgroundColor: isSelected ? theme.colors.primaryContainer : theme.colors.surface,
-          borderWidth: 1,
-          borderColor: isSelected ? theme.colors.primary : theme.colors.outline,
-        };
+  const getVariantStyles = React.useCallback((isSelected: boolean): ViewStyle => {
+    if (variant === 'contained') {
+      return {
+        backgroundColor: isSelected
+          ? theme.buttonGroup.variants.contained.selectedBackground
+          : theme.buttonGroup.variants.contained.background,
+        borderWidth: 0,
+      };
     }
-  };
-
-  const getSpacingForSize = (buttonSize: ButtonGroupSize): number => {
-    switch (buttonSize) {
-      case 'small':
-        return theme.sizing.sm;
-      case 'large':
-        return theme.sizing.lg;
-      default:
-        return theme.sizing.md;
+    if (variant === 'text') {
+      return {
+        backgroundColor: isSelected
+          ? theme.buttonGroup.variants.text.selectedBackground
+          : theme.buttonGroup.variants.text.background,
+        borderWidth: 0,
+      };
     }
-  };
+    // outlined
+    return {
+      backgroundColor: isSelected
+        ? theme.buttonGroup.variants.outlined.selectedBackground
+        : theme.buttonGroup.variants.outlined.background,
+      borderWidth: theme.buttonGroup.variants.outlined.borderWidth,
+      borderColor: isSelected
+        ? theme.buttonGroup.variants.outlined.selectedBorderColor
+        : theme.buttonGroup.variants.outlined.borderColor,
+    };
+  }, [theme.buttonGroup.variants, variant]);
 
-  const getButtonSpacing = () => {
+  const getHeightForSize = React.useCallback((buttonSize: ButtonGroupSize): number => {
+    const t = theme.buttonGroup.sizes[buttonSize];
+    return t.height;
+  }, [theme.buttonGroup.sizes]);
+
+  const getButtonSpacing = React.useCallback(() => {
     if (direction === 'horizontal') {
-      return { marginLeft: -1 }; // Overlap borders
+      return { marginLeft: theme.buttonGroup.overlap.horizontal };
     }
-    return { marginTop: -1 }; // Overlap borders
-  };
+    return { marginTop: theme.buttonGroup.overlap.vertical };
+  }, [direction, theme.buttonGroup.overlap.horizontal, theme.buttonGroup.overlap.vertical]);
 
   return (
     <View
-      style={[
-        styles().container,
+      style={React.useMemo(() => ([
+        styles(theme).container,
         { flexDirection: direction === 'horizontal' ? 'row' : 'column' },
         style,
-      ]}
+      ]), [direction, style, theme])}
       testID={testID}
     >
       {buttons.map((btn, idx) => {
         const isSelected = selectedIndex === idx;
         const btnStyles = [
-          styles().button,
-          { height: getSpacingForSize(size) },
+          styles(theme).button,
+          { height: getHeightForSize(size) },
           getVariantStyles(isSelected),
           idx !== 0 ? getButtonSpacing() : undefined,
         ].filter(Boolean) as ViewStyle[];
@@ -139,18 +140,12 @@ export const ButtonGroup: React.FC<ButtonGroupProps> = ({
   );
 };
 
-const styles = () => StyleSheet.create({
+const styles = (theme: Theme) => StyleSheet.create({
   button: {
-    borderRadius: 0,
-    flex: 1,
+    borderRadius: theme.buttonGroup.item.borderRadius,
+    flex: theme.buttonGroup.item.flex,
   },
   container: {
     alignItems: 'stretch',
-  },
-  notFirstHorizontal: {
-    marginLeft: -1, // Overlap borders
-  },
-  notFirstVertical: {
-    marginTop: -1, // Overlap borders
   },
 });

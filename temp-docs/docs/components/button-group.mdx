@@ -190,48 +190,43 @@ interface ButtonConfig {
 
 ## Theme Customization
 
-You can customize the ButtonGroup component through the theme:
+You can customize ButtonGroup via `theme.buttonGroup` tokens using `ThemeProvider`:
 
 ```tsx
-const theme = {
-  components: {
-    buttonGroup: {
-      container: {
-        // container styles
+import { ThemeProvider, createTheme, defaultTheme } from '@lazy-panda-ui/lazy-panda-ui/theme';
+
+const theme = createTheme(defaultTheme, {
+  buttonGroup: {
+    sizes: {
+      medium: { height: 44 },
+    },
+    item: { borderRadius: 6 },
+    overlap: { horizontal: -2, vertical: -2 },
+    variants: {
+      outlined: {
+        background: '#fff',
+        selectedBackground: '#eaf3ff',
+        borderWidth: 1,
+        borderColor: '#c7c7cc',
+        selectedBorderColor: defaultTheme.colors.primary,
       },
-      button: {
-        // individual button styles
+      contained: {
+        background: defaultTheme.colors.surfaceVariant,
+        selectedBackground: defaultTheme.colors.primaryContainer,
       },
-      selected: {
-        // selected button styles
-      },
-      disabled: {
-        // disabled button styles
-      },
-      variants: {
-        contained: {
-          backgroundColor: '#E3F2FD',  // example color
-        },
-        text: {
-          backgroundColor: 'transparent',
-        },
-        outlined: {
-          borderWidth: 1,
-          borderColor: '#BDBDBD',  // example color
-        },
-      },
-      sizes: {
-        small: {
-          padding: 8,  // example spacing
-        },
-        medium: {
-          padding: 16,  // example spacing
-        },
-        large: {
-          padding: 24,  // example spacing
-        },
+      text: {
+        background: 'transparent',
+        selectedBackground: defaultTheme.colors.primaryContainer,
       },
     },
   },
-};
+});
+
+export function App() {
+  return (
+    <ThemeProvider theme={theme}>
+      {/* your app */}
+    </ThemeProvider>
+  );
+}
 ```

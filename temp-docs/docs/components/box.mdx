@@ -31,16 +31,21 @@ function MyComponent() {
 
 | Name | Type | Default | Description |
 |------|------|---------|-------------|
-| `variant` | `'elevated' \| 'outlined' \| 'filled' \| 'tonal'` | `'filled'` | The visual style variant of the box |
-| `backgroundColor` | `string` | - | Background color of the box |
-| `direction` | `'row' \| 'column' \| 'row-reverse' \| 'column-reverse'` | `'column'` | The flex direction of the box |
-| `align` | `'flex-start' \| 'center' \| 'flex-end' \| 'stretch' \| 'baseline'` | `'stretch'` | The align-items property |
-| `justify` | `'flex-start' \| 'center' \| 'flex-end' \| 'space-between' \| 'space-around' \| 'space-evenly'` | `'flex-start'` | The justify-content property |
-| `padding` | `'none' \| 'xs' \| 'sm' \| 'md' \| 'lg' \| 'xl'` | `'none'` | The padding of the box |
-| `margin` | `'none' \| 'xs' \| 'sm' \| 'md' \| 'lg' \| 'xl'` | `'none'` | The margin of the box |
-| `gap` | `number` | - | The gap between children when using flex layout |
-| `grow` | `boolean` | `false` | If true, flex-grow will be set to 1 |
-| `shrink` | `boolean` | `false` | If true, flex-shrink will be set to 1 |
+| `variant` | `'elevated' \| 'outlined' \| 'filled' \| 'tonal'` | `'filled'` | Visual style |
+| `backgroundColor` | `string` | - | Overrides variant background |
+| `direction` | `'row' \| 'column' \| 'row-reverse' \| 'column-reverse'` | `'column'` | Flex direction |
+| `align` | `'flex-start' \| 'center' \| 'flex-end' \| 'stretch' \| 'baseline'` | `'stretch'` | Align items |
+| `justify` | `'flex-start' \| 'center' \| 'flex-end' \| 'space-between' \| 'space-around' \| 'space-evenly'` | `'flex-start'` | Justify content |
+| `padding` | `'none' \| 'xs' \| 'sm' \| 'md' \| 'lg' \| 'xl'` | `'none'` | Uses theme.spacing unless `'none'` |
+| `margin` | `'none' \| 'xs' \| 'sm' \| 'md' \| 'lg' \| 'xl'` | `'none'` | Uses theme.spacing unless `'none'` |
+| `wrap` | `boolean` | `false` | Wrap children |
+| `gap` | `number` | `0` | Gap between children (Web only) |
+| `grow` | `boolean` | `false` | flexGrow = 1 when true |
+| `shrink` | `boolean` | `false` | flexShrink = 1 when true |
+| `radius` | `number` | theme.box.defaults.radius | Corner radius override |
+| `elevation` | `number` | theme.box.variants.elevated.shadow.elevation | Android elevation override (elevated) |
+| `pressable` | `boolean` | `false` | Forces pressable wrapper without onPress |
+| `ripple` | `boolean` | `true` | Android ripple effect toggle |
 | `style` | `StyleProp<ViewStyle>` | - | Additional styles to apply |
 | `onPress` | `() => void` | - | Callback when box is pressed |
 
@@ -108,6 +113,13 @@ function MyComponent() {
 </Box>
 ```
 
+### Pressable + Ripple (Android)
+```tsx
+<Box onPress={() => console.log('pressed')} pressable ripple padding="md">
+  <Typography>Tap me</Typography>
+</Box>
+```
+
 ## Accessibility
 
 The Box component supports all standard React Native accessibility props:
@@ -147,14 +159,60 @@ The Box component can be styled using the following methods:
 
 On Android, the Box component supports ripple effects when used with `onPress`:
 
-```tsx
-<Box
-  onPress={() => {}}
-  android_ripple={{ color: 'rgba(0, 0, 0, 0.1)' }}
->
-  <Typography>Pressable with Ripple</Typography>
-</Box>
+Ripple is enabled by default on Android when pressable; disable with `ripple={false}`.
+
+## Theming
+
+Box uses tokens under `theme.box` to style defaults and variants. You can override them via `ThemeProvider`.
+
+Tokens:
+
+```ts
+theme.box = {
+  defaults: {
+    padding: number,
+    radius: number,
+    gap: number,
+  },
+  variants: {
+    filled: { backgroundColor: string },
+    outlined: { backgroundColor: string, borderColor: string, borderWidth: number },
+    tonal: { backgroundColor: string },
+    elevated: {
+      backgroundColor: string,
+      shadow: { color: string, opacity: number, radius: number, offsetY: number, elevation: number },
+    },
+  },
+  ripple: { color: string },
+}
 ```
+
+Example customization:
+
+```tsx
+import { ThemeProvider, createTheme, defaultTheme } from '@lazy-panda-ui/lazy-panda-ui/theme';
+
+const theme = createTheme(defaultTheme, {
+  box: {
+    defaults: { radius: 12 },
+    variants: {
+      elevated: {
+        backgroundColor: '#fff',
+        shadow: { ...defaultTheme.box.variants.elevated.shadow, opacity: 0.3, elevation: 8 },
+      },
+    },
+  },
+});
+
+export function App() {
+  return (
+    <ThemeProvider theme={theme}>
+      {/* your app */}
+    </ThemeProvider>
+  );
+}
+```
+
 
 ## Best Practices
 

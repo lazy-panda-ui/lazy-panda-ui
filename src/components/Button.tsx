@@ -88,6 +88,16 @@ export interface ButtonProps extends Omit<TouchableOpacityProps, 'onPress'> {
   testID?: string;
 }
 
+// Add alpha to a 6-digit hex color
+function addAlphaToHex(color: string, alpha: number): string {
+  const hex = color.startsWith('#') ? color.slice(1) : color;
+  if (!/^([0-9a-fA-F]{6})$/.test(hex)) return color;
+  const a = Math.round(Math.max(0, Math.min(1, alpha)) * 255)
+    .toString(16)
+    .padStart(2, '0');
+  return `#${hex}${a}`.toLowerCase();
+}
+
 
 const ButtonComponent = React.forwardRef<
   TouchableOpacity | View,
@@ -134,14 +144,14 @@ const ButtonComponent = React.forwardRef<
         case 'secondary':
           return theme.colors.secondaryContainer;
         default:
-          return `${theme.colors[color]}20`;
+    return addAlphaToHex(theme.colors[color], theme.button?.tonalOpacity ?? 0.125);
       }
     }
     if (variant === 'elevated') {
       return isPressed ? theme.colors.surfaceVariant : theme.colors.surface;
     }
     return 'transparent';
-  }, [disabled, variant, color, isPressed, theme.colors]);
+  }, [disabled, variant, color, isPressed, theme.colors, theme.button?.tonalOpacity]);
 
   const getTextColor = React.useCallback(() => {
     if (disabled) return theme.colors.onDisabled;
@@ -162,35 +172,22 @@ const ButtonComponent = React.forwardRef<
   }, [disabled, variant, color, theme.colors]);
 
   const getSizeStyle = React.useCallback(() => {
-    switch (size) {
-      case 'small':
-        return {
-          minHeight: 32,
-          paddingHorizontal: theme.spacing.md,
-        };
-      case 'large':
-        return {
-          minHeight: 48,
-          paddingHorizontal: theme.spacing.xl,
-        };
-      default:
-        return {
-          minHeight: 40,
-          paddingHorizontal: theme.spacing.lg,
-        };
-    }
-  }, [size, theme.spacing]);
+    const t = theme.button?.sizes?.[size];
+    if (t) return { minHeight: t.minHeight, paddingHorizontal: t.paddingX };
+    // fallback
+    if (size === 'small') return { minHeight: 32, paddingHorizontal: theme.spacing.md };
+    if (size === 'large') return { minHeight: 48, paddingHorizontal: theme.spacing.xl };
+    return { minHeight: 40, paddingHorizontal: theme.spacing.lg };
+  }, [size, theme.button?.sizes, theme.spacing.lg, theme.spacing.md, theme.spacing.xl]);
 
   const getFontSize = React.useCallback(() => {
-    switch (size) {
-      case 'small':
-        return theme.fontSize.caption;
-      case 'large':
-        return theme.fontSize.body1;
-      default:
-        return theme.fontSize.body2;
-    }
-  }, [size, theme.fontSize]);
+    const t = theme.button?.sizes?.[size];
+    if (t) return t.fontSize;
+    // fallback
+    if (size === 'small') return theme.fontSize.caption;
+    if (size === 'large') return theme.fontSize.body1;
+    return theme.fontSize.body2;
+  }, [size, theme.button?.sizes, theme.fontSize.body1, theme.fontSize.body2, theme.fontSize.caption]);
 
   const getShadow = React.useCallback((): ViewStyle => {
     if (variant !== 'elevated' || disabled) return {};
@@ -217,8 +214,8 @@ const ButtonComponent = React.forwardRef<
       alignItems: 'center',
       backgroundColor: getBackgroundColor(),
       borderColor: disabled ? theme.colors.disabled : theme.colors[color],
-      borderRadius: theme.borderRadius.md,
-      borderWidth: variant === 'outlined' ? 1 : 0,
+  borderRadius: theme.button?.borderRadius ?? theme.borderRadius.md,
+  borderWidth: variant === 'outlined' ? (theme.button?.outlinedBorderWidth ?? 1) : 0,
       flexDirection: 'row',
       justifyContent: 'center',
       width: fullWidth ? '100%' : undefined,
@@ -258,9 +255,9 @@ const ButtonComponent = React.forwardRef<
         />
       ) : (
         <View style={styles.iconContainer}>
-          {leftIcon ? <View style={{ marginRight: theme.spacing.xs }}>{leftIcon}</View> : null}
+          {leftIcon ? <View style={{ marginRight: theme.button?.iconSpacing ?? theme.spacing.xs }}>{leftIcon}</View> : null}
           <Text style={[styles.text, textStyle]}>{title}</Text>
-          {rightIcon ? <View style={{ marginLeft: theme.spacing.xs }}>{rightIcon}</View> : null}
+          {rightIcon ? <View style={{ marginLeft: theme.button?.iconSpacing ?? theme.spacing.xs }}>{rightIcon}</View> : null}
         </View>
       )}
     </>

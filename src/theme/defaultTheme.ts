@@ -168,6 +168,197 @@ const buildTheme = (colors: Theme['colors'], opts?: { isDark?: boolean }): Theme
   return {
     ...baseTheme,
     colors,
+    chip: {
+      sizes: {
+        small: { minHeight: 24, paddingX: baseTheme.spacing.sm, fontSize: 12, iconSpacing: baseTheme.spacing.xs },
+        medium: { minHeight: 32, paddingX: baseTheme.spacing.md, fontSize: 14, iconSpacing: baseTheme.spacing.xs },
+        large: { minHeight: 40, paddingX: baseTheme.spacing.lg, fontSize: 16, iconSpacing: baseTheme.spacing.sm },
+      },
+      borderRadius: baseTheme.borderRadius.full,
+      borderWidth: 1,
+      disabledOpacity: 0.6,
+      variants: {
+        filled: {
+          background: colors.primary,
+          selectedBackground: colors.primary,
+          text: colors.onPrimary,
+          selectedText: colors.onPrimary,
+          borderColor: 'transparent',
+          selectedBorderColor: 'transparent',
+        },
+        outlined: {
+          background: colors.surface,
+          selectedBackground: colors.primaryContainer,
+          text: colors.onSurface,
+          selectedText: colors.primary,
+          borderColor: colors.outline,
+          selectedBorderColor: colors.primary,
+        },
+        tonal: {
+          background: colors.surfaceVariant,
+          selectedBackground: colors.secondaryContainer,
+          text: colors.onSurface,
+          selectedText: colors.onSecondaryContainer,
+          borderColor: 'transparent',
+          selectedBorderColor: 'transparent',
+        },
+      },
+      ripple: { color: colors.onSurface },
+      animation: { pressScale: 0.96 },
+      close: { hitSlop: 10 },
+    },
+    container: {
+      breakpoints: { sm: 360, md: 768, lg: 1024, xl: 1280 },
+      maxWidths: { sm: 600, md: 900, lg: 1200, xl: 1536 },
+      paddingX: { sm: baseTheme.spacing.md, md: baseTheme.spacing.lg, lg: baseTheme.spacing.xl },
+    },
+    dialog: {
+      sizes: { small: 360, medium: 560, large: 720 },
+      minWidth: 250,
+      overlay: { color: '#000000', opacity: 0.3 },
+      container: {
+        backgroundColor: colors.card,
+        borderRadius: baseTheme.borderRadius.md,
+        padding: baseTheme.spacing.lg,
+        shadow: { color: '#000', opacity: 0.25, radius: 4, offsetY: 2, elevation: 4 },
+      },
+      title: { color: colors.text, fontSize: baseTheme.fontSize.h4, fontWeight: baseTheme.fontWeight.bold, marginBottom: baseTheme.spacing.sm },
+      animation: { type: 'fade' },
+    },
+    divider: {
+      colors: { line: colors.outline, text: colors.outline, textBackground: colors.background },
+      thickness: { hairline: 0.5, thin: 1, regular: 2, thick: 3 },
+      spacing: { horizontal: baseTheme.spacing.md, vertical: baseTheme.spacing.md },
+      inset: { xs: baseTheme.spacing.xs, sm: baseTheme.spacing.sm, md: baseTheme.spacing.md, lg: baseTheme.spacing.lg, xl: baseTheme.spacing.xl },
+      variants: { gradient: { overlayOpacity: 0.5 } },
+      text: { fontSize: baseTheme.fontSize.caption, fontWeight: baseTheme.fontWeight.medium, paddingX: baseTheme.spacing.sm },
+      arrow: { size: 8, padding: baseTheme.spacing.xs },
+      animation: { duration: 300 },
+    },
+    checkbox: {
+      sizes: { small: baseTheme.sizing.sm - 8, medium: baseTheme.sizing.md - 4, large: baseTheme.sizing.lg },
+      borderRadius: baseTheme.borderRadius.sm,
+      borderWidth: 2,
+      disabledOpacity: 0.5,
+      variants: {
+        filled: {
+          backgroundChecked: colors.primary,
+          backgroundUnchecked: colors.surface,
+          borderColor: colors.outline,
+          indicatorColor: colors.onPrimary,
+        },
+        outlined: {
+          background: colors.surface,
+          borderColor: colors.outline,
+          selectedBorderColor: colors.primary,
+          indicatorColor: colors.primary,
+        },
+        minimal: {
+          background: 'transparent',
+          indicatorColor: colors.primary,
+        },
+      },
+      ripple: { color: colors.onSurface },
+      animation: { duration: 150, easing: 'easeInOut' },
+    },
+    card: {
+      sizes: {
+        small: { padding: baseTheme.spacing.sm },
+        medium: { padding: baseTheme.spacing.md },
+        large: { padding: baseTheme.spacing.lg },
+      },
+      borderRadius: baseTheme.borderRadius.md,
+      disabledOpacity: 0.6,
+      variants: {
+        elevated: {
+          backgroundColor: colors.surface,
+          shadow: {
+            color: colors.text,
+            opacity: 0.1,
+            radius: 4,
+            offsetY: 2,
+            elevation: 2,
+          },
+        },
+        outlined: { backgroundColor: colors.surface, borderWidth: 1, borderColor: colors.outline },
+        filled: { backgroundColor: colors.surfaceVariant },
+        tonal: { backgroundColor: colors.primaryContainer },
+      },
+      loadingOverlay: { opacity: 0.7, backgroundColor: colors.surface },
+      ripple: { color: colors.onSurface },
+    },
+    buttonGroup: {
+      sizes: {
+        small: { height: baseTheme.sizing.sm },
+        medium: { height: baseTheme.sizing.md },
+        large: { height: baseTheme.sizing.lg },
+      },
+      item: {
+        borderRadius: 0,
+        flex: 1,
+      },
+      overlap: {
+        horizontal: -1,
+        vertical: -1,
+      },
+      variants: {
+        outlined: {
+          background: colors.surface,
+          selectedBackground: colors.primaryContainer,
+          borderWidth: 1,
+          borderColor: colors.outline,
+          selectedBorderColor: colors.primary,
+        },
+        contained: {
+          background: colors.surfaceVariant,
+          selectedBackground: colors.primaryContainer,
+        },
+        text: {
+          background: 'transparent',
+          selectedBackground: colors.primaryContainer,
+        },
+      },
+    },
+    button: {
+      sizes: {
+        small: { minHeight: 32, paddingX: baseTheme.spacing.md, fontSize: baseTheme.fontSize.caption },
+        medium: { minHeight: 40, paddingX: baseTheme.spacing.lg, fontSize: baseTheme.fontSize.body2 },
+        large: { minHeight: 48, paddingX: baseTheme.spacing.xl, fontSize: baseTheme.fontSize.body1 },
+      },
+      borderRadius: baseTheme.borderRadius.md,
+      iconSpacing: baseTheme.spacing.xs,
+      outlinedBorderWidth: 1,
+      elevated: {
+        elevation: 4,
+        pressedElevation: 2,
+        shadowColor: colors.outline,
+        shadowOpacity: 0.2,
+        shadowRadius: { default: 4, pressed: 2 },
+      },
+      tonalOpacity: 0.125,
+    },
+    box: {
+      defaults: {
+        radius: baseTheme.borderRadius.md,
+        gap: 0,
+      },
+      variants: {
+        filled: { backgroundColor: colors.surfaceVariant },
+        outlined: { backgroundColor: colors.surface, borderColor: colors.outline, borderWidth: 1 },
+        tonal: { backgroundColor: colors.secondaryContainer },
+        elevated: {
+          backgroundColor: colors.surface,
+          shadow: {
+            color: '#000',
+            opacity: 0.25,
+            radius: 4,
+            offsetY: 2,
+            elevation: 4,
+          },
+        },
+      },
+      ripple: { color: colors.onSurface },
+    },
     badge: {
       sizes: {
         small: { height: 16, minWidth: 16, dot: 8, paddingX: 4 },

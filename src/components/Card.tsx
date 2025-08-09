@@ -5,9 +5,9 @@ import {
   ViewStyle,
   Pressable,
   ActivityIndicator,
+  Platform,
 } from 'react-native';
 import { useTheme } from '../theme/ThemeProvider';
-import { getColorByVariant } from '../utils/themeHelpers';
 
 export type CardVariant = 'elevated' | 'outlined' | 'filled' | 'tonal';
 export type CardSize = 'small' | 'medium' | 'large';
@@ -113,52 +113,60 @@ export const Card: React.FC<CardProps> = ({
 }) => {
   const theme = useTheme();
 
-  const getPadding = (size: CardSize) => {
-    switch (size) {
-      case 'small':
-        return theme.spacing.sm;
-      case 'large':
-        return theme.spacing.lg;
+  const padding = React.useMemo(() => theme.card.sizes[size].padding, [size, theme.card.sizes]);
+
+  const shadowStyle = React.useMemo<ViewStyle>(() => {
+    if (variant !== 'elevated' || disabled) return {};
+    const s = theme.card.variants.elevated.shadow;
+    return Platform.select({
+      ios: {
+        shadowColor: s.color,
+        shadowOffset: { width: 0, height: s.offsetY },
+        shadowOpacity: s.opacity,
+        shadowRadius: s.radius,
+      },
+      android: { elevation: elevation ?? s.elevation },
+      default: {},
+    }) as ViewStyle;
+  }, [disabled, elevation, theme.card.variants.elevated.shadow, variant]);
+
+  const baseBackground = React.useMemo(() => {
+    if (disabled) return theme.colors.disabled;
+    switch (variant) {
+      case 'outlined':
+        return theme.card.variants.outlined.backgroundColor;
+      case 'filled':
+        return theme.card.variants.filled.backgroundColor;
+      case 'tonal':
+        return theme.card.variants.tonal.backgroundColor;
+      case 'elevated':
       default:
-        return theme.spacing.md;
+        return theme.card.variants.elevated.backgroundColor;
     }
-  };
+  }, [disabled, theme.card.variants, theme.colors.disabled, variant]);
 
-  const getElevation = (variant: CardVariant, elevation: number) => {
-    if (variant !== 'elevated' || disabled) return 0;
-    return elevation;
-  };
-
-  const variantColors = getColorByVariant(theme, variant, disabled);
-
-  const styles = StyleSheet.create({
+  const styles = React.useMemo(() => StyleSheet.create({
     card: {
-      backgroundColor: variantColors.surface,
-      borderColor: variantColors.border,
-      borderRadius: theme.borderRadius.md,
-      borderWidth: variant === 'outlined' ? 1 : 0,
+      backgroundColor: baseBackground,
+      borderColor: variant === 'outlined' ? theme.card.variants.outlined.borderColor : undefined,
+      borderRadius: theme.card.borderRadius,
+      borderWidth: variant === 'outlined' ? theme.card.variants.outlined.borderWidth : 0,
       marginVertical: theme.spacing.sm,
       overflow: 'hidden',
-      padding: getPadding(size),
-      ...(variant === 'elevated' && {
-        shadowColor: theme.colors.text,
-        shadowOffset: { width: 0, height: elevation },
-        shadowOpacity: 0.1 * elevation,
-        shadowRadius: elevation,
-        elevation: getElevation(variant, elevation),
-      }),
+      padding: padding,
+      ...shadowStyle,
     },
     container: {
-      opacity: disabled ? 0.6 : 1,
+      opacity: disabled ? theme.card.disabledOpacity : 1,
     },
     loadingOverlay: {
       ...StyleSheet.absoluteFillObject,
       alignItems: 'center',
-      backgroundColor: variantColors.surface,
+      backgroundColor: theme.card.loadingOverlay.backgroundColor,
       justifyContent: 'center',
-      opacity: 0.7,
+      opacity: theme.card.loadingOverlay.opacity,
     },
-  });
+  }), [baseBackground, disabled, padding, shadowStyle, theme.card.borderRadius, theme.card.disabledOpacity, theme.card.loadingOverlay.backgroundColor, theme.card.loadingOverlay.opacity, theme.card.variants.outlined.borderColor, theme.card.variants.outlined.borderWidth, theme.spacing.sm, variant]);
 
   const CardContainer = onPress ? Pressable : View;
 
@@ -172,11 +180,13 @@ export const Card: React.FC<CardProps> = ({
       accessibilityHint={accessibilityHint}
       accessibilityState={{ disabled, busy: loading }}
     >
-      <View style={[styles.card, style]}>
+      <View style={[styles.card, style]}
+        {...(onPress && Platform.OS === 'android' ? { android_ripple: { color: theme.card.ripple.color } } : {})}
+      >
         <View style={contentStyle}>{children}</View>
         {loading && (
           <View style={[styles.loadingOverlay, loadingOverlayStyle]}>
-            {LoadingComponent || <ActivityIndicator color={variantColors.onSurface} />}
+            {LoadingComponent || <ActivityIndicator color={theme.colors.onSurface} />}
           </View>
         )}
       </View>

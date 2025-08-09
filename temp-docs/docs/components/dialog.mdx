@@ -16,27 +16,18 @@ import { Dialog } from '@lazy-panda-ui/lazy-panda-ui';
 
 ```tsx
 import React from 'react';
-import { Dialog, Button } from '@lazy-panda-ui/lazy-panda-ui';
+import { Dialog, Button, Typography, Stack } from '@lazy-panda-ui/lazy-panda-ui';
 
 function MyComponent() {
-  const [open, setOpen] = useState(false);
-
+  const [open, setOpen] = React.useState(false);
   return (
     <>
-      <Button onClick={() => setOpen(true)}>
-        Open Dialog
-      </Button>
-
-      <Dialog open={open} onClose={() => setOpen(false)}>
-        <Dialog.Header>Dialog Title</Dialog.Header>
-        <Dialog.Content>
-          This is the dialog content.
-        </Dialog.Content>
-        <Dialog.Footer>
-          <Button onClick={() => setOpen(false)}>
-            Close
-          </Button>
-        </Dialog.Footer>
+      <Button onPress={() => setOpen(true)}>Open Dialog</Button>
+      <Dialog open={open} onClose={() => setOpen(false)} title="Dialog Title">
+        <Stack gap="sm">
+          <Typography>Dialog body content goes here.</Typography>
+          <Button onPress={() => setOpen(false)}>Close</Button>
+        </Stack>
       </Dialog>
     </>
   );
@@ -46,17 +37,11 @@ function MyComponent() {
 ## Props
 
 ### Dialog Props
-| Name | Type | Default | Description |
-|------|------|---------|-------------|
-| `open` | `boolean` | - | Whether dialog is visible |
-| `onClose` | `() => void` | - | Called when dialog closes |
-| `size` | `'sm' \| 'md' \| 'lg' \| 'xl' \| 'full'` | `'md'` | Dialog size |
-| `closeOnOverlayClick` | `boolean` | `true` | Close on overlay click |
-| `closeOnEscape` | `boolean` | `true` | Close on Escape key |
-| `centered` | `boolean` | `true` | Center vertically |
-| `scrollBehavior` | `'inside' \| 'outside'` | `'inside'` | Scroll behavior |
-| `trapFocus` | `boolean` | `true` | Trap keyboard focus |
-| `returnFocus` | `boolean` | `true` | Return focus on close |
+- open: boolean
+- onClose: () => void
+- title?: string
+- size?: 'small' | 'medium' | 'large' (default 'medium')
+- style?: ViewStyle
 
 ### Dialog.Header Props
 | Name | Type | Default | Description |
@@ -86,35 +71,39 @@ function MyComponent() {
 
 ### Different Sizes
 ```tsx
-<Stack spacing="md">
-  {['sm', 'md', 'lg', 'xl', 'full'].map((size) => (
-    <Button
-      key={size}
-      onClick={() => openDialog(size)}
-    >
-      Open {size} dialog
-    </Button>
-  ))}
+<Stack direction="row" gap="sm">
+  <Dialog open size="small" onClose={() => {}} title="Small" />
+  <Dialog open size="medium" onClose={() => {}} title="Medium" />
+  <Dialog open size="large" onClose={() => {}} title="Large" />
 </Stack>
 ```
 
-### Custom Animation
+### Theming
 ```tsx
-<Dialog
-  open={open}
-  onClose={onClose}
-  motionProps={{
-    initial: { opacity: 0, y: -20 },
-    animate: { opacity: 1, y: 0 },
-    exit: { opacity: 0, y: 20 },
-    transition: { duration: 0.2 }
-  }}
->
-  <Dialog.Header>Animated Dialog</Dialog.Header>
-  <Dialog.Content>
-    This dialog has custom animation.
-  </Dialog.Content>
-</Dialog>
+import { ThemeProvider, createTheme, defaultTheme } from '@lazy-panda-ui/lazy-panda-ui/theme';
+
+const theme = createTheme(defaultTheme, {
+  dialog: {
+    sizes: { medium: 600 },
+    overlay: { color: '#000', opacity: 0.5 },
+    container: {
+      backgroundColor: defaultTheme.colors.surface,
+      borderRadius: 12,
+      padding: 20,
+      shadow: { ...defaultTheme.dialog.container.shadow, elevation: 6 },
+    },
+    title: { color: defaultTheme.colors.onSurface, fontSize: 20, fontWeight: defaultTheme.fontWeight.semibold, marginBottom: 12 },
+    animation: { type: 'fade' },
+  },
+});
+
+function App() {
+  return (
+    <ThemeProvider theme={theme}>
+      <Dialog open onClose={() => {}} title="Custom Dialog" />
+    </ThemeProvider>
+  );
+}
 ```
 
 ### Nested Dialogs
@@ -263,16 +252,13 @@ function MyComponent() {
 
 ## API Reference
 
-### Size Values
-```tsx
-const dialogSizes = {
-  sm: '400px',
-  md: '560px',
-  lg: '720px',
-  xl: '880px',
-  full: '100vw',
-};
-```
+### Token Overview
+- dialog.sizes: width by size key
+- dialog.minWidth: minimum width
+- dialog.overlay: color and opacity
+- dialog.container: background, radius, padding, shadow
+- dialog.title: typography and spacing
+- dialog.animation: modal animation type
 
 ### Theme Customization
 ```tsx

@@ -1,0 +1,49 @@
+# Container
+
+Responsive content wrapper that centers your app and constrains width based on theme breakpoints.
+
+## Import
+
+```tsx
+import { Container } from '@lazy-panda-ui/lazy-panda-ui';
+```
+
+## Usage
+
+```tsx
+<Container>
+  <Content />
+</Container>
+```
+
+### Override maxWidth and padding
+
+```tsx
+<Container maxWidth={960} padding="lg">
+  <Content />
+</Container>
+```
+
+## Theming
+
+```tsx
+import { ThemeProvider, createTheme, defaultTheme } from '@lazy-panda-ui/lazy-panda-ui/theme';
+
+const theme = createTheme(defaultTheme, {
+  container: {
+    breakpoints: { sm: 360, md: 768, lg: 1024, xl: 1440 },
+    maxWidths: { sm: 560, md: 840, lg: 1080, xl: 1320 },
+    paddingX: { sm: 12, md: 16, lg: 24 },
+  },
+});
+
+function App() {
+  return (
+    <ThemeProvider theme={theme}>
+      <Container>
+        <Content />
+      </Container>
+    </ThemeProvider>
+  );
+}
+```

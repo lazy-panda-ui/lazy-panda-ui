@@ -1,11 +1,5 @@
 import React from 'react';
-import {
-  TouchableOpacity,
-  StyleSheet,
-  ViewStyle,
-  Animated,
-  Easing,
-} from 'react-native';
+import { Pressable, StyleSheet, ViewStyle, Animated, Easing, Platform } from 'react-native';
 import { useTheme } from '../theme/ThemeProvider';
 
 export type CheckBoxSize = 'small' | 'medium' | 'large';
@@ -49,19 +43,20 @@ export interface CheckBoxProps {
   testID?: string;
 }
 
-const createStyles = () =>
+const createStyles = (borderRadius: number, borderWidth: number, disabledOpacity: number) =>
   StyleSheet.create({
     container: {
       alignItems: 'center',
-      borderRadius: 4,
-      borderWidth: 2,
+      borderRadius,
+      borderWidth,
       justifyContent: 'center',
+      overflow: 'hidden',
     },
     disabled: {
-      opacity: 0.5,
+      opacity: disabledOpacity,
     },
     indicator: {
-      borderRadius: 2,
+      borderRadius: Math.max(2, borderRadius - 2),
     },
   });
 
@@ -81,39 +76,36 @@ export const CheckBox: React.FC<CheckBoxProps> = ({
   React.useEffect(() => {
     Animated.timing(scaleAnim, {
       toValue: checked ? 1 : 0,
-      duration: 150,
+      duration: theme.checkbox.animation.duration,
       easing: Easing.ease,
       useNativeDriver: true,
     }).start();
-  }, [checked, scaleAnim]);
+  }, [checked, scaleAnim, theme.checkbox.animation.duration]);
 
   const getSize = React.useCallback(() => {
-    switch (size) {
-      case 'small':
-        return theme.spacing.lg;
-      case 'large':
-        return theme.spacing.xl * 1.5;
-      default:
-        return theme.spacing.xl;
-    }
-  }, [size, theme.spacing]);
+    return theme.checkbox.sizes[size];
+  }, [size, theme.checkbox.sizes]);
 
   const boxSize = React.useMemo(() => getSize(), [getSize]);
   const indicatorSize = React.useMemo(() => boxSize * 0.5, [boxSize]);
-  const styles = React.useMemo(() => createStyles(), []);
+  const styles = React.useMemo(
+    () => createStyles(theme.checkbox.borderRadius, theme.checkbox.borderWidth, theme.checkbox.disabledOpacity),
+    [theme.checkbox.borderRadius, theme.checkbox.borderWidth, theme.checkbox.disabledOpacity]
+  );
 
   const getBorderColor = React.useCallback(() => {
     if (disabled) return theme.colors.disabled;
-    if (checked) return activeColor || theme.colors.primary;
-    return theme.colors.outline;
-  }, [disabled, checked, activeColor, theme.colors]);
+    if (variant === 'outlined' && checked) return activeColor || theme.checkbox.variants.outlined.selectedBorderColor;
+    if (variant === 'outlined') return theme.checkbox.variants.outlined.borderColor;
+    return theme.checkbox.variants.filled.borderColor;
+  }, [activeColor, checked, disabled, theme.checkbox.variants.outlined.borderColor, theme.checkbox.variants.outlined.selectedBorderColor, theme.checkbox.variants.filled.borderColor, theme.colors.disabled, variant]);
 
   const getBackgroundColor = React.useCallback(() => {
-    if (variant === 'filled' && checked) {
-      return activeColor || theme.colors.primary;
-    }
-    return theme.colors.surface;
-  }, [variant, checked, activeColor, theme.colors]);
+    if (disabled) return theme.colors.disabled;
+    if (variant === 'filled') return checked ? (activeColor || theme.checkbox.variants.filled.backgroundChecked) : theme.checkbox.variants.filled.backgroundUnchecked;
+    if (variant === 'outlined') return theme.checkbox.variants.outlined.background;
+    return theme.checkbox.variants.minimal.background;
+  }, [activeColor, checked, disabled, theme.checkbox.variants.filled.backgroundChecked, theme.checkbox.variants.filled.backgroundUnchecked, theme.checkbox.variants.minimal.background, theme.checkbox.variants.outlined.background, theme.colors.disabled, variant]);
 
   const containerStyle = React.useMemo(() => [
     styles.container,
@@ -141,15 +133,16 @@ export const CheckBox: React.FC<CheckBoxProps> = ({
       height: indicatorSize,
       backgroundColor:
         variant === 'filled'
-          ? theme.colors.onPrimary
-          : activeColor || theme.colors.primary,
+          ? theme.checkbox.variants.filled.indicatorColor
+          : activeColor || theme.checkbox.variants.outlined.indicatorColor,
       transform: [{ scale: scaleAnim }],
     },
   ], [
     styles,
     indicatorSize,
     variant,
-    theme.colors,
+    theme.checkbox.variants.filled.indicatorColor,
+    theme.checkbox.variants.outlined.indicatorColor,
     activeColor,
     scaleAnim,
   ]);
@@ -161,30 +154,17 @@ export const CheckBox: React.FC<CheckBoxProps> = ({
   }, [disabled, onChange, checked]);
 
   return (
-    <TouchableOpacity
+    <Pressable
       style={containerStyle}
       onPress={handlePress}
-      activeOpacity={0.7}
       disabled={disabled}
       accessibilityRole="checkbox"
       accessibilityState={{ checked, disabled }}
       testID={testID}
+      {...(Platform.OS === 'android' ? { android_ripple: { color: theme.checkbox.ripple.color } } : {})}
     >
       <Animated.View style={indicatorStyle} />
-    </TouchableOpacity>
+    </Pressable>
   );
 };
-  StyleSheet.create({
-    container: {
-      alignItems: 'center',
-      borderRadius: 4,
-      borderWidth: 2,
-      justifyContent: 'center',
-    },
-    disabled: {
-      opacity: 0.5,
-    },
-    indicator: {
-      borderRadius: 2,
-    },
-  });
+  

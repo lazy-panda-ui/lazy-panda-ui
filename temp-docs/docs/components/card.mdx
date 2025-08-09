@@ -168,45 +168,35 @@ function Example() {
 
 ## Theme Customization
 
-You can customize the Card component through the theme:
+Customize Card via `theme.card` tokens using `ThemeProvider`:
 
 ```tsx
-const theme = {
-  components: {
-    card: {
-      container: {
-        // base container styles
+import { ThemeProvider, createTheme, defaultTheme } from '@lazy-panda-ui/lazy-panda-ui/theme';
+
+const theme = createTheme(defaultTheme, {
+  card: {
+    sizes: { medium: { padding: 20 } },
+    borderRadius: 10,
+    disabledOpacity: 0.5,
+    variants: {
+      elevated: {
+        backgroundColor: defaultTheme.colors.surface,
+        shadow: { ...defaultTheme.card.variants.elevated.shadow, elevation: 4, radius: 6 },
       },
-      content: {
-        // content wrapper styles
-      },
-      loadingOverlay: {
-        // loading overlay styles
-      },
-      variants: {
-        elevated: {
-          // elevated variant styles
-          shadowColor: '#000',
-          shadowOffset: { width: 0, height: 2 },
-          shadowOpacity: 0.1,
-          shadowRadius: 8,
-          elevation: 3,
-        },
-        outlined: {
-          // outlined variant styles
-          borderWidth: 1,
-          borderColor: '#E5E5EA',
-        },
-        filled: {
-          // filled variant styles
-          backgroundColor: '#F2F2F7',
-        },
-        tonal: {
-          // tonal variant styles
-          backgroundColor: 'rgba(0, 122, 255, 0.08)',
-        },
-      },
+      outlined: { backgroundColor: '#fff', borderWidth: 1, borderColor: '#E5E5EA' },
+      filled: { backgroundColor: defaultTheme.colors.surfaceVariant },
+      tonal: { backgroundColor: defaultTheme.colors.primaryContainer },
     },
+    loadingOverlay: { opacity: 0.75, backgroundColor: defaultTheme.colors.surface },
+    ripple: { color: defaultTheme.colors.onSurface },
   },
-};
+});
+
+export function App() {
+  return (
+    <ThemeProvider theme={theme}>
+      {/* your app */}
+    </ThemeProvider>
+  );
+}
 ```

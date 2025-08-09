@@ -1,12 +1,5 @@
 import React from 'react';
-import {
-  View,
-  StyleSheet,
-  ViewStyle,
-  Text,
-  TextStyle,
-  Animated,
-} from 'react-native';
+import { View, StyleSheet, ViewStyle, Text, TextStyle, Animated } from 'react-native';
 import { useTheme, Theme } from '../theme';
 
 export type DividerVariant = 'solid' | 'dashed' | 'dotted' | 'gradient';
@@ -115,7 +108,8 @@ export const Divider: React.FC<DividerProps> = ({
   thickness = 'regular',
   color,
   gradientColor,
-  spacing = 'md',
+  // spacing prop kept for backward-compat; theme.divider.spacing now used
+  // deprecated: spacing (use theme.divider.spacing)
   inset = 'none',
   alignment = 'center',
   textProps,
@@ -134,45 +128,25 @@ export const Divider: React.FC<DividerProps> = ({
     if (animated) {
       Animated.timing(animatedValue, {
         toValue: 1,
-        duration: 300,
+        duration: theme.divider.animation.duration,
         useNativeDriver: true,
       }).start();
     }
-  }, [animated, animatedValue]);
+  }, [animated, animatedValue, theme.divider.animation.duration]);
 
-  const getThicknessValue = (thickness: DividerThickness): number => {
-    switch (thickness) {
-      case 'hairline':
-        return StyleSheet.hairlineWidth;
-      case 'thin':
-        return 1;
-      case 'thick':
-        return 3;
-      default:
-        return 2;
-    }
-  };
+  const getThicknessValue = React.useCallback((t: DividerThickness): number => {
+    const map = theme.divider.thickness;
+    return map[t];
+  }, [theme.divider.thickness]);
 
-  const getInsetValue = (inset: DividerInset): number => {
-    switch (inset) {
-      case 'xs':
-        return theme.spacing.xs;
-      case 'sm':
-        return theme.spacing.sm;
-      case 'md':
-        return theme.spacing.md;
-      case 'lg':
-        return theme.spacing.lg;
-      case 'xl':
-        return theme.spacing.xl;
-      default:
-        return 0;
-    }
-  };
+  const getInsetValue = React.useCallback((i: DividerInset): number => {
+    if (i === 'none') return 0;
+    return theme.divider.inset[i];
+  }, [theme.divider.inset]);
 
-  const getDividerStyle = (): ViewStyle => {
+  const getDividerStyle = React.useCallback((): ViewStyle => {
     const baseStyle: ViewStyle = {
-      backgroundColor: color || theme.colors.outline,
+      backgroundColor: color || theme.divider.colors.line,
       height: orientation === 'horizontal' ? getThicknessValue(thickness) : length || '100%',
       width: orientation === 'vertical' ? getThicknessValue(thickness) : length || '100%',
     };
@@ -192,7 +166,7 @@ export const Divider: React.FC<DividerProps> = ({
           backgroundColor: 'transparent',
           borderStyle: 'dashed' as const,
           borderWidth: getThicknessValue(thickness),
-          borderColor: color || theme.colors.outline,
+          borderColor: color || theme.divider.colors.line,
         };
       case 'dotted':
         return {
@@ -200,7 +174,7 @@ export const Divider: React.FC<DividerProps> = ({
           backgroundColor: 'transparent',
           borderStyle: 'dotted' as const,
           borderWidth: getThicknessValue(thickness),
-          borderColor: color || theme.colors.outline,
+          borderColor: color || theme.divider.colors.line,
         };
       case 'gradient':
         return {
@@ -210,7 +184,7 @@ export const Divider: React.FC<DividerProps> = ({
       default:
         return baseStyle;
     }
-  };
+  }, [color, fullSize, getThicknessValue, length, orientation, theme.divider.colors.line, thickness, variant]);
 
 
 
@@ -225,26 +199,26 @@ export const Divider: React.FC<DividerProps> = ({
     }
   };
 
-  const styles = StyleSheet.create({
+  const styles = React.useMemo(() => StyleSheet.create({
     arrow: {
       borderRightWidth: getThicknessValue(thickness),
       borderTopWidth: getThicknessValue(thickness),
-      height: 8,
+      height: theme.divider.arrow.size,
       transform: [{ rotate: '45deg' }],
-      width: 8,
+      width: theme.divider.arrow.size,
     },
     arrowContainer: {
-      padding: theme.spacing.xs,
+      padding: theme.divider.arrow.padding,
     },
     container: {
       alignItems: 'center',
       flexDirection: orientation === 'horizontal' ? 'row' : 'column',
       marginBottom: orientation === 'vertical' ? getInsetValue(inset) : undefined,
-      marginHorizontal: orientation === 'vertical' ? theme.spacing[spacing] : 0,
+      marginHorizontal: orientation === 'vertical' ? theme.divider.spacing.horizontal : 0,
       marginLeft: orientation === 'horizontal' ? getInsetValue(inset) : undefined,
       marginRight: orientation === 'horizontal' ? getInsetValue(inset) : undefined,
       marginTop: orientation === 'vertical' ? getInsetValue(inset) : undefined,
-      marginVertical: orientation === 'horizontal' ? theme.spacing[spacing] : 0,
+      marginVertical: orientation === 'horizontal' ? theme.divider.spacing.vertical : 0,
     },
     divider: {
       flexGrow: fullSize ? 1 : 0,
@@ -257,19 +231,19 @@ export const Divider: React.FC<DividerProps> = ({
       width: '100%',
     },
     text: {
-      backgroundColor: theme.colors.background,
-      fontSize: theme.fontSize.caption,
-      fontWeight: theme.fontWeight.medium,
-      paddingHorizontal: theme.spacing.sm,
+      backgroundColor: theme.divider.colors.textBackground,
+      fontSize: theme.divider.text.fontSize,
+      fontWeight: theme.divider.text.fontWeight,
+      paddingHorizontal: theme.divider.text.paddingX,
     },
     textContainer: {
       height: '100%',
       justifyContent: 'center',
-      paddingHorizontal: theme.spacing.md,
+      paddingHorizontal: theme.divider.spacing.horizontal,
       position: 'absolute',
       width: '100%',
     },
-  });
+  }), [fullSize, getDividerStyle, getInsetValue, getThicknessValue, inset, orientation, thickness, theme.divider.arrow.padding, theme.divider.arrow.size, theme.divider.colors.textBackground, theme.divider.spacing.horizontal, theme.divider.spacing.vertical, theme.divider.text.fontSize, theme.divider.text.fontWeight, theme.divider.text.paddingX]);
 
   const renderDivider = () => {
     const dividerComponent = (
@@ -289,14 +263,14 @@ export const Divider: React.FC<DividerProps> = ({
       />
     );
 
-    if (variant === 'gradient' && gradientColor) {
+  if (variant === 'gradient' && gradientColor) {
       return (
         <View style={styles.container}>
           <View style={[
             styles.gradientContainer,
             {
-              backgroundColor: color || theme.colors.outline,
-              opacity: 0.5,
+        backgroundColor: gradientColor || color || theme.divider.colors.line,
+        opacity: theme.divider.variants.gradient.overlayOpacity,
             }
           ]} />
           {dividerComponent}
@@ -317,11 +291,11 @@ export const Divider: React.FC<DividerProps> = ({
     >
       {showArrow && customArrow}
       {renderDivider()}
-      {textProps && (
+  {textProps && (
         <Text
           style={[
             styles.text,
-            { color: textProps.color || theme.colors.outline },
+    { color: textProps.color || theme.divider.colors.text },
             textProps.style,
           ]}
         >
@@ -330,7 +304,7 @@ export const Divider: React.FC<DividerProps> = ({
       )}
       {showArrow && !customArrow && (
         <View style={styles.arrowContainer}>
-          <View style={[styles.arrow, { borderColor: color || theme.colors.outline }]} />
+          <View style={[styles.arrow, { borderColor: color || theme.divider.colors.line }]} />
         </View>
       )}
     </View>

@@ -30,19 +30,19 @@ function MyComponent() {
 
 ## Props
 
-| Name | Type | Default | Description |
-|------|------|---------|-------------|
-| `label` | `string \| ReactNode` | - | Content of the chip |
-| `variant` | `'solid' \| 'outlined' \| 'soft'` | `'solid'` | Visual variant |
-| `color` | `'default' \| 'primary' \| 'secondary' \| 'success' \| 'warning' \| 'error'` | `'default'` | Color scheme |
-| `size` | `'sm' \| 'md' \| 'lg'` | `'md'` | Size of the chip |
-| `avatar` | `ReactNode` | - | Avatar element |
-| `icon` | `ReactNode` | - | Icon element |
-| `disabled` | `boolean` | `false` | Whether chip is disabled |
-| `clickable` | `boolean` | `false` | Whether chip is clickable |
-| `deletable` | `boolean` | `false` | Whether chip is deletable |
-| `onDelete` | `() => void` | - | Delete callback |
-| `onClick` | `() => void` | - | Click callback |
+- label: string
+- leftIcon?: React.ReactNode
+- rightIcon?: React.ReactNode
+- onPress?: () => void
+- selected?: boolean (default false)
+- variant?: 'filled' | 'outlined' | 'tonal' (default 'outlined')
+- size?: 'small' | 'medium' | 'large' (default 'medium')
+- disabled?: boolean (default false)
+- closeable?: boolean (default false)
+- onClose?: () => void
+- style?: ViewStyle
+- labelStyle?: TextStyle
+- testID?: string
 
 ## Examples
 
@@ -59,56 +59,36 @@ function MyComponent() {
 ### Chip Variants
 ```tsx
 <Stack direction="row" spacing="sm">
-  <Chip variant="solid" label="Solid" />
+  <Chip variant="filled" label="Filled" />
   <Chip variant="outlined" label="Outlined" />
-  <Chip variant="soft" label="Soft" />
+  <Chip variant="tonal" label="Tonal" />
+  <Chip variant="outlined" label="Selected" selected />
 </Stack>
 ```
 
-### Chip Colors
+### Sizes
 ```tsx
 <Stack direction="row" spacing="sm">
-  <Chip color="default" label="Default" />
-  <Chip color="primary" label="Primary" />
-  <Chip color="secondary" label="Secondary" />
-  <Chip color="success" label="Success" />
-  <Chip color="warning" label="Warning" />
-  <Chip color="error" label="Error" />
+  <Chip size="small" label="Small" />
+  <Chip size="medium" label="Medium" />
+  <Chip size="large" label="Large" />
 </Stack>
 ```
 
 ### With Icons
 ```tsx
 <Stack direction="row" spacing="sm">
-  <Chip
-    icon={<Icon name="user" />}
-    label="With Icon"
-  />
-  <Chip
-    icon={<Icon name="star" />}
-    label="Favorite"
-    color="primary"
-  />
-  <Chip
-    icon={<Icon name="check" />}
-    label="Completed"
-    color="success"
-  />
+  <Chip leftIcon={<Icon name="user" />} label="With Icon" />
+  <Chip rightIcon={<Icon name="close" />} label="Dismiss" />
+  <Chip leftIcon={<Icon name="check" />} label="Selected" selected />
 </Stack>
 ```
 
-### With Avatar
+### Closeable
 ```tsx
 <Stack direction="row" spacing="sm">
-  <Chip
-    avatar={<Avatar source={{ uri: '/user1.jpg' }} size="sm" />}
-    label="John Doe"
-  />
-  <Chip
-    avatar={<Avatar label="JD" size="sm" />}
-    label="Jane Doe"
-    color="primary"
-  />
+  <Chip label="Closable" closeable onClose={() => {}} />
+  <Chip label="Disabled" closeable disabled />
 </Stack>
 ```
 
@@ -148,16 +128,36 @@ function MyComponent() {
 
 ## Customization
 
-### Custom Styles
+### Theming with ThemeProvider
 ```tsx
-<Chip
-  label="Custom"
-  style={{
-    background: 'linear-gradient(45deg, #FE6B8B 30%, #FF8E53 90%)',
-    color: 'white',
-    boxShadow: '0 3px 5px 2px rgba(255, 105, 135, .3)',
-  }}
-/>
+import { ThemeProvider, createTheme, defaultTheme } from '@lazy-panda-ui/lazy-panda-ui/theme';
+
+const theme = createTheme(defaultTheme, {
+  chip: {
+    sizes: {
+      medium: { minHeight: 36, paddingX: 14, fontSize: 15, iconSpacing: 6 },
+    },
+    variants: {
+      outlined: {
+        background: defaultTheme.colors.surface,
+        selectedBackground: defaultTheme.colors.primaryContainer,
+        text: defaultTheme.colors.onSurface,
+        selectedText: defaultTheme.colors.primary,
+        borderColor: defaultTheme.colors.outline,
+        selectedBorderColor: defaultTheme.colors.primary,
+      },
+    },
+    ripple: { color: defaultTheme.colors.onSurface },
+  },
+});
+
+function App() {
+  return (
+    <ThemeProvider theme={theme}>
+      <Chip variant="outlined" label="Custom Chip" />
+    </ThemeProvider>
+  );
+}
 ```
 
 ### Custom Delete Icon
@@ -226,43 +226,11 @@ function ChipArray() {
 6. Provide visual feedback
 7. Keep delete actions reversible
 
-## API Reference
+## Related Components
 
-### Size Values
-```tsx
-const chipSizes = {
-  sm: {
-    height: 24,
-    fontSize: 12,
-    padding: '0 8px',
-  },
-  md: {
-    height: 32,
-    fontSize: 14,
-    padding: '0 12px',
-  },
-  lg: {
-    height: 40,
-    fontSize: 16,
-    padding: '0 16px',
-  },
-};
-```
-
-### Color Palette
-```tsx
-const chipColors = {
-  default: {
-    background: '#E0E0E0',
-    color: '#000000',
-  },
-  primary: {
-    background: '#1976D2',
-    color: '#FFFFFF',
-  },
-  // ... other colors
-};
-```
+- [Badge](badge)
+- [Button](button)
+- [Avatar](avatar)
 
 ## Related Components
 

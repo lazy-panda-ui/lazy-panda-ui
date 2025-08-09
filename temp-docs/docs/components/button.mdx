@@ -4,7 +4,7 @@ sidebar_position: 2
 
 # Button
 
-The Button component is used to trigger an action or event, such as submitting a form, opening a dialog, canceling an action, or performing a delete operation.
+The Button component triggers actions such as submitting a form, opening a dialog, or executing a task.
 
 ## Import
 
@@ -20,12 +20,7 @@ import { Button } from '@lazy-panda-ui/lazy-panda-ui';
 
 function MyComponent() {
   return (
-    <Button
-      variant="contained"
-      onPress={() => console.log('Button pressed')}
-    >
-      Press Me
-    </Button>
+    <Button title="Press Me" variant="contained" onPress={() => console.log('pressed')} />
   );
 }
 ```
@@ -34,103 +29,65 @@ function MyComponent() {
 
 | Name | Type | Default | Description |
 |------|------|---------|-------------|
-| `variant` | `'text' \| 'contained' \| 'outlined' \| 'tonal'` | `'text'` | The variant to use |
-| `size` | `'small' \| 'medium' \| 'large'` | `'medium'` | The size of the button |
-| `color` | `'primary' \| 'secondary' \| 'error' \| 'warning' \| 'info' \| 'success'` | `'primary'` | The color of the button |
-| `disabled` | `boolean` | `false` | If true, the button will be disabled |
-| `loading` | `boolean` | `false` | If true, shows a loading spinner |
-| `startIcon` | `ReactNode` | - | Element placed before the children |
-| `endIcon` | `ReactNode` | - | Element placed after the children |
+| `title` | `string` | — | Text content of the button |
+| `variant` | `'text' \| 'contained' \| 'outlined' \| 'tonal' \| 'elevated'` | `'contained'` | Visual variant |
+| `size` | `'small' \| 'medium' \| 'large'` | `'medium'` | Button size |
+| `color` | `'primary' \| 'secondary' \| 'error' \| 'warning' \| 'info' \| 'success'` | `'primary'` | Color scheme |
+| `disabled` | `boolean` | `false` | Disabled state |
+| `loading` | `boolean` | `false` | Show spinner |
+| `leftIcon` | `ReactNode` | — | Icon before text |
+| `rightIcon` | `ReactNode` | — | Icon after text |
+| `fullWidth` | `boolean` | `false` | Stretch to container width |
+| `ripple` | `boolean` | `true` | Android ripple effect toggle |
+| `onPress` | `() => void` | — | Press handler |
+| `style` | `StyleProp<ViewStyle>` | — | Container style override |
+| `textStyle` | `StyleProp<TextStyle>` | — | Text style override |
 | `fullWidth` | `boolean` | `false` | If true, the button will take up the full width |
 | `onPress` | `() => void` | - | Callback fired when the button is pressed |
 | `style` | `StyleProp<ViewStyle>` | - | Additional styles for the button |
 
 ## Variants
 
-### Text
 ```tsx
-<Button variant="text">Text Button</Button>
-```
-
-### Contained
-```tsx
-<Button variant="contained">Contained Button</Button>
-```
-
-### Outlined
-```tsx
-<Button variant="outlined">Outlined Button</Button>
-```
-
-### Tonal
-```tsx
-<Button variant="tonal">Tonal Button</Button>
+<>
+  <Button title="Text" variant="text" />
+  <Button title="Contained" variant="contained" />
+  <Button title="Outlined" variant="outlined" />
+  <Button title="Tonal" variant="tonal" />
+  <Button title="Elevated" variant="elevated" />
+</>
 ```
 
 ## Examples
 
-### With Icon
+### With Icons
 ```tsx
-import { Icon } from '@lazy-panda-ui/lazy-panda-ui';
-
-<Button
-  variant="contained"
-  startIcon={<Icon name="star" />}
->
-  With Icon
-</Button>
+<Button title="With Icons" variant="contained" leftIcon={<Icon name="star" />} rightIcon={<Icon name="chevron-right" />} />
 ```
 
 ### Loading State
 ```tsx
-<Button
-  variant="contained"
-  loading
->
-  Loading
-</Button>
+<Button title="Loading" variant="contained" loading />
 ```
 
 ### Full Width
 ```tsx
-<Button
-  variant="contained"
-  fullWidth
->
-  Full Width Button
-</Button>
+<Button title="Full Width" variant="contained" fullWidth />
 ```
 
 ### Custom Styled
 ```tsx
-<Button
-  variant="contained"
-  style={{
-    borderRadius: 25,
-    paddingHorizontal: 32
-  }}
->
-  Rounded Button
-</Button>
+<Button title="Rounded" variant="contained" style={{ borderRadius: 25, paddingHorizontal: 32 }} />
 ```
 
 ## Accessibility
 
-The Button component is accessible by default and includes the following features:
-
-- Built-in support for Android ripple effect
-- Proper accessibility roles and states
-- Loading state announcement
-- Disabled state handling
+- Android ripple effect is enabled by default (disable with `ripple={false}`).
+- Proper accessibility states for disabled and busy (loading).
+- Provide `accessibilityLabel` and `accessibilityHint` when needed.
 
 ```tsx
-<Button
-  accessibilityLabel="Submit form"
-  accessibilityHint="Submits the form and saves your data"
-  onPress={() => {}}
->
-  Submit
-</Button>
+<Button title="Submit" accessibilityLabel="Submit form" accessibilityHint="Submits the form and saves your data" onPress={() => {}} />
 ```
 
 ## API Reference
@@ -162,17 +119,52 @@ Available sizes for buttons:
 </>
 ```
 
-### Platform Specific
+## Theming
 
-On Android, buttons use Material Design's ripple effect:
+Buttons use tokens under `theme.button`, which you can override via `ThemeProvider`.
+
+```ts
+theme.button = {
+  sizes: {
+    small: { minHeight: number, paddingX: number, fontSize: number },
+    medium: { minHeight: number, paddingX: number, fontSize: number },
+    large: { minHeight: number, paddingX: number, fontSize: number },
+  },
+  borderRadius: number,
+  iconSpacing: number,
+  outlinedBorderWidth: number,
+  elevated: {
+    elevation: number,
+    pressedElevation: number,
+    shadowColor: string,
+    shadowOpacity: number,
+    shadowRadius: { default: number, pressed: number },
+  },
+  tonalOpacity: number,
+}
+```
+
+Example customization:
 
 ```tsx
-<Button
-  variant="contained"
-  android_ripple={{ color: 'rgba(255, 255, 255, 0.3)' }}
->
-  Android Ripple
-</Button>
+import { ThemeProvider, createTheme, defaultTheme } from '@lazy-panda-ui/lazy-panda-ui/theme';
+
+const theme = createTheme(defaultTheme, {
+  button: {
+    sizes: { medium: { minHeight: 44, paddingX: 20, fontSize: 16 } },
+    borderRadius: 10,
+    elevated: { ...defaultTheme.button.elevated, elevation: 6, pressedElevation: 3 },
+    tonalOpacity: 0.18,
+  },
+});
+
+export function App() {
+  return (
+    <ThemeProvider theme={theme}>
+      <Button title="Custom" variant="tonal" />
+    </ThemeProvider>
+  );
+}
 ```
 
 ## Best Practices

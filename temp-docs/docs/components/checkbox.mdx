@@ -1,0 +1,92 @@
+# CheckBox
+
+A configurable checkbox component with sizes and variants, integrated with ThemeProvider tokens.
+
+## Import
+
+```tsx
+import { CheckBox } from '@lazy-panda-ui/lazy-panda-ui';
+```
+
+## Usage
+
+```tsx
+function Example() {
+  const [checked, setChecked] = React.useState(false);
+  return <CheckBox checked={checked} onChange={setChecked} />;
+}
+```
+
+### Variants
+
+```tsx
+<CheckBox checked variant="filled" />
+<CheckBox checked variant="outlined" />
+<CheckBox checked variant="minimal" />
+```
+
+### Sizes
+
+```tsx
+<CheckBox checked size="small" />
+<CheckBox checked size="medium" />
+<CheckBox checked size="large" />
+```
+
+### Disabled
+
+```tsx
+<CheckBox checked onChange={() => {}} disabled />
+```
+
+## Props
+
+- checked: boolean
+- onChange: (checked: boolean) => void
+- size?: 'small' | 'medium' | 'large' (default 'medium')
+- variant?: 'filled' | 'outlined' | 'minimal' (default 'filled')
+- disabled?: boolean (default false)
+- activeColor?: string
+- style?: ViewStyle
+- testID?: string
+
+## Theming
+
+```tsx
+import { ThemeProvider, createTheme, defaultTheme } from '@lazy-panda-ui/lazy-panda-ui/theme';
+
+const theme = createTheme(defaultTheme, {
+  checkbox: {
+    sizes: { small: 16, medium: 20, large: 28 },
+    borderRadius: 4,
+    borderWidth: 2,
+    disabledOpacity: 0.5,
+    variants: {
+      filled: {
+        backgroundChecked: defaultTheme.colors.primary,
+        backgroundUnchecked: defaultTheme.colors.surface,
+        borderColor: defaultTheme.colors.outline,
+        indicatorColor: defaultTheme.colors.onPrimary,
+      },
+      outlined: {
+        background: defaultTheme.colors.surface,
+        borderColor: defaultTheme.colors.outline,
+        selectedBorderColor: defaultTheme.colors.primary,
+        indicatorColor: defaultTheme.colors.primary,
+      },
+      minimal: {
+        background: 'transparent',
+        indicatorColor: defaultTheme.colors.primary,
+      },
+    },
+    ripple: { color: defaultTheme.colors.onSurface },
+    animation: { duration: 150, easing: 'easeInOut' },
+  },
+});
+
+function App() {
+  return (
+    <ThemeProvider theme={theme}>{/* app */}</ThemeProvider>
+  );
+}
+```

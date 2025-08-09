@@ -137,6 +137,27 @@ function MyComponent() {
 </Drawer>
 ```
 
+### Animation and Easing
+You can control the animation duration and easing globally via the theme. The overlay fade uses the native driver for smoothness, and the slide uses the configured easing.
+
+```tsx
+const customTheme = {
+  ...defaultTheme,
+  drawer: {
+    ...defaultTheme.drawer,
+    animation: {
+      duration: 400,
+      easing: 'easeOut', // 'linear' | 'easeIn' | 'easeOut' | 'easeInOut'
+    },
+  },
+};
+
+<ThemeProvider theme={customTheme}>
+  <Drawer open={open} onClose={onClose} />
+  {/* ... */}
+</ThemeProvider>
+```
+
 ### Navigation Drawer
 ```tsx
 <Drawer open={open} onClose={onClose} placement="left">
@@ -261,8 +282,8 @@ const customTheme = {
       minHeight: 64,
     },
     animation: {
-      duration: 400,               // Animation duration in ms
-      easing: 'easeInOut',         // Animation easing
+  duration: 400,               // Animation duration in ms
+  easing: 'easeInOut',         // Animation easing ('linear' | 'easeIn' | 'easeOut' | 'easeInOut')
     },
     sizes: {
       sm: 0.3,    // 30% of screen dimension
@@ -369,6 +390,8 @@ The Drawer component includes built-in accessibility features:
 </Drawer>
 ```
 
+Note: Drawer.Header includes a close button by default (when `showCloseButton` is true) that calls `onClose` from Drawer automatically. You can override its behavior via `closeButtonProps.onPress`.
+
 ### Features
 - **Modal behavior**: Uses React Native Modal for proper overlay handling
 - **Back button support**: Android back button automatically closes drawer
@@ -383,7 +406,7 @@ The Drawer uses React Native's Animated API for smooth transitions:
 - **Slide animation**: Drawer slides in from the specified edge
 - **Fade animation**: Overlay fades in/out simultaneously
 - **Duration**: Configurable through theme (default: 300ms)
-- **Easing**: Theme-configurable easing curves
+- **Easing**: Theme-configurable easing curves ('linear' | 'easeIn' | 'easeOut' | 'easeInOut')
 - **Performance**: Uses native driver where possible for smooth animations
 
 ## Platform Differences

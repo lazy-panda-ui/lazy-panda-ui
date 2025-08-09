@@ -28,20 +28,23 @@
  * @version 1.0.0
  */
 
-import React, { useEffect, useRef } from 'react';
+import React, { useCallback, useContext, useEffect, useMemo, useRef } from 'react';
 import {
   View,
   Modal,
   TouchableWithoutFeedback,
-  Dimensions,
+  useWindowDimensions,
   StyleSheet,
   Animated,
   BackHandler,
   ViewStyle,
+  Platform,
+  Easing,
 } from 'react-native';
 import { useTheme } from '../theme';
 import { Typography } from './Typography';
 import { Button } from './Button';
+import type { ButtonProps } from './Button';
 
 /**
  * Props for the Drawer component.
@@ -84,7 +87,7 @@ export interface DrawerHeaderProps {
   /** Whether to show the close button in the header */
   showCloseButton?: boolean;
   /** Props to pass to the close button component */
-  closeButtonProps?: object;
+  closeButtonProps?: ButtonProps;
   /** Additional styles for the header container */
   style?: ViewStyle;
 }
@@ -113,8 +116,10 @@ export interface DrawerFooterProps {
   style?: ViewStyle;
 }
 
-/** Screen dimensions used for calculating drawer sizes */
-const { width: screenWidth, height: screenHeight } = Dimensions.get('window');
+/**
+ * Context to provide Drawer actions to compound components
+ */
+const DrawerContext = React.createContext<{ onClose?: () => void } | null>(null);
 
 /**
  * Header component for the Drawer. Displays a title and optional close button.
@@ -127,13 +132,14 @@ const { width: screenWidth, height: screenHeight } = Dimensions.get('window');
  * </Drawer.Header>
  * ```
  */
-const DrawerHeader: React.FC<DrawerHeaderProps> = ({
+const DrawerHeaderComponent: React.FC<DrawerHeaderProps> = ({
   children,
   showCloseButton = true,
   closeButtonProps,
   style,
 }) => {
   const theme = useTheme();
+  const ctx = useContext(DrawerContext);
 
   return (
     <View style={[
@@ -162,11 +168,13 @@ const DrawerHeader: React.FC<DrawerHeaderProps> = ({
           variant="text"
           size="small"
           {...closeButtonProps}
+          onPress={closeButtonProps?.onPress ?? ctx?.onClose}
         />
       )}
     </View>
   );
 };
+const DrawerHeader = React.memo(DrawerHeaderComponent);
 
 /**
  * Content component for the Drawer. Contains the main scrollable content area.
@@ -179,7 +187,7 @@ const DrawerHeader: React.FC<DrawerHeaderProps> = ({
  * </Drawer.Content>
  * ```
  */
-const DrawerContent: React.FC<DrawerContentProps> = ({ children, style }) => {
+const DrawerContentComponent: React.FC<DrawerContentProps> = ({ children, style }) => {
   const theme = useTheme();
 
   return (
@@ -195,6 +203,7 @@ const DrawerContent: React.FC<DrawerContentProps> = ({ children, style }) => {
     </View>
   );
 };
+const DrawerContent = React.memo(DrawerContentComponent);
 
 /**
  * Footer component for the Drawer. Typically contains action buttons.
@@ -208,7 +217,7 @@ const DrawerContent: React.FC<DrawerContentProps> = ({ children, style }) => {
  * </Drawer.Footer>
  * ```
  */
-const DrawerFooter: React.FC<DrawerFooterProps> = ({ children, style }) => {
+const DrawerFooterComponent: React.FC<DrawerFooterProps> = ({ children, style }) => {
   const theme = useTheme();
 
   return (
@@ -227,6 +236,7 @@ const DrawerFooter: React.FC<DrawerFooterProps> = ({ children, style }) => {
     </View>
   );
 };
+const DrawerFooter = React.memo(DrawerFooterComponent);
 
 /**
  * A sliding drawer component that appears from the edge of the screen.
@@ -294,83 +304,86 @@ export const Drawer: React.FC<DrawerProps> & {
   const theme = useTheme();
   const slideAnim = useRef(new Animated.Value(0)).current;
   const fadeAnim = useRef(new Animated.Value(0)).current;
+  const { width: screenWidth, height: screenHeight } = useWindowDimensions();
 
-  // Use theme overlay color if not provided
-  const effectiveOverlayColor = overlayColor || `rgba(${theme.drawer.backdrop.color === '#000000' ? '0, 0, 0' : '255, 255, 255'}, ${theme.drawer.backdrop.opacity})`;
+  // Map theme easing to Animated Easing
+  const easingFn = useMemo(() => {
+    switch (theme.drawer.animation.easing) {
+      case 'easeIn':
+        return Easing.in(Easing.ease);
+      case 'easeOut':
+        return Easing.out(Easing.ease);
+      case 'easeInOut':
+        return Easing.inOut(Easing.ease);
+      case 'linear':
+      default:
+        return Easing.linear;
+    }
+  }, [theme.drawer.animation.easing]);
+
+  // Overlay color/opacity handling
+  const overlayBgColor = overlayColor || theme.drawer.backdrop.color;
+  const overlayOpacity = useMemo(
+    () =>
+      overlayColor
+        ? fadeAnim
+        : fadeAnim.interpolate({ inputRange: [0, 1], outputRange: [0, theme.drawer.backdrop.opacity] }),
+    [fadeAnim, overlayColor, theme.drawer.backdrop.opacity]
+  );
 
   /**
    * Calculates the drawer size in pixels based on the size prop and placement.
    * 
    * @returns The drawer size in pixels
    */
-  const getSizeValue = () => {
+  const sizeValue = useMemo(() => {
     const isHorizontal = placement === 'left' || placement === 'right';
     const dimension = isHorizontal ? screenWidth : screenHeight;
-    
-    // Handle full size separately
-    if (size === 'full') {
-      return dimension;
-    }
-    
-    // Use theme-defined size ratios instead of hardcoded values
+    if (size === 'full') return dimension;
     const sizes = theme.drawer.sizes;
     const sizeRatio = sizes[size] || sizes.md;
     return dimension * sizeRatio;
-  };
+  }, [placement, screenWidth, screenHeight, size, theme.drawer.sizes]);
 
   /**
    * Generates the animated style object for the drawer based on placement.
    * 
    * @returns Style object with animated position values
    */
-  const getSlideStyle = () => {
-    const sizeValue = getSizeValue();
-    
+  const slideStyle = useMemo(() => {
     switch (placement) {
       case 'left':
         return {
-          left: slideAnim.interpolate({
-            inputRange: [0, 1],
-            outputRange: [-sizeValue, 0],
-          }),
+          left: slideAnim.interpolate({ inputRange: [0, 1], outputRange: [-sizeValue, 0] }),
           width: sizeValue,
           height: '100%',
-        };
+        } as const;
       case 'right':
         return {
-          right: slideAnim.interpolate({
-            inputRange: [0, 1],
-            outputRange: [-sizeValue, 0],
-          }),
+          right: slideAnim.interpolate({ inputRange: [0, 1], outputRange: [-sizeValue, 0] }),
           width: sizeValue,
           height: '100%',
-        };
+        } as const;
       case 'top':
         return {
-          top: slideAnim.interpolate({
-            inputRange: [0, 1],
-            outputRange: [-sizeValue, 0],
-          }),
+          top: slideAnim.interpolate({ inputRange: [0, 1], outputRange: [-sizeValue, 0] }),
           width: '100%',
           height: sizeValue,
-        };
+        } as const;
       case 'bottom':
         return {
-          bottom: slideAnim.interpolate({
-            inputRange: [0, 1],
-            outputRange: [-sizeValue, 0],
-          }),
+          bottom: slideAnim.interpolate({ inputRange: [0, 1], outputRange: [-sizeValue, 0] }),
           width: '100%',
           height: sizeValue,
-        };
+        } as const;
       default:
-        return {};
+        return {} as const;
     }
-  };
+  }, [placement, slideAnim, sizeValue]);
 
   // Handle drawer open/close animations
   useEffect(() => {
-    const animationDuration = theme.drawer.animation.duration;
+  const animationDuration = theme.drawer.animation.duration;
     
     if (open) {
       // Animate drawer into view
@@ -378,12 +391,14 @@ export const Drawer: React.FC<DrawerProps> & {
         Animated.timing(slideAnim, {
           toValue: 1,
           duration: animationDuration,
-          useNativeDriver: false,
+      easing: easingFn,
+      useNativeDriver: false, // position properties can't use native driver
         }),
         Animated.timing(fadeAnim, {
           toValue: 1,
           duration: animationDuration,
-          useNativeDriver: false,
+      easing: easingFn,
+      useNativeDriver: true,
         }),
       ]).start();
     } else {
@@ -392,16 +407,18 @@ export const Drawer: React.FC<DrawerProps> & {
         Animated.timing(slideAnim, {
           toValue: 0,
           duration: animationDuration,
-          useNativeDriver: false,
+      easing: easingFn,
+      useNativeDriver: false,
         }),
         Animated.timing(fadeAnim, {
           toValue: 0,
           duration: animationDuration,
-          useNativeDriver: false,
+      easing: easingFn,
+      useNativeDriver: true,
         }),
       ]).start();
     }
-  }, [open, slideAnim, fadeAnim, theme.drawer.animation.duration]);
+  }, [open, slideAnim, fadeAnim, theme.drawer.animation.duration, easingFn]);
 
   // Handle Android back button press
   useEffect(() => {
@@ -422,51 +439,50 @@ export const Drawer: React.FC<DrawerProps> & {
   /**
    * Handles overlay press to close drawer if closeOnOverlayClick is enabled.
    */
-  const handleOverlayPress = () => {
+  const handleOverlayPress = useCallback(() => {
     if (closeOnOverlayClick) {
       onClose();
     }
-  };
+  }, [closeOnOverlayClick, onClose]);
 
   return (
-    <Modal
-      visible={open}
-      transparent
-      animationType="none"
-      onRequestClose={onClose}
-    >
-      <View style={styles.container}>
-        <TouchableWithoutFeedback onPress={handleOverlayPress}>
+    <Modal visible={open} transparent animationType="none" onRequestClose={onClose}>
+      <DrawerContext.Provider value={useMemo(() => ({ onClose }), [onClose])}>
+        <View style={styles.container}>
+          <TouchableWithoutFeedback onPress={handleOverlayPress}>
+            <Animated.View
+              style={[
+                styles.overlay,
+                { backgroundColor: overlayBgColor, opacity: overlayOpacity },
+              ]}
+            />
+          </TouchableWithoutFeedback>
+
           <Animated.View
             style={[
-              styles.overlay,
+              styles.drawer,
               {
-                backgroundColor: effectiveOverlayColor,
-                opacity: fadeAnim,
+                backgroundColor: theme.drawer.container.backgroundColor || theme.colors.surface,
+                borderRadius: theme.drawer.container.borderRadius,
+                ...Platform.select({
+                  ios: {
+                    shadowColor: theme.drawer.container.shadow.color,
+                    shadowOpacity: theme.drawer.container.shadow.opacity,
+                    shadowRadius: theme.drawer.container.shadow.radius,
+                    shadowOffset: theme.drawer.container.shadow.offset,
+                  },
+                  android: { elevation: theme.drawer.container.shadow.elevation },
+                  default: {},
+                }),
+                ...slideStyle,
               },
+              style,
             ]}
-          />
-        </TouchableWithoutFeedback>
-        
-        <Animated.View
-          style={[
-            styles.drawer,
-            {
-              backgroundColor: theme.drawer.container.backgroundColor || theme.colors.surface,
-              borderRadius: theme.drawer.container.borderRadius,
-              shadowColor: theme.drawer.container.shadow.color,
-              shadowOffset: theme.drawer.container.shadow.offset,
-              shadowOpacity: theme.drawer.container.shadow.opacity,
-              shadowRadius: theme.drawer.container.shadow.radius,
-              elevation: theme.drawer.container.shadow.elevation,
-              ...getSlideStyle(),
-            },
-            style,
-          ]}
-        >
-          {children}
-        </Animated.View>
-      </View>
+          >
+            {children}
+          </Animated.View>
+        </View>
+      </DrawerContext.Provider>
     </Modal>
   );
 };

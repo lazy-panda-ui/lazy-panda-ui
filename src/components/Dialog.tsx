@@ -1,5 +1,5 @@
 import React from 'react';
-import { Modal, View, StyleSheet, ViewStyle, Text } from 'react-native';
+import { Modal, View, StyleSheet, ViewStyle, Text, Platform } from 'react-native';
 import { useTheme, Theme } from '../theme';
 
 export interface DialogProps {
@@ -7,17 +7,23 @@ export interface DialogProps {
   onClose: () => void;
   children?: React.ReactNode;
   title?: string;
-  style?: ViewStyle;
+  style?: ViewStyle; // dialog container override
+  size?: 'small' | 'medium' | 'large';
 }
 
-export const Dialog: React.FC<DialogProps> = ({ open, onClose, children, style, title }) => {
+export const Dialog: React.FC<DialogProps> = ({ open, onClose, children, style, title, size = 'medium' }) => {
   const theme = useTheme();
+
+  const s = React.useMemo(() => styles(theme), [theme]);
+
+  const widthStyle = React.useMemo(() => ({ maxWidth: theme.dialog.sizes[size], minWidth: theme.dialog.minWidth }), [size, theme.dialog.minWidth, theme.dialog.sizes]);
+
   return (
-    <Modal visible={open} transparent animationType="fade" onRequestClose={onClose}>
-      <View style={styles(theme).overlay}>
-        <View style={[styles(theme).dialog, style]}>
+    <Modal visible={open} transparent animationType={theme.dialog.animation.type} onRequestClose={onClose}>
+  <View style={[s.overlay, { backgroundColor: theme.dialog.overlay.color, opacity: theme.dialog.overlay.opacity }]}>
+        <View style={[s.dialog, widthStyle, style]}>
           {typeof title === 'string' && (
-            <Text testID="dialog-title" style={styles(theme).title}>{title}</Text>
+            <Text testID="dialog-title" style={s.title}>{title}</Text>
           )}
           {children}
         </View>
@@ -28,23 +34,29 @@ export const Dialog: React.FC<DialogProps> = ({ open, onClose, children, style, 
 
 const styles = (theme: Theme) => StyleSheet.create({
   dialog: {
-    backgroundColor: theme.colors.card,
-    borderRadius: theme.borderRadius.md,
-    elevation: 4,
-    maxWidth: '90%',
-    minWidth: 250,
-    padding: theme.spacing.lg,
+    backgroundColor: theme.dialog.container.backgroundColor,
+    borderRadius: theme.dialog.container.borderRadius,
+    padding: theme.dialog.container.padding,
+    ...Platform.select({
+      ios: {
+        shadowColor: theme.dialog.container.shadow.color,
+        shadowOpacity: theme.dialog.container.shadow.opacity,
+        shadowRadius: theme.dialog.container.shadow.radius,
+        shadowOffset: { width: 0, height: theme.dialog.container.shadow.offsetY },
+      },
+      android: { elevation: theme.dialog.container.shadow.elevation },
+      default: {},
+    }),
   },
   overlay: {
     alignItems: 'center',
-    backgroundColor: 'rgba(0,0,0,0.3)',
     flex: 1,
     justifyContent: 'center',
   },
   title: {
-    color: theme.colors.text,
-    fontSize: theme.fontSize.h4,
-    fontWeight: theme.fontWeight.bold,
-    marginBottom: theme.spacing.sm,
+    color: theme.dialog.title.color,
+    fontSize: theme.dialog.title.fontSize,
+    fontWeight: theme.dialog.title.fontWeight,
+    marginBottom: theme.dialog.title.marginBottom,
   },
 });

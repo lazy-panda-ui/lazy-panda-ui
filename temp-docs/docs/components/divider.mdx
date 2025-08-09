@@ -1,0 +1,82 @@
+# Divider
+
+Visually separates content with optional text, arrow, and gradient styles.
+
+## Import
+
+```tsx
+import { Divider } from '@lazy-panda-ui/lazy-panda-ui';
+```
+
+## Usage
+
+```tsx
+<Divider />
+```
+
+### Variants
+
+```tsx
+<Stack gap="sm">
+  <Divider variant="solid" />
+  <Divider variant="dashed" />
+  <Divider variant="dotted" />
+  <Divider variant="gradient" gradientColor="#007AFF" />
+</Stack>
+```
+
+### Orientation
+
+```tsx
+<Stack direction="row" gap="md">
+  <Divider orientation="vertical" />
+  <Content />
+</Stack>
+```
+
+### Thickness and Inset
+
+```tsx
+<Divider thickness="hairline" inset="sm" />
+<Divider thickness="thick" inset="lg" />
+```
+
+### With Text
+
+```tsx
+<Divider textProps={{ text: 'OR' }} />
+<Divider textProps={{ text: 'Section', color: '#666' }} />
+```
+
+### With Arrow
+
+```tsx
+<Divider showArrow />
+```
+
+## Theming
+
+```tsx
+import { ThemeProvider, createTheme, defaultTheme } from '@lazy-panda-ui/lazy-panda-ui/theme';
+
+const theme = createTheme(defaultTheme, {
+  divider: {
+    colors: { line: '#E0E0E0', text: '#6B7280', textBackground: '#fff' },
+    thickness: { hairline: 0.5, thin: 1, regular: 2, thick: 4 },
+    spacing: { horizontal: 12, vertical: 12 },
+    inset: { xs: 2, sm: 4, md: 8, lg: 16, xl: 24 },
+    variants: { gradient: { overlayOpacity: 0.4 } },
+    text: { fontSize: 12, fontWeight: defaultTheme.fontWeight.medium, paddingX: 6 },
+    arrow: { size: 8, padding: 4 },
+    animation: { duration: 300 },
+  },
+});
+
+function App() {
+  return (
+    <ThemeProvider theme={theme}>
+      <Divider textProps={{ text: 'Custom' }} />
+    </ThemeProvider>
+  );
+}
+```

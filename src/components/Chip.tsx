@@ -1,13 +1,5 @@
 import React from 'react';
-import {
-  TouchableOpacity,
-  Text,
-  StyleSheet,
-  ViewStyle,
-  TextStyle,
-  View,
-  Animated,
-} from 'react-native';
+import { Pressable, Text, StyleSheet, ViewStyle, TextStyle, View, Animated, Platform } from 'react-native';
 import { useTheme, Theme } from '../theme';
 
 export type ChipVariant = 'filled' | 'outlined' | 'tonal';
@@ -89,144 +81,128 @@ export const Chip: React.FC<ChipProps> = ({
   testID,
 }) => {
   const theme = useTheme();
-  const [pressAnim] = React.useState(new Animated.Value(1));
+  const pressAnim = React.useRef(new Animated.Value(1)).current;
 
-  const animate = (toValue: number) => {
-    Animated.spring(pressAnim, {
-      toValue,
-      useNativeDriver: true,
-    }).start();
-  };
+  const animate = React.useCallback((toValue: number) => {
+    Animated.spring(pressAnim, { toValue, useNativeDriver: true }).start();
+  }, [pressAnim]);
 
-  const getBackgroundColor = () => {
+  const sizes = theme.chip.sizes[size];
+
+  const backgroundColor = React.useMemo((): string => {
     if (disabled) return theme.colors.disabled;
     if (selected) {
       switch (variant) {
-        case 'tonal':
-          return theme.colors.secondaryContainer;
+        case 'filled':
+          return theme.chip.variants.filled.selectedBackground;
         case 'outlined':
-          return theme.colors.surface;
-        default:
-          return theme.colors.primary;
+          return theme.chip.variants.outlined.selectedBackground;
+        case 'tonal':
+          return theme.chip.variants.tonal.selectedBackground;
       }
     }
     switch (variant) {
-      case 'tonal':
-        return theme.colors.surfaceVariant;
       case 'filled':
-        return theme.colors.surfaceVariant;
-      default:
-        return theme.colors.surface;
+        return theme.chip.variants.filled.background;
+      case 'outlined':
+        return theme.chip.variants.outlined.background;
+      case 'tonal':
+        return theme.chip.variants.tonal.background;
     }
-  };
+  }, [disabled, selected, variant, theme.chip.variants, theme.colors.disabled]);
 
-  const getBorderColor = () => {
+  const borderColor = React.useMemo((): string => {
     if (disabled) return theme.colors.disabled;
     if (selected) {
-      return variant === 'outlined'
-        ? theme.colors.primary
-        : 'transparent';
+      switch (variant) {
+        case 'filled':
+          return theme.chip.variants.filled.selectedBorderColor;
+        case 'outlined':
+          return theme.chip.variants.outlined.selectedBorderColor;
+        case 'tonal':
+          return theme.chip.variants.tonal.selectedBorderColor;
+      }
     }
-    return variant === 'outlined'
-      ? theme.colors.outline
-      : 'transparent';
-  };
+    switch (variant) {
+      case 'filled':
+        return theme.chip.variants.filled.borderColor;
+      case 'outlined':
+        return theme.chip.variants.outlined.borderColor;
+      case 'tonal':
+        return theme.chip.variants.tonal.borderColor;
+    }
+  }, [disabled, selected, variant, theme.chip.variants, theme.colors.disabled]);
 
-  const getTextColor = () => {
+  const textColor = React.useMemo((): string => {
     if (disabled) return theme.colors.onDisabled;
     if (selected) {
       switch (variant) {
-        case 'tonal':
-          return theme.colors.onSecondaryContainer;
+        case 'filled':
+          return theme.chip.variants.filled.selectedText;
         case 'outlined':
-          return theme.colors.primary;
-        default:
-          return theme.colors.onPrimary;
+          return theme.chip.variants.outlined.selectedText;
+        case 'tonal':
+          return theme.chip.variants.tonal.selectedText;
       }
     }
-    return theme.colors.onSurface;
-  };
-
-  const getFontSize = () => {
-    switch (size) {
-      case 'small':
-        return 12;
-      case 'large':
-        return 16;
-      default:
-        return 14;
+    switch (variant) {
+      case 'filled':
+        return theme.chip.variants.filled.text;
+      case 'outlined':
+        return theme.chip.variants.outlined.text;
+      case 'tonal':
+        return theme.chip.variants.tonal.text;
     }
-  };
+  }, [disabled, selected, variant, theme.chip.variants, theme.colors.onDisabled]);
 
-  const getSizeStyle = () => {
-    switch (size) {
-      case 'small':
-        return {
-          paddingVertical: theme.spacing.xs,
-          paddingHorizontal: theme.spacing.sm,
-          minHeight: 24,
-        };
-      case 'large':
-        return {
-          paddingVertical: theme.spacing.md,
-          paddingHorizontal: theme.spacing.lg,
-          minHeight: 40,
-        };
-      default:
-        return {
-          paddingVertical: theme.spacing.sm,
-          paddingHorizontal: theme.spacing.md,
-          minHeight: 32,
-        };
-    }
-  };
+  
+
+  const containerBase = styles(theme).container;
+  const sizeStyle = React.useMemo(() => ({
+    paddingVertical: Math.max(2, (sizes.minHeight - sizes.fontSize) / 2 - 2),
+    paddingHorizontal: sizes.paddingX,
+    minHeight: sizes.minHeight,
+    borderWidth: theme.chip.borderWidth,
+    borderRadius: theme.chip.borderRadius,
+  }), [sizes.fontSize, sizes.minHeight, sizes.paddingX, theme.chip.borderRadius, theme.chip.borderWidth]);
 
   return (
-    <TouchableOpacity
+    <Pressable
       onPress={disabled ? undefined : onPress}
-      onPressIn={() => animate(0.96)}
+      onPressIn={() => animate(theme.chip.animation.pressScale)}
       onPressOut={() => animate(1)}
       disabled={disabled}
-      activeOpacity={0.7}
       testID={testID}
+      {...(Platform.OS === 'android' ? { android_ripple: { color: theme.chip.ripple.color } } : {})}
     >
       <Animated.View
         style={[
-          styles(theme).container,
-          {
-            backgroundColor: getBackgroundColor(),
-            borderColor: getBorderColor(),
-            transform: [{ scale: pressAnim }],
-          },
-          getSizeStyle(),
+          containerBase,
+          { backgroundColor, borderColor, transform: [{ scale: pressAnim }] },
+          sizeStyle,
           style,
         ]}
       >
-        {leftIcon && <View style={styles(theme).icon}>{leftIcon}</View>}
+        {leftIcon && <View style={[styles(theme).icon, { marginRight: sizes.iconSpacing }]}>{leftIcon}</View>}
         <Text
           style={[
             styles(theme).label,
-            {
-              color: getTextColor(),
-              fontSize: getFontSize(),
-            },
+            { color: textColor, fontSize: sizes.fontSize },
             labelStyle,
           ]}
         >
           {label}
         </Text>
-        {rightIcon && <View style={styles(theme).icon}>{rightIcon}</View>}
+        {rightIcon && <View style={[styles(theme).icon, { marginLeft: sizes.iconSpacing }]}>{rightIcon}</View>}
         {closeable && !disabled && (
-          <TouchableOpacity
+          <Pressable
             style={styles(theme).closeButton}
             onPress={onClose}
-            hitSlop={{ top: 10, right: 10, bottom: 10, left: 10 }}
-          >
-            {/* Add your close icon here */}
-          </TouchableOpacity>
+            hitSlop={{ top: theme.chip.close.hitSlop, right: theme.chip.close.hitSlop, bottom: theme.chip.close.hitSlop, left: theme.chip.close.hitSlop }}
+          />
         )}
       </Animated.View>
-    </TouchableOpacity>
+    </Pressable>
   );
 };
 
