@@ -30,73 +30,38 @@ const sidebars: SidebarsConfig = {
       "type": "category",
       "label": "Components",
       "items": [
-        {
-          "type": "category",
-          "label": "Inputs",
-          "items": [
-            "components/inputs/button",
-            "components/inputs/button-group",
-            "components/inputs/select",
-            "components/inputs/text-field"
-          ]
-        },
-        {
-          "type": "category",
-          "label": "Data Display",
-          "items": [
-            "components/data-display/accordion",
-            "components/data-display/avatar",
-            "components/data-display/badge",
-            "components/data-display/card",
-            "components/data-display/chip",
-            "components/data-display/icon",
-            "components/data-display/image-list",
-            "components/data-display/list",
-            "components/data-display/popover",
-            "components/data-display/table",
-            "components/data-display/tooltip"
-          ]
-        },
-        {
-          "type": "category",
-          "label": "Feedback",
-          "items": [
-            "components/feedback/alert",
-            "components/feedback/dialog",
-            "components/feedback/modal",
-            "components/feedback/notification",
-            "components/feedback/progress",
-            "components/feedback/skeleton",
-            "components/feedback/snackbar",
-            "components/feedback/spinner",
-            "components/feedback/toast"
-          ]
-        },
-        {
-          "type": "category",
-          "label": "Navigation",
-          "items": [
-            "components/navigation/drawer",
-            "components/navigation/menu",
-            "components/navigation/tabs"
-          ]
-        },
-        {
-          "type": "category",
-          "label": "Layout",
-          "items": [
-            "components/layout/box",
-            "components/layout/grid",
-            "components/layout/stack"
-          ]
-        },
-        {
-          "type": "category",
-          "label": "Typography",
-          "items": [
-            "components/typography"
-          ]
-        }
+        "components/button",
+        "components/button-group",
+        "components/select",
+        "components/text-field",
+        "components/accordion",
+        "components/avatar",
+        "components/badge",
+        "components/card",
+        "components/chip",
+        "components/icon",
+        "components/image-list",
+        "components/list",
+        "components/popover",
+        "components/table",
+        "components/tooltip",
+        "components/alert",
+        "components/dialog",
+        "components/modal",
+        "components/notification",
+        "components/progress",
+        "components/skeleton",
+        "components/snackbar",
+        "components/spinner",
+        "components/toast",
+        "components/drawer",
+        "components/menu",
+        "components/tabs",
+        "components/box",
+        "components/grid",
+        "components/stack",
+        "components/typography"
+
       ]
     }
   ]
