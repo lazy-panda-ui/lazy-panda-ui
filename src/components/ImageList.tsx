@@ -81,7 +81,7 @@ export const ImageList: React.FC<ImageListProps> = ({
   testID,
 }) => {
   const theme = useTheme();
-  const spacing = gap ?? theme.spacing.sm;
+  const spacing = gap ?? theme.imageList.gap.md;
 
   const [loadingStates, setLoadingStates] = React.useState<{ [key: number]: boolean }>(
     Object.fromEntries(images.map((_, idx) => [idx, true]))
@@ -98,61 +98,76 @@ export const ImageList: React.FC<ImageListProps> = ({
     onError?.(event);
   };
 
+  // Memoized styles
+  const imageContainerBaseStyle = React.useMemo(() => ({
+    backgroundColor: theme.imageList.background,
+    borderRadius: theme.imageList.borderRadius,
+    overflow: 'hidden' as ViewStyle['overflow'],
+    position: 'relative' as ViewStyle['position'],
+  }), [theme]);
+  const loadingContainerBaseStyle = React.useMemo(() => ({
+    ...StyleSheet.absoluteFillObject,
+    alignItems: 'center' as ViewStyle['alignItems'],
+    backgroundColor: theme.imageList.loading.background,
+    justifyContent: 'center' as ViewStyle['justifyContent'],
+  }), [theme]);
+  const fallbackContainerBaseStyle = React.useMemo(() => ({
+    ...StyleSheet.absoluteFillObject,
+    alignItems: 'center' as ViewStyle['alignItems'],
+    backgroundColor: theme.imageList.fallback.background,
+    justifyContent: 'center' as ViewStyle['justifyContent'],
+  }), [theme]);
+
   const renderImage = (item: ImageItem, idx: number) => {
-    // Try to use a unique key from the image source if possible
     let key: string | number = idx;
     if (typeof item.source === 'object' && item.source && 'uri' in item.source && typeof item.source.uri === 'string') {
       key = item.source.uri;
     }
 
+    const imageContainerStyle = imageContainerBaseStyle;
+    const imageStyleFinal = [
+      {
+        width: '100%',
+        aspectRatio: item.aspectRatio || 1,
+        borderRadius: theme.imageList.borderRadius,
+      },
+      imageStyle,
+    ];
+    const loadingContainerStyle = loadingContainerBaseStyle;
+    const fallbackContainerStyle = fallbackContainerBaseStyle;
+    const itemStyle = {
+      width: variant === 'grid' ? `${100 / columns}%` : '100%',
+      padding: spacing / 2,
+    };
+
     const imageComponent = (
-      <View style={styles(theme).imageContainer}>
+      <View style={imageContainerStyle}>
         <Image
           key={key}
           source={item.source}
-          style={[
-            {
-              width: '100%',
-              aspectRatio: item.aspectRatio || 1,
-            },
-            styles(theme).image,
-            imageStyle,
-          ]}
+          style={imageStyleFinal}
           resizeMode="cover"
           testID={`${testID}-item-${idx}`}
           onLoad={() => handleLoad(idx)}
           onError={(e) => handleError(idx, e)}
         />
         {showLoading && loadingStates[idx] && (
-          <View style={styles(theme).loadingContainer}>
-            <ActivityIndicator color={theme.colors.primary} />
+          <View style={loadingContainerStyle}>
+            <ActivityIndicator color={theme.imageList.loading.color} />
           </View>
         )}
         {errorStates[idx] && fallback && (
-          <View style={styles(theme).fallbackContainer}>{fallback}</View>
+          <View style={fallbackContainerStyle}>{fallback}</View>
         )}
       </View>
     );
 
     return item.onPress ? (
-      <TouchableOpacity
-        key={key}
-        onPress={item.onPress}
-        style={{
-          width: variant === 'grid' ? `${100 / columns}%` : '100%',
-          padding: spacing / 2,
-        }}
-      >
+      <TouchableOpacity key={key} onPress={item.onPress} style={itemStyle}>
         {imageComponent}
       </TouchableOpacity>
     ) : (
-      <View
-        key={key}
-        style={{
-          width: variant === 'grid' ? `${100 / columns}%` : '100%',
-          padding: spacing / 2,
-        }}
-      >
+      <View key={key} style={itemStyle}>
         {imageComponent}
       </View>
     );
@@ -191,27 +206,6 @@ export const ImageList: React.FC<ImageListProps> = ({
 const styles = (theme: Theme) => StyleSheet.create({
   container: {
     width: '100%',
-  },
-  fallbackContainer: {
-    ...StyleSheet.absoluteFillObject,
-    alignItems: 'center',
-    backgroundColor: theme.colors.surfaceVariant,
-    justifyContent: 'center',
-  },
-  image: {
-    borderRadius: theme.borderRadius.md,
-  },
-  imageContainer: {
-    backgroundColor: theme.colors.surfaceVariant,
-    borderRadius: theme.borderRadius.md,
-    overflow: 'hidden',
-    position: 'relative',
-  },
-  loadingContainer: {
-    ...StyleSheet.absoluteFillObject,
-    alignItems: 'center',
-    backgroundColor: theme.colors.surfaceVariant,
-    justifyContent: 'center',
   },
   masonryContainer: {
     flexDirection: 'row',

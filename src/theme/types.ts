@@ -1,3 +1,5 @@
+export type EasingName = 'linear' | 'easeIn' | 'easeOut' | 'easeInOut';
+
 export interface Theme {
   colors: {
     primary: string;
@@ -116,10 +118,7 @@ export interface Theme {
       padding: number;
       minHeight: number;
     };
-    animation: {
-      duration: number;
-      easing: 'linear' | 'easeIn' | 'easeOut' | 'easeInOut';
-    };
+  animation: { duration: number; easing: EasingName };
     sizes: {
       sm: number;
       md: number;
@@ -151,10 +150,7 @@ export interface Theme {
       size: number;
       color: string;
     };
-    animation: {
-      duration: number;
-      easing: 'linear' | 'easeIn' | 'easeOut' | 'easeInOut';
-    };
+  animation: { duration: number; easing: EasingName };
   };
   alert: {
     padding: number;
@@ -363,7 +359,7 @@ export interface Theme {
       };
     };
     ripple: { color: string };
-    animation: { duration: number; easing: 'linear' | 'easeIn' | 'easeOut' | 'easeInOut' };
+  animation: { duration: number; easing: EasingName };
   };
   chip: {
     sizes: {
@@ -431,5 +427,36 @@ export interface Theme {
     text: { fontSize: number; fontWeight: Theme['fontWeight'][keyof Theme['fontWeight']]; paddingX: number };
     arrow: { size: number; padding: number };
     animation: { duration: number };
+  };
+  grid: {
+    columns: number;
+    breakpoints: { xs: number; sm: number; md: number; lg: number; xl: number };
+    gap: { none: number; xs: number; sm: number; md: number; lg: number; xl: number };
+    containerWidth: { sm: number; md: number; lg: number; xl: number };
+  };
+  icon: {
+    sizes: { xs: number; sm: number; md: number; lg: number; xl: number };
+    colors: { default: string; primary: string; secondary: string; error: string; success: string; warning: string; info: string; disabled: string };
+  };
+  imageList: {
+    gap: { xs: number; sm: number; md: number; lg: number; xl: number };
+    borderRadius: number;
+    background: string;
+    loading: { color: string; background: string };
+    fallback: { background: string };
+  };
+  fab: {
+    sizes: {
+      small: { diameter: number; paddingX: number; labelFontSize: number };
+      medium: { diameter: number; paddingX: number; labelFontSize: number };
+      large: { diameter: number; paddingX: number; labelFontSize: number };
+    };
+    iconSpacing: number;
+    colors: { background: string; foreground: string };
+    shadow: { color: string; opacity: number; radius: number; offsetY: number; elevation: number };
+    disabledOpacity: number;
+    ripple: { color: string };
+    animation: { pressScale: number };
+    offset: number; // distance from screen edges for positioning
   };
 }

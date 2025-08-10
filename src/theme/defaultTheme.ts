@@ -45,6 +45,21 @@ export const baseTheme = {
     lg: 32,
     xl: 40,
   },
+  fab: {
+    // Size for circular regular FABs and paddingX when extended
+    sizes: {
+      small: { diameter: 40, paddingX: 12, labelFontSize: 12 },
+      medium: { diameter: 56, paddingX: 16, labelFontSize: 14 },
+      large: { diameter: 64, paddingX: 20, labelFontSize: 16 },
+    },
+    iconSpacing: 8,
+    colors: { background: '#007AFF', foreground: '#FFFFFF' },
+    shadow: { color: '#000', opacity: 0.3, radius: 4.65, offsetY: 3, elevation: 6 },
+    disabledOpacity: 0.5,
+    ripple: { color: 'rgba(255,255,255,0.2)' },
+    animation: { pressScale: 0.95 },
+    offset: 24,
+  },
   fontWeight: {
     light: "300" as const,
     regular: "400" as const,
@@ -168,6 +183,11 @@ const buildTheme = (colors: Theme['colors'], opts?: { isDark?: boolean }): Theme
   return {
     ...baseTheme,
     colors,
+    fab: {
+      ...baseTheme.fab,
+      colors: { background: colors.primary, foreground: colors.onPrimary },
+      ripple: { color: colors.onPrimary },
+    },
     chip: {
       sizes: {
         small: { minHeight: 24, paddingX: baseTheme.spacing.sm, fontSize: 12, iconSpacing: baseTheme.spacing.xs },
@@ -234,6 +254,45 @@ const buildTheme = (colors: Theme['colors'], opts?: { isDark?: boolean }): Theme
       text: { fontSize: baseTheme.fontSize.caption, fontWeight: baseTheme.fontWeight.medium, paddingX: baseTheme.spacing.sm },
       arrow: { size: 8, padding: baseTheme.spacing.xs },
       animation: { duration: 300 },
+    },
+    grid: {
+      columns: 12,
+      breakpoints: { xs: 0, sm: 640, md: 768, lg: 1024, xl: 1280 },
+      gap: {
+        none: 0,
+        xs: baseTheme.spacing.xs,
+        sm: baseTheme.spacing.sm,
+        md: baseTheme.spacing.md,
+        lg: baseTheme.spacing.lg,
+        xl: baseTheme.spacing.xl,
+      },
+      containerWidth: { sm: 600, md: 900, lg: 1200, xl: 1536 },
+    },
+    icon: {
+      sizes: { xs: 16, sm: 20, md: 24, lg: 32, xl: 40 },
+      colors: {
+        default: '#222',
+        primary: '#007AFF',
+        secondary: '#5856D6',
+        error: '#FF3B30',
+        success: '#34C759',
+        warning: '#FF9500',
+        info: '#5856D6',
+        disabled: '#C7C7CC',
+      },
+    },
+    imageList: {
+      gap: {
+        xs: 4,
+        sm: 8,
+        md: 16,
+        lg: 24,
+        xl: 32,
+      },
+      borderRadius: 8,
+      background: '#F2F2F7',
+      loading: { color: '#007AFF', background: '#F2F2F7' },
+      fallback: { background: '#E5E5EA' },
     },
     checkbox: {
       sizes: { small: baseTheme.sizing.sm - 8, medium: baseTheme.sizing.md - 4, large: baseTheme.sizing.lg },

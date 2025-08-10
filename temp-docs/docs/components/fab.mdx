@@ -1,0 +1,123 @@
+---
+sidebar_position: 26
+---
+
+# Fab (Floating Action Button)
+
+Prominent action button used for primary actions. Fully theme-aware via ThemeProvider and optimized for performance.
+
+## Import
+
+```tsx
+import { Fab } from '@lazy-panda-ui/lazy-panda-ui';
+```
+
+## Variants
+
+- regular: circular button with icon
+- extended: pill with icon + label
+
+```tsx
+<Fab icon={<IconPlus />} onPress={createItem} />
+<Fab variant="extended" icon={<IconUpload />} label="Upload" onPress={upload} />
+```
+
+## Sizes
+
+```tsx
+<Fab size="small" icon={<IconPlus />} onPress={noop} />
+<Fab size="medium" icon={<IconPlus />} onPress={noop} />
+<Fab size="large" icon={<IconPlus />} onPress={noop} />
+
+<Fab variant="extended" size="small" icon={<IconPlus />} label="Small" onPress={noop} />
+<Fab variant="extended" size="medium" icon={<IconPlus />} label="Medium" onPress={noop} />
+<Fab variant="extended" size="large" icon={<IconPlus />} label="Large" onPress={noop} />
+```
+
+## Positioning
+
+```tsx
+<>
+  <Fab position="bottom-right" icon={<IconPlus />} onPress={noop} />
+  <Fab position="bottom-left" icon={<IconChat />} onPress={noop} />
+  <Fab position="top-right" icon={<IconFilter />} onPress={noop} />
+  <Fab position="top-left" icon={<IconHelp />} onPress={noop} />
+  <Fab position="center" variant="extended" icon={<IconPlay />} label="Start" onPress={noop} />
+</>
+```
+
+Offset from the screen edges can be adjusted via `theme.fab.offset`.
+
+## Loading and Disabled
+
+```tsx
+<Fab icon={<IconUpload />} loading onPress={noop} />
+<Fab icon={<IconDelete />} disabled onPress={noop} />
+```
+
+## Theming
+
+Customize via ThemeProvider. You can adjust colors, sizes, shadow, ripple, and press animation.
+
+```tsx
+import { ThemeProvider, defaultTheme } from '@lazy-panda-ui/lazy-panda-ui';
+
+const customTheme = {
+  ...defaultTheme,
+  fab: {
+    ...defaultTheme.fab,
+    colors: { background: '#10B981', foreground: '#ffffff' },
+    sizes: {
+      ...defaultTheme.fab.sizes,
+      medium: { diameter: 56, paddingX: 24, labelFontSize: 15 },
+    },
+    shadow: { color: '#000', opacity: 0.35, radius: 6, offsetY: 4, elevation: 8 },
+    offset: 32,
+    ripple: { color: 'rgba(255,255,255,0.25)' },
+    animation: { pressScale: 0.92 },
+  },
+};
+
+<ThemeProvider theme={customTheme}>
+  <Fab icon={<IconPlus />} onPress={noop} />
+  <Fab variant="extended" icon={<IconEdit />} label="Edit" onPress={noop} />
+</ThemeProvider>
+```
+
+## Props
+
+| Name | Type | Default | Description |
+|------|------|---------|-------------|
+| `icon` | `React.ReactNode` | - | Icon to display |
+| `label` | `string` | - | Label (extended variant only) |
+| `onPress` | `() => void` | - | Press handler |
+| `size` | `'small' \| 'medium' \| 'large'` | `medium` | Size of FAB |
+| `variant` | `'regular' \| 'extended'` | `regular` | Visual variant |
+| `position` | `'top-left' \| 'top-right' \| 'bottom-left' \| 'bottom-right' \| 'center'` | `bottom-right` | Screen position |
+| `color` | `string` | theme.fab.colors.background | Custom background color |
+| `loading` | `boolean` | `false` | Shows a spinner and disables click |
+| `disabled` | `boolean` | `false` | Disables the button |
+| `style` | `ViewStyle` | - | Container style override |
+| `labelStyle` | `TextStyle` | - | Label style override (extended only) |
+| `testID` | `string` | - | Test identifier |
+
+## Theme Tokens
+
+```ts
+theme.fab = {
+  sizes: {
+    small: { diameter: 40, paddingX: 12, labelFontSize: 12 },
+    medium: { diameter: 56, paddingX: 16, labelFontSize: 14 },
+    large: { diameter: 64, paddingX: 20, labelFontSize: 16 },
+  },
+  iconSpacing: 8,
+  colors: { background: theme.colors.primary, foreground: theme.colors.onPrimary },
+  shadow: { color: '#000', opacity: 0.3, radius: 4.65, offsetY: 3, elevation: 6 },
+  disabledOpacity: 0.5,
+  ripple: { color: theme.colors.onPrimary },
+  animation: { pressScale: 0.95 },
+  offset: 24,
+};
+```
+
+This component uses native ripple on Android and Animated.spring for press feedback. Styles are memoized for performance.

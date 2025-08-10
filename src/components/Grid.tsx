@@ -55,24 +55,23 @@ export const GridItem: React.FC<GridItemProps> = ({
   children,
   style,
 }) => {
+  const theme = useTheme();
   const { width } = useWindowDimensions();
-  const colsValue = typeof cols === 'number' ? cols : getResponsiveColumns(cols, width);
+  const colsValue = React.useMemo(() =>
+    typeof cols === 'number' ? cols : getResponsiveColumns(cols, width, theme),
+    [cols, width, theme]
+  );
+  const totalCols = theme.grid.columns;
+  const itemStyle = React.useMemo(() => ({
+    flex: 0,
+    flexBasis: `${(colsValue / totalCols) * 100}%`,
+    maxWidth: `${(colsValue / totalCols) * 100}%`,
+    display: display === 'none' ? 'none' : 'flex',
+    ...(orderIndex !== undefined ? { zIndex: orderIndex } : {}),
+  }), [colsValue, totalCols, display, orderIndex]) as ViewStyle;
 
   return (
-    <View
-      style={[
-        {
-          flex: 0,
-          flexBasis: `${(colsValue / 12) * 100}%`,
-          maxWidth: `${(colsValue / 12) * 100}%`,
-          display: display === 'none' ? 'none' : 'flex',
-        },
-        orderIndex !== undefined && { zIndex: orderIndex },
-        style,
-      ]}
-    >
-      {children}
-    </View>
+    <View style={[itemStyle, style]}>{children}</View>
   );
 };
 
@@ -143,22 +142,16 @@ export interface GridProps {
 
 // Helper functions
 const getSpacingValue = (theme: Theme, spacing: GridSpacing): number => {
-  switch (spacing) {
-    case 'none': return 0;
-    case 'xs': return theme.spacing.xs;
-    case 'sm': return theme.spacing.sm;
-    case 'lg': return theme.spacing.lg;
-    case 'xl': return theme.spacing.xl;
-    default: return theme.spacing.md;
-  }
+  return theme.grid.gap[spacing] ?? theme.grid.gap.md;
 };
 
-const getResponsiveColumns = (breakpoints: GridBreakpoints, screenWidth: number): number => {
-  if (screenWidth >= 1280 && breakpoints.xl) return breakpoints.xl;
-  if (screenWidth >= 1024 && breakpoints.lg) return breakpoints.lg;
-  if (screenWidth >= 768 && breakpoints.md) return breakpoints.md;
-  if (screenWidth >= 640 && breakpoints.sm) return breakpoints.sm;
-  return breakpoints.xs || 12;
+const getResponsiveColumns = (breakpoints: GridBreakpoints, screenWidth: number, theme: Theme): number => {
+  const bp = theme.grid.breakpoints;
+  if (screenWidth >= bp.xl && breakpoints.xl) return breakpoints.xl;
+  if (screenWidth >= bp.lg && breakpoints.lg) return breakpoints.lg;
+  if (screenWidth >= bp.md && breakpoints.md) return breakpoints.md;
+  if (screenWidth >= bp.sm && breakpoints.sm) return breakpoints.sm;
+  return breakpoints.xs || theme.grid.columns;
 };
 
 export const Grid: React.FC<GridProps> = ({

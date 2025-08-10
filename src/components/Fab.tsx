@@ -1,5 +1,5 @@
 import React from 'react';
-import { TouchableOpacity, StyleSheet, ViewStyle, Text, View, Animated, TextStyle, ActivityIndicator } from 'react-native';
+import { Pressable, StyleSheet, ViewStyle, Text, View, Animated, TextStyle, ActivityIndicator, Platform } from 'react-native';
 import { useTheme, Theme } from '../theme';
 
 export type FabSize = 'small' | 'medium' | 'large';
@@ -79,22 +79,22 @@ export const Fab: React.FC<FabProps> = ({
   const theme = useTheme();
   const scaleAnim = React.useRef(new Animated.Value(1)).current;
 
-  const handlePressIn = () => {
+  const handlePressIn = React.useCallback(() => {
     Animated.spring(scaleAnim, {
-      toValue: 0.95,
+      toValue: theme.fab.animation.pressScale,
       useNativeDriver: true,
     }).start();
-  };
+  }, [scaleAnim, theme.fab.animation.pressScale]);
 
-  const handlePressOut = () => {
+  const handlePressOut = React.useCallback(() => {
     Animated.spring(scaleAnim, {
       toValue: 1,
       useNativeDriver: true,
     }).start();
-  };
+  }, [scaleAnim]);
 
-  const getPositionStyle = (): ViewStyle => {
-    const margin = theme.spacing.lg;
+  const positionStyle = React.useMemo((): ViewStyle => {
+    const margin = theme.fab.offset;
     switch (position) {
       case 'top-left':
         return { top: margin, left: margin };
@@ -103,78 +103,65 @@ export const Fab: React.FC<FabProps> = ({
       case 'bottom-left':
         return { bottom: margin, left: margin };
       case 'center':
-        return { 
-          alignSelf: 'center',
-          bottom: margin
-        };
+        return { alignSelf: 'center', bottom: margin };
       default:
         return { bottom: margin, right: margin };
     }
-  };
+  }, [position, theme.fab.offset]);
 
-  const getSizeStyle = (): ViewStyle => {
-    switch (size) {
-      case 'small':
-        return {
-          width: variant === 'extended' ? undefined : 40,
-          height: 40,
-          borderRadius: 20,
-          paddingHorizontal: variant === 'extended' ? theme.spacing.md : 0,
-        };
-      case 'large':
-        return {
-          width: variant === 'extended' ? undefined : 64,
-          height: 64,
-          borderRadius: 32,
-          paddingHorizontal: variant === 'extended' ? theme.spacing.xl : 0,
-        };
-      default:
-        return {
-          width: variant === 'extended' ? undefined : 56,
-          height: 56,
-          borderRadius: 28,
-          paddingHorizontal: variant === 'extended' ? theme.spacing.lg : 0,
-        };
-    }
-  };
+  const sizeStyle = React.useMemo((): ViewStyle => {
+    const sz = theme.fab.sizes[size];
+    const diameter = sz.diameter;
+    const isExtended = variant === 'extended';
+    return {
+      width: isExtended ? undefined : diameter,
+      height: diameter,
+      borderRadius: diameter / 2,
+      paddingHorizontal: isExtended ? sz.paddingX : 0,
+    };
+  }, [size, variant, theme.fab.sizes]);
+
+  const backgroundColor = color || theme.fab.colors.background;
+  const foregroundColor = theme.fab.colors.foreground;
+
+  const shadowStyle = React.useMemo(() => ({
+    shadowColor: theme.fab.shadow.color,
+    shadowOpacity: theme.fab.shadow.opacity,
+    shadowRadius: theme.fab.shadow.radius,
+    shadowOffset: { width: 0, height: theme.fab.shadow.offsetY },
+    ...(Platform.OS === 'android' ? { elevation: theme.fab.shadow.elevation } : {}),
+  }), [theme.fab.shadow]);
 
   return (
-    <Animated.View
-      style={{
-          transform: [{ scale: scaleAnim }],
-          opacity: disabled ? 0.5 : 1,
-        }}
-      testID={testID}
-    >
-      <TouchableOpacity
-        style={[
-          styles(theme).fab,
-          getSizeStyle(),
-          getPositionStyle(),
-          {
-            backgroundColor: color || theme.colors.primary,
-          },
-          style,
-        ]}
-        onPress={onPress}
+    <Animated.View style={{ transform: [{ scale: scaleAnim }], opacity: disabled ? theme.fab.disabledOpacity : 1 }} testID={testID}>
+      <Pressable
+        onPress={disabled || loading ? undefined : onPress}
         onPressIn={handlePressIn}
         onPressOut={handlePressOut}
-        activeOpacity={0.8}
         disabled={disabled || loading}
         accessibilityRole="button"
         accessibilityState={{ disabled, busy: loading }}
+        style={[
+          styles(theme).fab,
+          sizeStyle,
+          positionStyle,
+          { backgroundColor },
+          shadowStyle,
+          style,
+        ]}
+        {...(Platform.OS === 'android' ? { android_ripple: { color: theme.fab.ripple.color } } : {})}
       >
         {loading ? (
-          <ActivityIndicator color={theme.colors.onPrimary} size={size === 'small' ? 'small' : 'large'} />
+          <ActivityIndicator color={foregroundColor} size={size === 'small' ? 'small' : 'large'} />
         ) : (
           <>
-            {icon && <View style={styles(theme).icon}>{icon}</View>}
-            {(variant === 'extended' && label) && (
-              <Text style={[styles(theme).label, labelStyle]}>{label}</Text>
+            {icon && <View style={[styles(theme).icon, variant === 'extended' ? { marginRight: theme.fab.iconSpacing } : null]}>{icon}</View>}
+            {variant === 'extended' && !!label && (
+              <Text style={[styles(theme).label, { color: foregroundColor, fontSize: theme.fab.sizes[size].labelFontSize }, labelStyle]}>{label}</Text>
             )}
           </>
         )}
-      </TouchableOpacity>
+      </Pressable>
     </Animated.View>
   );
 };
@@ -182,23 +169,15 @@ export const Fab: React.FC<FabProps> = ({
 const styles = (theme: Theme) => StyleSheet.create({
   fab: {
     alignItems: 'center',
-    backgroundColor: theme.colors.primary,
-    elevation: 6,
     flexDirection: 'row',
     justifyContent: 'center',
     minWidth: 0,
     position: 'absolute',
-    shadowColor: '#000',
-    shadowOffset: { width: 0, height: 3 },
-    shadowOpacity: 0.3,
-    shadowRadius: 4.65,
   },
   icon: {
-    marginRight: 8,
+    marginRight: 0,
   },
   label: {
-    color: theme.colors.onPrimary,
-    fontSize: theme.fontSize.body1,
     fontWeight: theme.fontWeight.medium,
     marginLeft: theme.spacing.xs,
   },
